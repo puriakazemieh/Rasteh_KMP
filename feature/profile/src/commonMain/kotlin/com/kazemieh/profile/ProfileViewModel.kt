@@ -1,0 +1,496 @@
+package com.kazemieh.profile
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.kazemieh.common.AppResult
+import com.kazemieh.domain.address.Address
+import com.kazemieh.domain.profile.Profile
+import com.kazemieh.domain.profile.GetProfileUseCase
+import com.kazemieh.domain.profile.ObserveProfileUseCase
+import com.kazemieh.domain.profile.UpdateProfileUseCase
+import com.kazemieh.domain.address.AddAddressUseCase
+import com.kazemieh.domain.address.DeleteAddressUseCase
+import com.kazemieh.domain.address.GetAddressesUseCase
+import com.kazemieh.domain.address.SetDefaultAddressUseCase
+import com.kazemieh.domain.address.UpdateAddressUseCase
+import com.kazemieh.domain.profile.ValidateProfileUseCase
+import com.kazemieh.domain.auth.SignOutUseCase
+import com.kazemieh.domain.wallet.GetWalletBalanceUseCase
+import com.kazemieh.domain.favorite.GetFavoritesUseCase
+import com.kazemieh.domain.favorite.ObserveFavoriteIdsUseCase
+import com.kazemieh.domain.favorite.ToggleFavoriteUseCase
+import com.kazemieh.domain.catalog.ProductSummary
+import com.kazemieh.domain.order.GetMyOrdersUseCase
+import com.kazemieh.domain.order.Order
+import com.kazemieh.domain.wallet.WalletBalance
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import com.kazemieh.designsystem.Resources
+
+class ProfileViewModel(
+    private val getProfileUseCase: GetProfileUseCase,
+    private val updateProfileUseCase: UpdateProfileUseCase,
+    private val observeProfileUseCase: ObserveProfileUseCase,
+    private val validateProfileUseCase: ValidateProfileUseCase,
+    private val getAddressesUseCase: GetAddressesUseCase,
+    private val addAddressUseCase: AddAddressUseCase,
+    private val updateAddressUseCase: UpdateAddressUseCase,
+    private val deleteAddressUseCase: DeleteAddressUseCase,
+    private val setDefaultAddressUseCase: SetDefaultAddressUseCase,
+    private val getWalletBalanceUseCase: GetWalletBalanceUseCase,
+    private val getFavoritesUseCase: GetFavoritesUseCase,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    private val observeFavoriteIdsUseCase: ObserveFavoriteIdsUseCase,
+    private val getMyOrdersUseCase: GetMyOrdersUseCase,
+    private val signOutUseCase: SignOutUseCase
+) : ViewModel() {
+
+    private val _state = MutableStateFlow(ProfileState())
+    val state = _state.asStateFlow()
+
+    private val _effect = Channel<ProfileEffect>()
+    val effect = _effect.receiveAsFlow()
+
+    init {
+        handleIntent(ProfileIntent.LoadProfile)
+        handleIntent(ProfileIntent.LoadAddresses)
+        handleIntent(ProfileIntent.LoadWalletBalance)
+        handleIntent(ProfileIntent.LoadFavorites)
+        observeProfile()
+        observeFavorites()
+        observeOrders()
+    }
+
+    private fun observeOrders() {
+        viewModelScope.launch {
+            _state.update { it.copy(ordersLoading = true) }
+            getMyOrdersUseCase().collectLatest { result ->
+                when (result) {
+                    is AppResult.Success -> _state.update { it.copy(orders = result.data, ordersLoading = false) }
+                    is AppResult.Error -> _state.update { it.copy(ordersLoading = false) }
+                    is AppResult.Loading -> _state.update { it.copy(ordersLoading = true) }
+                }
+            }
+        }
+    }
+
+    private fun observeFavorites() {
+        viewModelScope.launch {
+            observeFavoriteIdsUseCase().collectLatest { ids ->
+                _state.update { state ->
+                    state.copy(
+                        favorites = state.favorites.filter { ids.contains(it.id) }
+                    )
+                }
+            }
+        }
+    }
+
+    fun handleIntent(intent: ProfileIntent) {
+        when (intent) {
+            is ProfileIntent.LoadProfile -> loadProfile()
+            is ProfileIntent.LoadWalletBalance -> loadWalletBalance()
+            is ProfileIntent.UpdateFirstName -> updateFirstName(intent.value)
+            is ProfileIntent.UpdateLastName -> updateLastName(intent.value)
+            is ProfileIntent.UpdateCity -> updateCity(intent.value)
+            is ProfileIntent.UpdatePostalCode -> updatePostalCode(intent.value)
+            is ProfileIntent.UpdateAddress -> {} // This was for profile address, now we have a list
+            is ProfileIntent.UpdatePhoneNumber -> updatePhoneNumber(intent.value)
+            is ProfileIntent.SaveProfile -> saveProfile()
+            
+            is ProfileIntent.LoadAddresses -> loadAddresses()
+            is ProfileIntent.AddAddress -> addAddress(intent)
+            is ProfileIntent.UpdateUserAddress -> updateUserAddress(intent)
+            is ProfileIntent.DeleteAddress -> deleteAddress(intent.id)
+            is ProfileIntent.SetDefaultAddress -> setDefaultAddress(intent.id)
+
+            is ProfileIntent.LoadFavorites -> loadFavorites()
+            is ProfileIntent.ToggleFavorite -> toggleFavorite(intent.product)
+            is ProfileIntent.SignOut -> signOut()
+        }
+    }
+
+    private fun signOut() {
+        viewModelScope.launch {
+            when (val result = signOutUseCase()) {
+                is AppResult.Success -> _effect.send(ProfileEffect.SignedOut)
+                is AppResult.Error -> _effect.send(ProfileEffect.ShowError(result.message))
+                else -> {}
+            }
+        }
+    }
+
+    private fun loadFavorites() {
+        viewModelScope.launch {
+            _state.update { it.copy(favoritesLoading = true) }
+            when (val result = getFavoritesUseCase()) {
+                is AppResult.Success -> {
+                    _state.update { it.copy(favorites = result.data.items, favoritesLoading = false) }
+                }
+                is AppResult.Error -> {
+                    _state.update { it.copy(favoritesLoading = false) }
+                    _effect.send(ProfileEffect.ShowError(result.message))
+                }
+                is AppResult.Loading -> {}
+            }
+        }
+    }
+
+    private fun toggleFavorite(product: ProductSummary) {
+        viewModelScope.launch {
+            val isFavorite = product.isFavorite
+            // Optimistic update
+            _state.update { state ->
+                state.copy(
+                    favorites = if (isFavorite) {
+                        state.favorites.filter { it.id != product.id }
+                    } else {
+                        // Prevent duplicates
+                        if (state.favorites.any { it.id == product.id }) {
+                            state.favorites.map { if (it.id == product.id) it.copy(isFavorite = true) else it }
+                        } else {
+                            state.favorites + product.copy(isFavorite = true)
+                        }
+                    }
+                )
+            }
+
+            when (val result = toggleFavoriteUseCase(product.id, !isFavorite)) {
+                is AppResult.Success -> {
+                    // Success, state already updated optimistically
+                }
+                is AppResult.Error -> {
+                    // Revert on error
+                    _state.update { state ->
+                        state.copy(
+                            favorites = if (isFavorite) {
+                                state.favorites + product
+                            } else {
+                                state.favorites.filter { it.id != product.id }
+                            }
+                        )
+                    }
+                    _effect.send(ProfileEffect.ShowError(result.message))
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun observeProfile() {
+        viewModelScope.launch {
+            observeProfileUseCase().collectLatest { result ->
+                when (result) {
+                    is AppResult.Success -> {
+                        _state.update {
+                            it.copy(
+                                profile = result.data,
+                                displayState = AppResult.Success(Unit),
+                                isFormValid = validateProfileUseCase(result.data)
+                            )
+                        }
+                    }
+
+                    is AppResult.Error -> {
+                        _state.update {
+                            it.copy(displayState = AppResult.Error(result.message))
+                        }
+                    }
+
+                    is AppResult.Loading -> {
+                        _state.update {
+                            it.copy(displayState = AppResult.Loading)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun loadProfile() {
+        viewModelScope.launch {
+            _state.update { it.copy(displayState = AppResult.Loading) }
+
+            when (val result = getProfileUseCase()) {
+                is AppResult.Success -> {
+                    _state.update {
+                        it.copy(displayState = AppResult.Success(Unit), profile = result.data)
+                    }
+                }
+
+                is AppResult.Error -> {
+                    _state.update {
+                        it.copy(displayState = AppResult.Error(result.message))
+                    }
+                }
+
+                is AppResult.Loading -> {
+                    _state.update {
+                        it.copy(displayState = AppResult.Loading)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun loadWalletBalance() {
+        viewModelScope.launch {
+            _state.update { it.copy(walletBalanceState = AppResult.Loading) }
+            val result = getWalletBalanceUseCase()
+            _state.update { it.copy(walletBalanceState = result) }
+        }
+    }
+
+    private fun loadAddresses() {
+        viewModelScope.launch {
+            _state.update { it.copy(addressLoading = true) }
+            when (val result = getAddressesUseCase()) {
+                is AppResult.Success -> {
+                    _state.update { it.copy(addresses = result.data, addressLoading = false) }
+                }
+                is AppResult.Error -> {
+                    _state.update { it.copy(addressLoading = false) }
+                    _effect.send(ProfileEffect.ShowError(result.message))
+                }
+                is AppResult.Loading -> {}
+            }
+        }
+    }
+
+    private fun addAddress(intent: ProfileIntent.AddAddress) {
+        viewModelScope.launch {
+            _state.update { it.copy(addressSaving = true) }
+            val result = addAddressUseCase(
+                receiverName = intent.receiverName,
+                receiverPhone = intent.receiverPhone,
+                country = intent.country,
+                province = intent.province,
+                city = intent.city,
+                addressLine1 = intent.addressLine1,
+                addressLine2 = intent.addressLine2,
+                postalCode = intent.postalCode,
+                setAsDefault = intent.setAsDefault
+            )
+            when (result) {
+                is AppResult.Success -> {
+                    _effect.send(ProfileEffect.ShowSuccess(Resources.String.AddressAddedSuccessfully))
+                    loadAddresses()
+                }
+                is AppResult.Error -> {
+                    _effect.send(ProfileEffect.ShowError(result.message))
+                }
+                is AppResult.Loading -> {}
+            }
+            _state.update { it.copy(addressSaving = false) }
+        }
+    }
+
+    private fun updateUserAddress(intent: ProfileIntent.UpdateUserAddress) {
+        viewModelScope.launch {
+            _state.update { it.copy(addressSaving = true) }
+            val result = updateAddressUseCase(
+                id = intent.id,
+                receiverName = intent.receiverName,
+                receiverPhone = intent.receiverPhone,
+                country = intent.country,
+                province = intent.province,
+                city = intent.city,
+                addressLine1 = intent.addressLine1,
+                addressLine2 = intent.addressLine2,
+                postalCode = intent.postalCode
+            )
+            when (result) {
+                is AppResult.Success -> {
+                    _effect.send(ProfileEffect.ShowSuccess(Resources.String.VariantUpdated))
+                    loadAddresses()
+                }
+                is AppResult.Error -> {
+                    _effect.send(ProfileEffect.ShowError(result.message))
+                }
+                is AppResult.Loading -> {}
+            }
+            _state.update { it.copy(addressSaving = false) }
+        }
+    }
+
+    private fun deleteAddress(id: Long) {
+        viewModelScope.launch {
+            when (val result = deleteAddressUseCase(id)) {
+                is AppResult.Success -> {
+                    _effect.send(ProfileEffect.ShowSuccess(Resources.String.VariantDeleted))
+                    loadAddresses()
+                }
+                is AppResult.Error -> {
+                    _effect.send(ProfileEffect.ShowError(result.message))
+                }
+                is AppResult.Loading -> {}
+            }
+        }
+    }
+
+    private fun setDefaultAddress(id: Long) {
+        viewModelScope.launch {
+            when (val result = setDefaultAddressUseCase(id)) {
+                is AppResult.Success -> {
+                    _effect.send(ProfileEffect.ShowSuccess(Resources.String.StatusUpdatedSuccessfully))
+                    loadAddresses()
+                }
+                is AppResult.Error -> {
+                    _effect.send(ProfileEffect.ShowError(result.message))
+                }
+                is AppResult.Loading -> {}
+            }
+        }
+    }
+
+    private fun updateFirstName(value: String) {
+        _state.value.profile?.let { profile ->
+            val updated = profile.copy(firstName = value)
+            _state.update {
+                it.copy(
+                    profile = updated,
+                    isFormValid = validateProfileUseCase(updated)
+                )
+            }
+        }
+    }
+
+    private fun updateLastName(value: String) {
+        _state.value.profile?.let { profile ->
+            val updated = profile.copy(lastName = value)
+            _state.update {
+                it.copy(
+                    profile = updated,
+                    isFormValid = validateProfileUseCase(updated)
+                )
+            }
+        }
+    }
+
+    private fun updateCity(value: String) {
+        _state.value.profile?.let { profile ->
+            val updated = profile.copy(city = value)
+            _state.update {
+                it.copy(
+                    profile = updated,
+                    isFormValid = validateProfileUseCase(updated)
+                )
+            }
+        }
+    }
+
+    private fun updatePostalCode(value: Int?) {
+        _state.value.profile?.let { profile ->
+            val updated = profile.copy(postalCode = value)
+            _state.update {
+                it.copy(
+                    profile = updated,
+                    isFormValid = validateProfileUseCase(updated)
+                )
+            }
+        }
+    }
+
+    private fun updatePhoneNumber(value: String) {
+        _state.value.profile?.let { profile ->
+            val updated = profile.copy(phone = value)
+            _state.update {
+                it.copy(
+                    profile = updated,
+                    isFormValid = validateProfileUseCase(updated)
+                )
+            }
+        }
+    }
+
+    private fun saveProfile() {
+        val profile = _state.value.profile ?: return
+
+        viewModelScope.launch {
+            _state.update { it.copy(isSaving = true) }
+
+            when (val result = updateProfileUseCase(profile)) {
+                is AppResult.Success -> {
+                    _effect.send(ProfileEffect.ShowSuccess(Resources.String.Success))
+                }
+
+                is AppResult.Error -> {
+                    _effect.send(ProfileEffect.ShowError(result.message))
+                }
+
+                is AppResult.Loading -> {}
+            }
+
+            _state.update { it.copy(isSaving = false) }
+        }
+    }
+}
+
+
+sealed interface ProfileIntent {
+    data object LoadProfile : ProfileIntent
+    data object LoadWalletBalance : ProfileIntent
+    data class UpdateFirstName(val value: String) : ProfileIntent
+    data class UpdateLastName(val value: String) : ProfileIntent
+    data class UpdateCity(val value: String) : ProfileIntent
+    data class UpdatePostalCode(val value: Int?) : ProfileIntent
+    data class UpdateAddress(val value: String) : ProfileIntent
+    data class UpdatePhoneNumber(val value: String) : ProfileIntent
+    data object SaveProfile : ProfileIntent
+
+    data object LoadAddresses : ProfileIntent
+    data class AddAddress(
+        val receiverName: String,
+        val receiverPhone: String,
+        val country: String,
+        val province: String,
+        val city: String,
+        val addressLine1: String,
+        val addressLine2: String?,
+        val postalCode: String?,
+        val setAsDefault: Boolean
+    ) : ProfileIntent
+    data class UpdateUserAddress(
+        val id: Long,
+        val receiverName: String?,
+        val receiverPhone: String?,
+        val country: String?,
+        val province: String?,
+        val city: String?,
+        val addressLine1: String?,
+        val addressLine2: String?,
+        val postalCode: String?
+    ) : ProfileIntent
+    data class DeleteAddress(val id: Long) : ProfileIntent
+    data class SetDefaultAddress(val id: Long) : ProfileIntent
+
+    data object LoadFavorites : ProfileIntent
+    data class ToggleFavorite(val product: ProductSummary) : ProfileIntent
+    data object SignOut : ProfileIntent
+}
+
+data class ProfileState(
+    val profile: Profile? = null,
+    val addresses: List<Address> = emptyList(),
+    val favorites: List<ProductSummary> = emptyList(),
+    val orders: List<Order> = emptyList(),
+    val ordersLoading: Boolean = false,
+    val walletBalanceState: AppResult<WalletBalance> = AppResult.Loading,
+    val displayState: AppResult<Unit?> = AppResult.Loading,
+    val isFormValid: Boolean = false,
+    val isSaving: Boolean = false,
+    val addressLoading: Boolean = false,
+    val addressSaving: Boolean = false,
+    val favoritesLoading: Boolean = false
+)
+
+sealed class ProfileEffect {
+    data class ShowError(val message: Any) : ProfileEffect()
+    data class ShowSuccess(val message: Any) : ProfileEffect()
+    data object SignedOut : ProfileEffect()
+}

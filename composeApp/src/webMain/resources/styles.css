@@ -1,0 +1,17 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+@font-face {
+    font-family: 'typeface_fa';
+    src: url('typeface_fa.ttf') format('truetype');
+    font-display: swap;
+}
+
+* {
+    font-family: 'typeface_fa', system-ui, -apple-system, sans-serif !important;
+}

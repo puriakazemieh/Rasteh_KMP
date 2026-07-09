@@ -1,0 +1,116 @@
+package com.kazemieh.common
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+sealed class Screen {
+
+    @Serializable
+    data object AuthGraph: Screen()
+
+    @Serializable
+    data object Login : Screen()
+
+    @Serializable
+    data object Register : Screen()
+
+    @Serializable
+    data object ForgotPassword : Screen()
+
+    @Serializable
+    data class ResetPassword(val token: String) : Screen()
+
+    @Serializable
+    data class HomeGraph(val showCart: Boolean = false) : Screen()
+
+    @Serializable
+    data object BlogGraph : Screen()
+
+    @Serializable
+    data object BlogList : Screen()
+
+    @Serializable
+    data class BlogDetail(val slug: String) : Screen()
+
+    @Serializable
+    data object ProductsOverview : Screen()
+
+    @Serializable
+    data object Cart : Screen()
+
+    @Serializable
+    data object Categories : Screen()
+
+    @Serializable
+    data object Search : Screen()
+
+    @Serializable
+    data object Profile : Screen()
+
+    @Serializable
+    data object MyOrders : Screen()
+
+    @Serializable
+    data class OrderDetail(val id: Long) : Screen()
+
+    @Serializable
+    data class OrderTracking(val id: Long) : Screen()
+
+    @Serializable
+    data object Settings : Screen()
+
+    @Serializable
+    data object AdminPanel : Screen()
+
+    @Serializable
+    data class ManageProduct(val id: Long? = null) : Screen()
+
+    @Serializable
+    data object ManageOrders : Screen()
+
+    @Serializable
+    data object ManageOptions : Screen()
+
+    @Serializable
+    data object ManageDiscounts : Screen()
+
+    @Serializable
+    data object ManageWallets : Screen()
+
+    @Serializable
+    data object ManageWithdrawals : Screen()
+
+    @Serializable
+    data object ManageStories : Screen()
+
+    @Serializable
+    data object AdminBlogList : Screen()
+
+    @Serializable
+    data class ManageBlog(val id: Long? = null, val slug: String? = null) : Screen()
+
+    @Serializable
+    data object Wallet : Screen()
+
+    @Serializable
+    data object Favorites : Screen()
+
+    @Serializable
+    data class Checkout(val totalAmount: Double) : Screen()
+
+    @Serializable
+    data class PaymentCompleted(val success: Boolean, val error: String? = null) : Screen()
+
+    @Serializable
+    data class CategorySearch(val id: Long, val name: String) : Screen()
+
+    @Serializable
+    data object ContactUs : Screen()
+
+    @Serializable
+    data class ProductDetail(val slug: String) : Screen()
+
+    @Serializable
+    data object CustomerClub : Screen()
+
+}

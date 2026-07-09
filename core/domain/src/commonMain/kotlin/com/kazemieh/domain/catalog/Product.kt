@@ -1,0 +1,64 @@
+package com.kazemieh.domain.catalog
+
+data class ProductSummary(
+    val id: Long,
+    val title: String,
+    val slug: String,
+    val thumbnailUrl: String?,
+    val minPrice: Double?,
+    val maxPrice: Double?,
+    val minDiscountedPrice: Double? = null,
+    val maxDiscountedPrice: Double? = null,
+    val inStock: Boolean,
+    val categoryId: Long?,
+    val categoryName: String?,
+    val options: Map<String, List<String>>,
+    val isFavorite: Boolean = false,
+    val averageRating: Double? = null,
+    val reviewCount: Long = 0
+)
+
+data class ProductAttribute(
+    val name: String,
+    val value: String
+)
+
+data class ProductDetail(
+    val id: Long,
+    val title: String,
+    val slug: String,
+    val description: String?,
+    val brand: String? = null,
+    val attributes: List<ProductAttribute> = emptyList(),
+    val categoryId: Long?,
+    val categoryName: String?,
+    val images: List<ProductImage>,
+    val videos: List<ProductVideo> = emptyList(),
+    val variants: List<ProductVariant>,
+    val createdAt: String,
+    val basePrice: Double? = null,
+    val discountedPrice: Double? = null,
+    val isFavorite: Boolean = false
+)
+
+data class ProductImage(
+    val id: Long,
+    val url: String,
+    val sortOrder: Int
+)
+
+data class ProductVideo(
+    val id: Long,
+    val url: String,
+    val sortOrder: Int
+)
+
+data class ProductVariant(
+    val id: Long,
+    val sku: String,
+    val price: Double,
+    val discountedPrice: Double? = null,
+    val compareAtPrice: Double?,
+    val available: Int,
+    val options: Map<String, String>
+)

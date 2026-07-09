@@ -1,0 +1,31 @@
+package com.kazemieh.catalog
+
+import com.kazemieh.domain.catalog.ProductSummary
+
+data class CategorySearchState(
+    val isLoading: Boolean = false,
+    val products: List<ProductSummary> = emptyList(),
+    val totalCount: Long = 0,
+    val error: Any? = null,
+    val searchQuery: String = "",
+    val categoryId: Long? = null,
+    val categoryName: String = "",
+    val selectedOptions: Map<String, String> = emptyMap(),
+    val availableOptions: Map<String, Set<String>> = emptyMap(),
+    val sort: String = "newest",
+    val discountedOnly: Boolean = false
+)
+
+sealed interface CategorySearchIntent {
+    data class Init(val categoryId: Long, val categoryName: String) : CategorySearchIntent
+    data class UpdateSearchQuery(val query: String) : CategorySearchIntent
+    data class ToggleOption(val key: String, val value: String) : CategorySearchIntent
+    data class UpdateSort(val sort: String) : CategorySearchIntent
+    data class SetDiscountedOnly(val value: Boolean) : CategorySearchIntent
+    data class ToggleFavorite(val product: ProductSummary) : CategorySearchIntent
+}
+
+sealed interface CategorySearchEffect {
+    data class ShowError(val message: Any) : CategorySearchEffect
+    data object NavigateToAuth : CategorySearchEffect
+}
