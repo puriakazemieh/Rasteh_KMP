@@ -2,7 +2,7 @@
 
 > مارکت‌پلیسِ محلیِ پاساژ/راسته (ترکیبی از دیوار/شیپور/باسلام/ترب): یک اپِ **یکپارچه** با سه نقش
 > (خریدار / فروشنده / ادمینِ پاساژ)، کاتالوگِ دوحالته («خرید آنلاین»/«فقط بازدید حضوری»)،
-> دنبال‌کردن + هدیهٔ دنبال‌کننده، چتِ درون‌برنامه‌ای، پیشنهادِ قیمت، و ۲۰ قابلیتِ ویژه.
+> کشفِ **راسته × محل**، نشان‌کردن (Bookmark)، چتِ درون‌برنامه‌ای، پیشنهادِ قیمت، و ۲۰ قابلیتِ ویژه.
 > زبانِ رابط: **فارسی، راست‌به‌چپ (RTL)**، اعداد به‌صورتِ **ارقامِ فارسی**.
 
 این سند خروجیِ **تلفیقِ دو منبع** است:
@@ -15,12 +15,20 @@
 
 ## ۰) منبعِ حقیقت: بستهٔ طراحی
 
-مرجعِ نهاییِ UI پوشهٔ `design_handoff_unified_app` است:
-- `Unified App.dc.html` — اپِ کاملِ hi-fi (~۵۸ صفحه در یک state machine با متغیرِ `screen`؛ هر `screen` = یک route).
-- `README.md` — توکن‌های طراحی، مدلِ داده، فهرستِ صفحات، رفتار و state.
+- **`design_handoff_v2/`** — **نسخهٔ به‌روز و منبعِ حقیقتِ فعلی** (بازطراحیِ خانه/فروشگاه/محصول + مدلِ راسته×محل + حذفِ فالو).
+- `design_handoff_unified_app/` — نسخهٔ اول (تاریخی؛ برای شرحِ کاملِ ۲۰ قابلیت هنوز مرجع است).
+- در هر دو: `Unified App.dc.html` (اپِ کامل)، `README.md` (توکن‌ها/مدلِ داده/صفحات/رفتار/state).
 
 **Fidelity: high-fidelity.** رنگ‌ها/تایپوگرافی/فاصله‌ها/شعاع‌ها/تعاملات نهایی‌اند و باید **پیکسل‌به‌پیکسل**
-با Compose Multiplatform بازسازی شوند. HTML مستقیماً به تولید نمی‌رود؛ بازسازی با الگوهای همین کدبیس.
+با Compose Multiplatform بازسازی شوند. HTML مستقیماً به تولید نمی‌رود. **هرجا v2 و v1 اختلاف دارند، v2 حاکم است.**
+
+### تغییراتِ کلیدیِ v2 (این پلن بر اساسِ آن‌ها به‌روز شد)
+1. **مدلِ «راسته × محل»**: خانه با گریدِ **راسته‌ها** (صنف: مبل/موبایل/طلا/پوشاک…) آغاز می‌شود؛ کلیک روی راسته → **باتم‌شیت** انتخابِ **محل** (پاساژ/بازار) → صفحهٔ `rastehSearch`.
+2. **حذفِ کاملِ فالو + هدیهٔ دنبال‌کننده**: `shopDetail` دیگر نوارِ آمار و دکمهٔ «دنبال کردن» ندارد؛ جایِ آن **«پیام به فروشگاه» + «تماس»**. سازوکارِ ذخیره → **Bookmark (نشان‌کردن)**.
+3. **حذفِ سربرگِ خانه** (شهر/زنگوله/آواتار)؛ خانه با **سرچ‌بار** شروع می‌شود.
+4. **`listing`**: بخشِ «دیدن در فروشگاه‌های دیگر» حالا **بعد از نظرات** است؛ نوارِ پایینِ چسبان دو حالته (خریدنی/فقط‌حضوری).
+5. **نقشِ `superadmin`** اضافه شد (customer/vendor/admin/superadmin).
+6. قابِ دستگاه ۳۷۵px؛ رنگِ اختصاصیِ آیکونِ هر راسته در توکن‌ها.
 
 ---
 
@@ -57,11 +65,18 @@
 | سبزِ موفقیت / «خرید آنلاین» | `oklch(0.5 0.13 150)` |
 | قرمزِ هشدار / حراج / زنده / گزارش | `oklch(0.58 0.22 25)` |
 | نارنجی/کهربایی (هشدارِ ملایم) | `oklch(0.6 0.16 60)` |
-| طلایی (سطحِ وفاداری) | `oklch(0.7 0.13 70)` |
+| طلایی (سطحِ وفاداری) | `oklch(0.7 0.13 70)` · ستارهٔ امتیاز `oklch(0.65 0.15 70)` |
 | آبی (نقشه/پارکینگ) | `oklch(0.5 0.13 240)` |
+| ارزان‌ترین (بوردر سبز listing) | `oklch(0.6 0.13 150)` |
+
+### رنگِ آیکونِ راسته‌ها (v2 — گریدِ خانه)
+هر راسته رنگِ اختصاصیِ آیکون دارد: مبل `oklch(0.55 0.13 45)` · موبایل `oklch(0.5 0.14 260)` · پوشاک `oklch(0.55 0.15 350)` ·
+طلا `oklch(0.62 0.13 85)` · لوازم‌خانگی `oklch(0.55 0.12 200)` · کیف‌وکفش `oklch(0.5 0.13 30)` · آرایشی `oklch(0.58 0.15 350)` ·
+کتاب `oklch(0.55 0.11 150)` · اسباب‌بازی `oklch(0.6 0.14 60)` · همه `oklch(0.5 0.02 280)`.
+(این رنگ‌ها از سرور می‌آیند — فیلدِ `colorOklch` روی `Rasteh`.)
 
 ### شعاعِ گوشه
-- چیپ/دکمهٔ گردِ کامل `999px`؛ کارت `12–18px` (رایج ۱۲/۱۳/۱۴)؛ فریمِ بیرونی `44px`، صفحهٔ داخل `34px`؛ آواتار `50%`.
+- چیپ/فیلد `10–11px`؛ کارت `12–14px`؛ باتم‌شیت `22px` بالا؛ آواتار `50%`. قابِ دستگاه در v2 عرضِ ۳۷۵px.
 
 ### فاصله و سایه
 - paddingِ صفحه ۱۶px افقی؛ هدرها `13px 16px`؛ gapِ کارت‌ها ۸–۱۲px؛ gapِ گریدِ دوستونه ۱۰–۱۱px.
@@ -77,13 +92,18 @@
 
 ## ۳) نقش‌ها و ناوبری (یک اپِ یکپارچه)
 
-**تصمیمِ طراحی (به‌روزشده):** برخلافِ پیش‌نویسِ قبلی که اپ‌های جدا پیشنهاد می‌داد، طراحی **یک اپِ واحد**
-دارد که نقش با سوییچِ درون‌پروفایلی عوض می‌شود (`role = customer | vendor | admin`).
-با انتخابِ نقش، **درونِ همان تبِ پروفایل** آمار + میان‌بر + لیست‌های آن نقش inline ظاهر می‌شود (نه صفحهٔ جدا).
+**اپِ واحد** با سوییچِ درون‌پروفایلیِ نقش (`role = customer | vendor | admin | superadmin`).
+با انتخابِ نقش، **درونِ همان تبِ پروفایل** میان‌بر + لیست‌های آن نقش inline ظاهر می‌شود (نه صفحهٔ جدا).
 
-- **Bottom-nav** خریدار (۵ آیتم): **خانه، جست‌وجو، ذخیره‌ها، پیام‌ها، پروفایل**.
-- Router واقعی به‌جای متغیرِ `screen` (هر `screen` = یک Screen در `core/navigation`؛ الگویِ sealed class + NavHost).
-- Stateهای سراسری (Koin/store): auth/نقش، `city`، `cart`، `followedShops`، `bookmarks/shopBookmarks`، `messages`، `notifBadge`.
+**خانهٔ v2 (بازطراحی — از بالا):** ۱) **سرچ‌بار** (بالاترین عنصر؛ سربرگِ شهر/زنگوله/آواتار **حذف شد**) →
+۲) **گریدِ راسته‌ها** (۵ ستون × ۲ ردیف؛ کلیک → **باتم‌شیتِ انتخابِ محل**) → ۳) تبِ **فروشگاه‌ها/محصولات** →
+۴) **اخیراً دیده‌شده** → ۵) **نشان‌شده‌ها (Bookmark)** → ۶) **جدیدترین فروشگاه‌ها/محصولات**.
+
+- **Bottom-nav** خریدار: **خانه، جست‌وجو، نشان‌شده‌ها، پیام‌ها، پروفایل**.
+- جریانِ کشف: `feed → (کلیک راسته) rastehSheet → rastehSearch(محل) → shopDetail/listing`.
+- Router واقعی به‌جای متغیرِ `screen` (هر `screen` = یک Screen در `core/navigation`؛ sealed class + NavHost).
+- Stateهای سراسری (Koin/store): auth/نقش، `city`، `cart`، `bookmarks/shopBookmarks`، `rastehSheetId`، `selectedLocation`، `homeTab/rastehTab/shopTab`، `messages`، `notifBadge`.
+  (`followedShops` **حذف شد** — v2 فالو ندارد.)
 
 ---
 
@@ -103,37 +123,38 @@ feature/orders      -- تاریخچه/وضعیتِ سفارش (+ نمایشِ ن
 ### اقتباسی — کپی + تغییر
 ```
 feature/catalog     -- کارتِ محصول: badge نوع «خرید آنلاین»/«بازدید حضوری»؛ دکمهٔ «تماس/مسیریابی» به‌جای «افزودن به سبد» وقتی visitOnly
-feature/details(listing) -- سبکِ ترب: گالریِ نقطه‌دار، انتخابِ مدل(chip)، بخشِ «فروشندگانِ دیگرِ این کالا»
-                            (ارزان‌ترین با بوردر سبز + badge)، لینکِ «مقایسهٔ همه» → compare
+feature/details(listing) -- v2: گالریِ نقطه‌دار، انتخابِ مدل(chip)، کارتِ فروشگاه، توضیحات، **نظرات**، سپس بخشِ «دیدن در فروشگاه‌های دیگر»
+                            (ارزان‌ترین با بوردر سبز + badge؛ فقط برای buyable)، لینکِ «مقایسهٔ همه» → compare.
+                            نوارِ پایینِ چسبان: buyable = افزودن‌به‌سبد + پیشنهادِ قیمت + چت؛ visitOnly = چت + تماس
 feature/cart        -- سبدِ تک‌ونـدوری: هشدار هنگامِ افزودنِ آیتم از فروشگاهِ دیگر
 feature/admin/*     -- الگویِ AdminXxxScreen اما اسکوپ‌شده به vendorId فعلی (نه دیدِ سراسری)
 ```
 
-### کاملاً جدید — از روی صفحاتِ طراحی
+### کاملاً جدید — از روی صفحاتِ طراحیِ v2
 ```
-feature/home(feed)          -- هدر (انتخابِ شهر، لوگو، زنگولهٔ badge، آواتار)، سرچ‌بار، چیپِ دسته، تبِ فروشگاه/محصول،
-                               بنرِ «امکاناتِ ویژه»، ردیفِ «دیده‌شدهٔ اخیر»، «دنبال‌شده‌ها» (+badge هدیه)، لیستِ «فروشگاه‌های بازارچه»، دکمهٔ «نقشهٔ پاساژ»
-feature/shop(shopDetail)    -- سبکِ باسلام: کاورِ گرادیانی، آواتارِ روی کاور، تیکِ تأیید، نوارِ آمار (دنبال‌کننده/رضایت/عملکرد)،
-                               دکمه‌های «دنبال‌کردن»(toggle)/«پیام»، تب‌ها: محصولات/حراجی/ویترینو/نظرات/اطلاعات(+گزارشِ تخلف)
-feature/follow              -- toggleِ دنبال، manageFollowing (لغوِ دنبال + کارتِ «هدیهٔ دنبال‌کننده» FOLLOW15)
-feature/search              -- فیلترِ دسته/قیمت/برند/وضعیت(new/used)/مرتب‌سازی/طبقه/شهر
-feature/bookmarks           -- تبِ محصولات/فروشگاه‌ها
+feature/home(feed)          -- v2: سرچ‌بار (بدونِ سربرگ) + گریدِ راسته‌ها + تبِ فروشگاه/محصول + اخیراً دیده‌شده + نشان‌شده‌ها + جدیدترین‌ها
+feature/rasteh              -- **جدیدِ v2**: گریدِ راسته‌ها، باتم‌شیتِ انتخابِ محل (rastehSheetOpen)، صفحهٔ rastehSearch (تبِ فروشگاه/محصولِ یک محل + شمارش)
+feature/shop(shopDetail)    -- v2: کاور + بلوکِ هویت + دکمه‌های **«پیام به فروشگاه» (اصلی) و «تماس»** (بدونِ نوارِ آمار و دکمهٔ فالو)،
+                               تب‌ها: محصولات/حراجی/ویترینو/نظرات/اطلاعات(+گزارشِ تخلف)
+feature/search              -- فیلترِ راسته/محل/دسته/قیمت/برند/وضعیت(new/used)/مرتب‌سازی
+feature/bookmarks           -- تبِ محصولات/فروشگاه‌ها (سازوکارِ ذخیره، جایگزینِ فالو)
 feature/chat                -- chatList + chatThread
 feature/offer(makeOffer)    -- پیشنهادِ قیمت (فقط اگر فروشگاه acceptsOffers)
 feature/city(citySelect)    -- جست‌وجوی شهر، «موقعیتِ فعلی»، لیست با تیک
-feature/activity            -- فیدِ فعالیت (پسند/ذخیره/پیام/دنبال)
+feature/activity            -- فیدِ فعالیت (پسند/ذخیره/پیام)
 feature/notifications, feature/wallet, feature/referral, feature/settings, feature/support, feature/editProfile, feature/myReviews
-feature/profile             -- تبِ پروفایل + سوییچِ نقش (customer/vendor/admin) inline؛ منویِ «کالاها و سفارش‌های منِ» (myListings)، logoutConfirm (دیالوگِ خروج، پاک‌کردنِ توکن)
-feature/vendor/onboarding(becomeVendor) -- فرمِ ثبت: نام، دسته، طبقه، نوع(buyable/visitOnly)، تلفن، آدرس، ساعتِ کاری، about،
+feature/profile             -- تبِ پروفایل + سوییچِ نقش (customer/vendor/admin/superadmin) inline؛ myListings، logoutConfirm
+feature/vendor/onboarding(becomeVendor) -- فرمِ ثبت: نام، **راسته**، **محل**، طبقه، نوع(buyable/visitOnly)، تلفن، آدرس، ساعتِ کاری، about،
                                toggleهای «چتِ درون‌برنامه‌ای» و «پذیرشِ پیشنهادِ قیمت»؛ حالتِ pending «در انتظارِ تأیید»
 feature/vendor/dashboard(vendorDash) -- کارتِ فروشگاه + نوارِ آمار (بازدیدِ امروز/پیامِ جدید/سفارشِ در انتظار) + گریدِ میان‌بر
 feature/vendor/addProduct   -- اسلاتِ عکس، نام، دسته، قیمت، وضعیت، موجودی، درصدِ تخفیف، توضیح + حالتِ موفقیت
 feature/vendor/manageListings, editShop, vendorOrders, vendorAnalytics, shopQr
-feature/vendor/followerPerk -- کارتِ گرادیانیِ قرمز، کدِ فعال (FOLLOW15)، ساختِ کدِ جدید + toggleِ «قیمتِ ویژه به دنبال‌کننده‌ها»
 feature/admin/dashboard(adminDash) -- تب‌های approvals/reports/quickAdd/supervisors + کارتِ آمار
-feature/admin/vendorApproval, feature/admin/reportDetail
-feature/mall-map(floorMap/wayfind) -- MVP: فهرستِ طبقات؛ بعدی: نقشهٔ گرافیکی با مختصات و مسیرِ خط‌چین
+feature/admin/vendorApproval, feature/admin/reportDetail  (+ نمایِ سراسریِ superadmin)
+feature/mall-map(floorMap/wayfind) -- MVP: فهرستِ طبقاتِ محل؛ بعدی: نقشهٔ گرافیکی با مختصات و مسیرِ خط‌چین
 ```
+> **حذف‌شده در v2 (نساز):** `feature/follow` (manageFollowing) و `feature/vendor/followerPerk` (FOLLOW15).
+> صفحاتشان در پروتوتایپ باقی مانده ولی legacy هستند.
 
 ### ۲۰ قابلیتِ ویژه (`feature/features` launcher → هر کدام یک صفحه)
 گریدِ دوستونهٔ ۲۰ کاشی. صفحات: `concierge, wayfind, live, flash, groupbuy, loyalty, appointment, compare,
@@ -150,22 +171,24 @@ escrow, tracking, returns, giftcard, warranty, events, community, pricealert, st
 - کپیِ `feature/auth` + enum نقشِ `VENDOR` + گزینهٔ «می‌خواهم فروشنده شوم» در signup.
 - تنظیمِ `settings.gradle.kts` + `composeApp/build.gradle.kts` برای ماژول‌های بالا.
 
-### فازِ ۱ — خانه + فروشگاه + onboarding + تأییدِ ادمین
-- `feature/home(feed)` با همهٔ بلوک‌هایِ طراحی، `feature/city`، `feature/shop(shopDetail)` (تب‌ها + نوارِ آمار).
-- `feature/vendor/onboarding` (فرم + حالتِ pending)، `feature/admin/vendorApproval` (approve/reject).
+### فازِ ۱ — خانهٔ v2 + راسته/محل + فروشگاه + onboarding + تأییدِ ادمین
+- `feature/home(feed)` بازطراحیِ v2 (سرچ‌بار + گریدِ راسته‌ها، بدونِ سربرگ)، `feature/city`.
+- `feature/rasteh`: گریدِ راسته‌ها + **باتم‌شیتِ انتخابِ محل** + صفحهٔ `rastehSearch` (تبِ فروشگاه/محصولِ محل).
+- `feature/shop(shopDetail)` v2 (دکمه‌های «پیام»/«تماس»، بدونِ آمار/فالو، تب‌ها).
+- `feature/vendor/onboarding` (فرم با راسته/محل + pending)، `feature/admin/vendorApproval` (approve/reject).
 
 ### فازِ ۲ — کاتالوگِ دوحالته
-- `feature/catalog` + `feature/details(listing)`: شرطِ buyable/visitOnly روی قیمت/دکمهٔ خرید + «فروشندگانِ دیگر».
+- `feature/catalog` + `feature/details(listing)` v2: شرطِ buyable/visitOnly، «دیدن در فروشگاه‌های دیگر» **بعد از نظرات**، نوارِ پایینِ دوحالته.
 - `feature/vendor/addProduct` + `manageListings` + `editShop` (اسکوپِ vendorId).
 - `feature/vendor/category-mode` (سوییچِ Showcase/Commerce per دسته).
 
-### فازِ ۳ — دنبال‌کردن + چت + پیشنهاد + بوکمارک
-- `feature/follow` + `manageFollowing` + `feature/vendor/followerPerk`.
-- `feature/chat` (chatList/chatThread)، `feature/offer(makeOffer)`، `feature/bookmarks`، `feature/activity`.
+### فازِ ۳ — چت + پیشنهاد + بوکمارک  ~~(فالو حذف شد)~~
+- `feature/chat` (chatList/chatThread)، `feature/offer(makeOffer)`، `feature/bookmarks` (جایگزینِ فالو)، `feature/activity`.
+- ~~`feature/follow` / `feature/vendor/followerPerk`~~ — **حذف‌شده در v2** (نساز).
 
 ### فازِ ۴ — سبد/سفارش + جست‌وجو/مقایسه
 - `feature/cart` (هشدارِ تک‌ونـدوری) + `orderConfirm`، `feature/orders` (نامِ فروشگاه)، `feature/vendor/vendorOrders`.
-- `feature/search` (همهٔ فیلترها)، `compare` (مقایسهٔ فروشندگان)، تبِ نظراتِ shopDetail.
+- `feature/search` (فیلترِ راسته/محل/…)، `compare` (مقایسهٔ فروشندگان)، تبِ نظراتِ shopDetail.
 
 ### فازِ ۵ — قابلیت‌هایِ موجِ اول
 - `features` launcher + `flash` (تایمرِ زندهٔ setInterval معادل + نوارِ موجودی)، `groupbuy`، `loyalty`، `pricealert`.
@@ -190,11 +213,12 @@ escrow, tracking, returns, giftcard, warranty, events, community, pricealert, st
 | `feature/auth` | همنام | `+VENDOR` role، گزینهٔ فروشنده‌شدن |
 | `feature/cart` | همنام | چکِ تک‌ونـدوری |
 | `feature/orders` | همنام | نمایشِ نامِ فروشگاه |
-| `feature/catalog`, `feature/details` | همنام | شرطِ buyable/visitOnly + «فروشندگانِ دیگر» |
-| `feature/search` | همنام (Phase B) | فیلترِ طبقه/شهر/وضعیت |
+| `feature/catalog`, `feature/details` | همنام | شرطِ buyable/visitOnly + «دیدن در فروشگاه‌های دیگر» (بعد از نظرات) |
+| `feature/search` | همنام (Phase B) | فیلترِ راسته/محل/وضعیت |
 | کامپوننتِ جدولِ اسپک/attributes | از `DetailsScreen.kt`/`ComparisonScreen.kt` | الگو |
-| `feature/admin/*` | الگویِ AdminXxxScreen | اسکوپِ vendorId (inline در پروفایل) |
-| `feature/home,shop,follow,chat,offer,city,bookmarks,activity,wallet,mall-map`, vendorِ*, ۲۰ قابلیت | ندارد | جدید (از روی طراحی) |
+| `feature/admin/*` | الگویِ AdminXxxScreen | اسکوپِ vendorId (inline)؛ + نمایِ superadmin |
+| `feature/home,rasteh,shop,chat,offer,city,bookmarks,activity,wallet,mall-map`, vendorِ*, ۲۰ قابلیت | ندارد | جدید (از روی طراحیِ v2) |
+| ~~`feature/follow`, `feature/vendor/followerPerk`~~ | — | **حذف‌شده در v2** |
 
 ---
 
@@ -203,7 +227,7 @@ escrow, tracking, returns, giftcard, warranty, events, community, pricealert, st
 - هر ماژولِ Gradleِ جدید → include در `settings.gradle.kts` **و** صریح در `composeApp/build.gradle.kts`.
 - الگویِ AppResult/ViewModel/Effect دقیقاً مثلِ پروژه‌ی فروشگاه (state/effect/Channel).
 - **RTL سراسری** + `faDigits` روی هر عددِ نمایشی؛ تایمرِ flash با `HH : MM : SS` فارسی.
-- **state مشترک** برای `followedShops`/`bookmarks`/`cart`/`messages`/`notifBadge` با badge (طبقِ بخشِ State طراحی).
+- **state مشترک** برای `bookmarks`/`shopBookmarks`/`cart`/`rastehSheetId`/`selectedLocation`/`messages`/`notifBadge` (طبقِ بخشِ State طراحیِ v2؛ `followedShops` حذف شد).
 - تصویر/لوگو: الگویِ «افزودن با لینک» یا آپلودِ ساده؛ همیشه fallbackِ ایموجی.
 - برایِ تستِ محلی: کاربرِ ابری قادر به build نیست (۴۰۳ از Gradle distribution)؛ build و `./gradlew` رویِ دستگاهِ کاربر.
 
@@ -211,8 +235,9 @@ escrow, tracking, returns, giftcard, warranty, events, community, pricealert, st
 
 ## ۸) MVP در برابرِ بعدی
 
-**MVP (فازِ ۰ تا ۴):** دیزاین‌سیستمِ کامل (RTL/فارسی)، خانه/فروشگاه/کاتالوگِ دوحالته، ثبتِ ونـدور با تأیید،
-دنبال‌کردن + هدیهٔ دنبال‌کننده، چت، پیشنهادِ قیمت، بوکمارک، سبد/سفارشِ تک‌ونـدوری، جست‌وجو + مقایسهٔ فروشندگان.
+**MVP (فازِ ۰ تا ۴):** دیزاین‌سیستمِ کامل (RTL/فارسی)، خانهٔ v2 + راسته/محل + `rastehSearch`،
+فروشگاه (پیام/تماس) + کاتالوگِ دوحالته، ثبتِ ونـدور با تأیید، چت، پیشنهادِ قیمت، بوکمارک (نشان‌کردن)،
+سبد/سفارشِ تک‌ونـدوری، جست‌وجو + «دیدن در فروشگاه‌های دیگر». (بدونِ فالو — در v2 حذف شد.)
 
 **موجِ بعدی (فازِ ۵ به بعد):** ۲۰ قابلیتِ ویژه (flash/groupbuy/loyalty/pricealert →
 wayfind/appointment/returns/warranty/giftcard/events/stories →
