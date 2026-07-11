@@ -11,6 +11,10 @@ import com.kazemieh.domain.favorite.FavoriteRepository
 import com.kazemieh.domain.order.OrderRepository
 import com.kazemieh.domain.payment.PaymentRepository
 import com.kazemieh.domain.address.AddressRepository
+import com.kazemieh.domain.marketplace.MarketplaceRepository
+import com.kazemieh.data.marketplace.repository.MarketplaceRepositoryImpl
+import com.kazemieh.data.marketplace.source.MarketplaceDataSource
+import com.kazemieh.data.marketplace.source.MarketplaceDataSourceImpl
 import com.kazemieh.domain.profile.ProfileRepository
 import com.kazemieh.domain.settings.SettingsRepository
 import com.kazemieh.network.common.TokenProvider
@@ -159,6 +163,14 @@ val dataModule = module {
 
     single<PaymentDataSource> {
         PaymentDataSourceImpl(get())
+    }
+
+    single<MarketplaceRepository> {
+        MarketplaceRepositoryImpl(get())
+    }
+
+    single<MarketplaceDataSource> {
+        MarketplaceDataSourceImpl(get())
     }
 
     single { ProfileLocalDataSource(get()) }

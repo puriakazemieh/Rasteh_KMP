@@ -15,8 +15,19 @@
   (پرچمِ فازِ ۰؛ نقشِ VENDOR فقط پس از onboarding و تأییدِ ادمین در فازِ ۱ اعطا می‌شود). نقش‌ها در `core/common/Roles.kt`.
 
 > ماژول‌هایِ دیگرِ (catalog/cart/orders/details/admin/blog…) از پایهٔ shop همراه آمده‌اند و در فازهایِ بعد
-> طبقِ پلن به مدلِ راسته (vendor-scoped، دوحالته، دنبال‌کردن، چت، ۲۰ قابلیت) تطبیق داده می‌شوند.
+> طبقِ پلن به مدلِ راسته (vendor-scoped، دوحالته، چت، ۲۰ قابلیت) تطبیق داده می‌شوند.
 > ناوبری در `core/navigation` مونولیتیک است؛ در فازهایِ بعد به تدریج صفحاتِ راسته جایگزین می‌شوند.
+
+## فازِ ۱ — لایهٔ دادهٔ مارکت‌پلیس (مصرفِ APIهای سرور)
+
+لایهٔ کاملِ network/domain/data برای APIهای فازِ ۱ سرور (راسته×محل + onboarding + تأییدِ ادمین) اضافه شد،
+دقیقاً هم‌سبکِ بقیهٔ ماژول‌ها (Api/Impl → DataSource → Repository → AppResult) و ثبت‌شده در Koin:
+- `core/network/marketplace`: `MarketplaceApi(+Impl)` + DTOها (Rasteh/Location/City/Shop، CreateShopRequest).
+- `core/domain/marketplace`: مدل‌ها (`Rasteh`, `MarketplaceLocation`, `City`, `Shop`) + `MarketplaceRepository`.
+- `core/data/marketplace`: `MarketplaceDataSource(+Impl)`، `MarketplaceRepositoryImpl`، مپرها.
+- endpointها: `getRastehs`, `getLocationsByRasteh`, `getLocation`, `getCities`, `registerShop`, `getMyShops`, `getShop`, و ادمین `getAdminShops/approve/reject/suspend`.
+
+قدمِ بعدی (فازِ ۱ UI): ماژولِ `feature/rasteh` (گریدِ راسته + باتم‌شیتِ محل + `rastehSearch`)، خانهٔ v2، `shopDetail`، onboarding و صفِ تأییدِ ادمین + سیم‌کشیِ ناوبری.
 
 ## ساختار ماژول‌ها
 ```
