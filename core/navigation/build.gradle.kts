@@ -57,6 +57,7 @@ kotlin {
                 implementation(libs.compose.navigation)
                 implementation(project(":feature:auth"))
                 implementation(project(":feature:main"))
+                implementation(project(":feature:bazaar"))
                 implementation(project(":feature:cart"))
                 implementation(project(":feature:catalog"))
                 implementation(project(":feature:settings"))

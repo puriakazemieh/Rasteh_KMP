@@ -30,9 +30,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.kazemieh.bazaar.RastehHomeScreen
 import com.kazemieh.cart.CartScreen
 import com.kazemieh.catalog.CategorySearchScreen
-import com.kazemieh.catalog.ProductsOverviewScreen
 import com.kazemieh.common.Screen
 import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.FontSize
@@ -40,7 +40,6 @@ import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
 import com.kazemieh.main.component.BottomBar
 import com.kazemieh.main.component.BottomBarDestination
-import com.kazemieh.main.component.HomeTopBar
 import com.kazemieh.main.component.TitleTopBar
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
@@ -65,6 +64,7 @@ fun MainGraphScreen(
     navigateToWallet: () -> Unit,
     navigateToFavorites: () -> Unit,
     navigateToCustomerClub: () -> Unit,
+    navigateToRastehSearch: (rastehId: Long, rastehLabel: String, locationId: Long, locationName: String) -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
     val navController = rememberNavController()
@@ -116,7 +116,8 @@ fun MainGraphScreen(
             containerColor = MaterialTheme.colorScheme.surface,
             topBar = {
                 when (selectedDestination) {
-                    BottomBarDestination.ProductsOverview -> HomeTopBar()
+                    // خانهٔ v2 «search-first» است؛ نوارِ جستجوی خودش را دارد و هدرِ سنگین ندارد.
+                    BottomBarDestination.ProductsOverview -> {}
                     // صفحه‌ی جستجو هدر و فیلدِ جستجوی خودش را دارد
                     BottomBarDestination.Search -> {}
                     else -> TitleTopBar(title = stringResource(selectedDestination.title))
@@ -140,11 +141,8 @@ fun MainGraphScreen(
                         startDestination = Screen.ProductsOverview
                     ) {
                         composable<Screen.ProductsOverview> {
-                            ProductsOverviewScreen(
-                                navigateToDetails = navigateToDetails,
-                                navigateToCategorySearch = navigateToCategorySearch,
-                                navigateToBlogDetail = navigateToBlogDetail,
-                                navigateToAuth = navigateToAuth
+                            RastehHomeScreen(
+                                navigateToRastehSearch = navigateToRastehSearch
                             )
                         }
                         composable<Screen.Search> {

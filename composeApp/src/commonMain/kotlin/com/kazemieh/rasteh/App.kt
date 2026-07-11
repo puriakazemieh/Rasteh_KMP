@@ -9,6 +9,7 @@ import com.kazemieh.admin.products.adminProductsModule
 import com.kazemieh.admin.wallet.adminWalletModule
 import com.kazemieh.admin.blog.adminBlogModule
 import com.kazemieh.auth.authModule
+import com.kazemieh.bazaar.bazaarModule
 import com.kazemieh.blog.blogModule
 import com.kazemieh.cart.cartModule
 import com.kazemieh.catalog.catalogModule
@@ -57,6 +58,7 @@ fun initKoin(config: KoinAppDeclaration? = null) {
             networkModule,
             dataModule,
             mainModule,
+            bazaarModule,
             authModule,
             profileModule,
             cartModule,

@@ -27,7 +27,21 @@
 - `core/data/marketplace`: `MarketplaceDataSource(+Impl)`، `MarketplaceRepositoryImpl`، مپرها.
 - endpointها: `getRastehs`, `getLocationsByRasteh`, `getLocation`, `getCities`, `registerShop`, `getMyShops`, `getShop`, و ادمین `getAdminShops/approve/reject/suspend`.
 
-قدمِ بعدی (فازِ ۱ UI): ماژولِ `feature/rasteh` (گریدِ راسته + باتم‌شیتِ محل + `rastehSearch`)، خانهٔ v2، `shopDetail`، onboarding و صفِ تأییدِ ادمین + سیم‌کشیِ ناوبری.
+## فازِ ۱b — رابطِ کاربریِ خانهٔ v2 (ماژولِ `feature/bazaar`)
+
+ماژولِ تازهٔ `feature/bazaar` (پکیجِ `com.kazemieh.bazaar` — نامِ `bazaar` برای پرهیز از تداخلِ
+namespace با `composeApp`) رابطِ کاربریِ کشفِ راسته را می‌سازد و لایهٔ دادهٔ فازِ ۱ را مصرف می‌کند:
+
+- **`RastehHomeScreen`** — خانهٔ v2 «search-first»: نوارِ جستجو + گریدِ ۳ستونهٔ راسته‌ها (`getRastehs`).
+  هدرِ سنگینِ قدیمی حذف شد؛ این صفحه جایگزینِ محتوایِ تبِ خانه در `MainGraphScreen` شد.
+- **`LocationPickerSheet`** — باتم‌شیتِ انتخابِ محل با ضربه روی هر راسته (`getLocationsByRasteh`).
+- **`RastehSearchScreen`** — مقصدِ انتخابِ محل؛ فعلاً وضعیتِ «به‌زودی» (endpointِ فهرستِ فروشگاه‌ها
+  در فازِ ۲ سرور فعال می‌شود). مسیرِ `Screen.RastehSearch` به `AppNavigation` افزوده شد.
+- **`RastehHomeViewModel`** (MVI) `MarketplaceRepository` را مستقیم مصرف می‌کند؛ در `bazaarModule`
+  ثبت و در `App.kt` وصل شد. نگاشتِ `iconKey`→(اموجی/رنگ) در `util/RastehVisual`.
+
+قدمِ بعدی: `shopDetail` v2 (پیام/تماس)، فرمِ onboardingِ فروشنده (`becomeVendor` با راسته/محل)،
+صفِ تأییدِ فروشندهٔ ادمین، و فعال‌سازیِ فهرستِ فروشگاه‌ها پس از افزودنِ endpointِ مرورِ کاتالوگ در سرور.
 
 ## ساختار ماژول‌ها
 ```

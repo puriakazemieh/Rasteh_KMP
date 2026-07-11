@@ -9,12 +9,12 @@ plugins {
 
 kotlin {
     androidLibrary {
-        namespace = "com.kazemieh.main"
+        namespace = "com.kazemieh.bazaar"
         compileSdk = 36
         minSdk = 24
     }
 
-    val xcfName = "feature:main"
+    val xcfName = "feature:bazaar"
 
     iosX64 {
         binaries.framework {
@@ -48,47 +48,19 @@ kotlin {
                 implementation(libs.compose.material3)
                 implementation(libs.compose.ui)
                 implementation(libs.compose.components.resources)
-                implementation(libs.androidx.lifecycle.runtimeCompose)
-
-
                 implementation(libs.compose.material.icons.core)
-                implementation(libs.compose.material.icons.extended)
+                implementation(libs.androidx.lifecycle.runtimeCompose)
 
                 implementation(libs.koin.compose)
                 implementation(libs.compose.navigation)
                 implementation(libs.koin.compose.viewmodel)
-                implementation(libs.image.loader)
 
-                implementation("io.coil-kt.coil3:coil-compose:3.0.4")
                 implementation(project(":core:designSystem"))
                 implementation(project(":core:domain"))
                 implementation(project(":core:common"))
-                implementation(project(":feature:cart"))
-                implementation(project(":feature:catalog"))
-                implementation(project(":feature:bazaar"))
-            }
-        }
 
-
-        androidMain {
-            dependencies {
-            }
-        }
-
-        iosMain {
-            dependencies {
-            }
-        }
-
-        jsMain {
-            dependencies {
-            }
-        }
-
-        jvmMain {
-            dependencies {
+                implementation(libs.compose.material.icons.extended)
             }
         }
     }
-
 }

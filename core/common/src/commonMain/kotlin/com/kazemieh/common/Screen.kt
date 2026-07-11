@@ -24,6 +24,14 @@ sealed class Screen {
     data class HomeGraph(val showCart: Boolean = false) : Screen()
 
     @Serializable
+    data class RastehSearch(
+        val rastehId: Long,
+        val rastehLabel: String,
+        val locationId: Long,
+        val locationName: String,
+    ) : Screen()
+
+    @Serializable
     data object BlogGraph : Screen()
 
     @Serializable

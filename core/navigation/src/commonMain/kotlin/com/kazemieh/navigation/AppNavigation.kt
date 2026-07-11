@@ -27,6 +27,7 @@ import com.kazemieh.common.AuthState
 import com.kazemieh.common.PaymentEventBus
 import com.kazemieh.common.Screen
 import com.kazemieh.common.TokenExpiredEventBus
+import com.kazemieh.bazaar.RastehSearchScreen
 import com.kazemieh.details.DetailsScreen
 import com.kazemieh.main.MainGraphScreen
 import com.kazemieh.support.ContactUsScreen
@@ -127,6 +128,25 @@ fun AppNavHost(
                 navigateToCustomerClub = {
                     navController.navigate(Screen.CustomerClub)
                 },
+                navigateToRastehSearch = { rastehId, rastehLabel, locationId, locationName ->
+                    navController.navigate(
+                        Screen.RastehSearch(
+                            rastehId = rastehId,
+                            rastehLabel = rastehLabel,
+                            locationId = locationId,
+                            locationName = locationName,
+                        )
+                    )
+                },
+            )
+        }
+
+        composable<Screen.RastehSearch> {
+            val args = it.toRoute<Screen.RastehSearch>()
+            RastehSearchScreen(
+                rastehLabel = args.rastehLabel,
+                locationName = args.locationName,
+                navigateBack = { navController.navigateBack() },
             )
         }
 
