@@ -32,6 +32,12 @@ sealed class Screen {
     ) : Screen()
 
     @Serializable
+    data object BecomeVendor : Screen()
+
+    @Serializable
+    data object AdminShops : Screen()
+
+    @Serializable
     data object BlogGraph : Screen()
 
     @Serializable

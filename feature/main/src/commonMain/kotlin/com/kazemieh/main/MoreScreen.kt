@@ -57,6 +57,8 @@ fun MoreScreen(
     onSupportClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onAdminPanelClick: () -> Unit,
+    onBecomeVendorClick: () -> Unit = {},
+    onAdminShopsClick: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -76,9 +78,25 @@ fun MoreScreen(
         // آیتم‌های پروفایل (سفارش‌ها، علاقه‌مندی‌ها، آدرس‌ها، کیف پول) به داخل
         // صفحه‌ی «مشخصات» منتقل شده‌اند و از طریق کارت هدر بالا در دسترس‌اند.
 
-        // ---- (اگر ادمین) پنل مدیریت فروشگاه ----
+        // ---- (اگر ادمین) پنل مدیریت فروشگاه + صفِ تأییدِ فروشندگان ----
         if (isAdmin) {
             AdminPanelCard(onClick = onAdminPanelClick)
+            Spacer(Modifier.height(12.dp))
+            AccountRow(
+                title = "تأییدِ فروشندگان",
+                subtitle = "بررسی و تأییدِ درخواست‌های فروشگاه",
+                onClick = onAdminShopsClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+        }
+
+        // ---- (کاربرِ عادیِ واردشده) درخواستِ فروشندگی ----
+        if (isLoggedIn && !isAdmin) {
+            AccountRow(
+                title = "درخواستِ فروشندگی",
+                subtitle = "فروشگاهِ خود را در راسته ثبت کنید",
+                onClick = onBecomeVendorClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
             Spacer(Modifier.height(12.dp))
         }
 

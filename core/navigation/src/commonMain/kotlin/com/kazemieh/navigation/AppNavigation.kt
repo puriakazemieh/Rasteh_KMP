@@ -27,6 +27,8 @@ import com.kazemieh.common.AuthState
 import com.kazemieh.common.PaymentEventBus
 import com.kazemieh.common.Screen
 import com.kazemieh.common.TokenExpiredEventBus
+import com.kazemieh.bazaar.AdminShopsScreen
+import com.kazemieh.bazaar.BecomeVendorScreen
 import com.kazemieh.bazaar.RastehSearchScreen
 import com.kazemieh.details.DetailsScreen
 import com.kazemieh.main.MainGraphScreen
@@ -138,6 +140,24 @@ fun AppNavHost(
                         )
                     )
                 },
+                navigateToBecomeVendor = {
+                    navController.navigate(Screen.BecomeVendor)
+                },
+                navigateToAdminShops = {
+                    navController.navigate(Screen.AdminShops)
+                },
+            )
+        }
+
+        composable<Screen.BecomeVendor> {
+            BecomeVendorScreen(
+                navigateBack = { navController.navigateBack() },
+            )
+        }
+
+        composable<Screen.AdminShops> {
+            AdminShopsScreen(
+                navigateBack = { navController.navigateBack() },
             )
         }
 

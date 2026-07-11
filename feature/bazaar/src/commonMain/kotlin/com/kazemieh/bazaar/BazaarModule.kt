@@ -5,4 +5,6 @@ import org.koin.dsl.module
 
 val bazaarModule = module {
     viewModel { RastehHomeViewModel(repository = get()) }
+    viewModel { BecomeVendorViewModel(repository = get()) }
+    viewModel { AdminShopsViewModel(repository = get()) }
 }
