@@ -1,12 +1,17 @@
 package com.kazemieh.network.marketplace
 
+import com.kazemieh.network.marketplace.dto.request.CreateOrderRequest
 import com.kazemieh.network.marketplace.dto.request.CreateProductRequest
+import com.kazemieh.network.marketplace.dto.request.CreateReviewRequest
 import com.kazemieh.network.marketplace.dto.request.CreateShopRequest
+import com.kazemieh.network.marketplace.dto.request.UpdateOrderStatusRequest
 import com.kazemieh.network.marketplace.dto.request.UpdateProductRequest
 import com.kazemieh.network.marketplace.dto.response.CityResponse
 import com.kazemieh.network.marketplace.dto.response.LocationResponse
+import com.kazemieh.network.marketplace.dto.response.OrderResponse
 import com.kazemieh.network.marketplace.dto.response.ProductResponse
 import com.kazemieh.network.marketplace.dto.response.RastehResponse
+import com.kazemieh.network.marketplace.dto.response.ReviewResponse
 import com.kazemieh.network.marketplace.dto.response.ShopResponse
 
 interface MarketplaceApi {
@@ -31,6 +36,21 @@ interface MarketplaceApi {
     suspend fun createProduct(request: CreateProductRequest): ProductResponse
     suspend fun updateProduct(id: Long, request: UpdateProductRequest): ProductResponse
     suspend fun deleteProduct(id: Long)
+
+    // نظرات
+    suspend fun getReviews(shopId: Long): List<ReviewResponse>
+    suspend fun createReview(request: CreateReviewRequest): ReviewResponse
+
+    // جست‌وجو
+    suspend fun searchShops(query: String?, rastehId: Long?, locationId: Long?, type: String?, sort: String?): List<ShopResponse>
+    suspend fun searchProducts(query: String?, shopId: Long?, condition: String?, minPrice: Long?, maxPrice: Long?, sort: String?): List<ProductResponse>
+
+    // سفارش
+    suspend fun createOrder(request: CreateOrderRequest): OrderResponse
+    suspend fun getMyOrders(): List<OrderResponse>
+    suspend fun getOrder(id: Long): OrderResponse
+    suspend fun getVendorOrders(shopId: Long): List<OrderResponse>
+    suspend fun updateOrderStatus(id: Long, request: UpdateOrderStatusRequest): OrderResponse
 
     // admin
     suspend fun getAdminShops(status: String): List<ShopResponse>

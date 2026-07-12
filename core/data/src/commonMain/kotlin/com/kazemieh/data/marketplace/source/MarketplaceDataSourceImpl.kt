@@ -4,13 +4,19 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.data.marketplace.mapper.toDomain
 import com.kazemieh.domain.marketplace.City
 import com.kazemieh.domain.marketplace.MarketplaceLocation
+import com.kazemieh.domain.marketplace.Order
 import com.kazemieh.domain.marketplace.Product
 import com.kazemieh.domain.marketplace.Rasteh
+import com.kazemieh.domain.marketplace.Review
 import com.kazemieh.domain.marketplace.Shop
 import com.kazemieh.network.common.safeApiCall
 import com.kazemieh.network.marketplace.MarketplaceApi
+import com.kazemieh.network.marketplace.dto.request.CreateOrderRequest
 import com.kazemieh.network.marketplace.dto.request.CreateProductRequest
+import com.kazemieh.network.marketplace.dto.request.CreateReviewRequest
 import com.kazemieh.network.marketplace.dto.request.CreateShopRequest
+import com.kazemieh.network.marketplace.dto.request.OrderItemRequest
+import com.kazemieh.network.marketplace.dto.request.UpdateOrderStatusRequest
 import com.kazemieh.network.marketplace.dto.request.UpdateProductRequest
 
 class MarketplaceDataSourceImpl(
@@ -102,6 +108,44 @@ class MarketplaceDataSourceImpl(
 
     override suspend fun deleteProduct(id: Long): AppResult<Unit> = safeApiCall {
         api.deleteProduct(id)
+    }
+
+    override suspend fun getReviews(shopId: Long): AppResult<List<Review>> = safeApiCall {
+        api.getReviews(shopId).map { it.toDomain() }
+    }
+
+    override suspend fun createReview(shopId: Long, rating: Int, comment: String?): AppResult<Review> = safeApiCall {
+        api.createReview(CreateReviewRequest(shopId, rating, comment)).toDomain()
+    }
+
+    override suspend fun searchShops(query: String?, rastehId: Long?, locationId: Long?, type: String?, sort: String?): AppResult<List<Shop>> = safeApiCall {
+        api.searchShops(query, rastehId, locationId, type, sort).map { it.toDomain() }
+    }
+
+    override suspend fun searchProducts(query: String?, shopId: Long?, condition: String?, minPrice: Long?, maxPrice: Long?, sort: String?): AppResult<List<Product>> = safeApiCall {
+        api.searchProducts(query, shopId, condition, minPrice, maxPrice, sort).map { it.toDomain() }
+    }
+
+    override suspend fun createOrder(shopId: Long, items: List<Pair<Long, Int>>, note: String?): AppResult<Order> = safeApiCall {
+        api.createOrder(
+            CreateOrderRequest(shopId, items.map { OrderItemRequest(it.first, it.second) }, note)
+        ).toDomain()
+    }
+
+    override suspend fun getMyOrders(): AppResult<List<Order>> = safeApiCall {
+        api.getMyOrders().map { it.toDomain() }
+    }
+
+    override suspend fun getOrder(id: Long): AppResult<Order> = safeApiCall {
+        api.getOrder(id).toDomain()
+    }
+
+    override suspend fun getVendorOrders(shopId: Long): AppResult<List<Order>> = safeApiCall {
+        api.getVendorOrders(shopId).map { it.toDomain() }
+    }
+
+    override suspend fun updateOrderStatus(id: Long, status: String): AppResult<Order> = safeApiCall {
+        api.updateOrderStatus(id, UpdateOrderStatusRequest(status)).toDomain()
     }
 
     override suspend fun getAdminShops(status: String): AppResult<List<Shop>> = safeApiCall {

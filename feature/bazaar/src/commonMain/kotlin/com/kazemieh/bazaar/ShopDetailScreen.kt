@@ -22,6 +22,8 @@ import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Sell
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -90,6 +92,7 @@ fun ShopDetailScreen(
     }
 
     var showOffer by remember { mutableStateOf(false) }
+    var showReview by remember { mutableStateOf(false) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -124,8 +127,12 @@ fun ShopDetailScreen(
                 is AppResult.Success -> Content(
                     shop = shop.data,
                     products = state.products,
+                    reviews = state.reviews,
+                    orderBusyProductId = state.orderBusyProductId,
                     onMessage = { viewModel.startChat(shop.data.name) },
                     onOffer = { showOffer = true },
+                    onBuy = { viewModel.quickOrder(it) },
+                    onAddReview = { showReview = true },
                 )
             }
         }
@@ -141,14 +148,28 @@ fun ShopDetailScreen(
             },
         )
     }
+    if (showReview) {
+        ReviewDialog(
+            submitting = state.reviewSubmitting,
+            onDismiss = { showReview = false },
+            onSubmit = { rating, comment ->
+                viewModel.submitReview(rating, comment)
+                showReview = false
+            },
+        )
+    }
 }
 
 @Composable
 private fun Content(
     shop: Shop,
     products: AppResult<List<Product>>,
+    reviews: AppResult<List<com.kazemieh.domain.marketplace.Review>>,
+    orderBusyProductId: Long?,
     onMessage: () -> Unit,
     onOffer: () -> Unit,
+    onBuy: (Product) -> Unit,
+    onAddReview: () -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -170,9 +191,58 @@ private fun Content(
                 if (products.data.isEmpty()) {
                     item { Text("کالایی ثبت نشده است", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = FontSize.SMALL) }
                 } else {
-                    items(products.data, key = { it.id }) { ProductCard(product = it) }
+                    items(products.data, key = { it.id }) { product ->
+                        ProductCard(
+                            product = product,
+                            buying = orderBusyProductId == product.id,
+                            onBuy = { onBuy(product) },
+                        )
+                    }
                 }
             }
+        }
+
+        // ---- نظرات ----
+        item {
+            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Text("نظرات", fontSize = FontSize.EXTRA_REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f))
+                TextButton(onClick = onAddReview) { Text("افزودنِ نظر") }
+            }
+        }
+        when (reviews) {
+            is AppResult.Loading -> item {
+                Box(Modifier.fillMaxWidth().height(60.dp), Alignment.Center) { CircularProgressIndicator() }
+            }
+            is AppResult.Error -> item {
+                Text("خطا در دریافتِ نظرات", color = MaterialTheme.colorScheme.error, fontSize = FontSize.SMALL)
+            }
+            is AppResult.Success -> {
+                if (reviews.data.isEmpty()) {
+                    item { Text("هنوز نظری ثبت نشده است", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = FontSize.SMALL) }
+                } else {
+                    items(reviews.data, key = { "r-${it.id}" }) { review -> ReviewRow(review) }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ReviewRow(review: com.kazemieh.domain.marketplace.Review) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(14.dp),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(review.authorName ?: "کاربر", fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f))
+            Text("★ ${review.rating.toFaDigits()}", fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.secondary)
+        }
+        review.comment?.let {
+            Spacer(Modifier.height(4.dp))
+            Text(it, fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
@@ -289,6 +359,49 @@ private fun OfferDialog(
                 onClick = { amountValue?.let { onSubmit(it, message.ifBlank { null }) } },
                 enabled = !submitting && amountValue != null && amountValue > 0,
             ) { Text("ثبتِ پیشنهاد") }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("انصراف") } },
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ReviewDialog(
+    submitting: Boolean,
+    onDismiss: () -> Unit,
+    onSubmit: (rating: Int, comment: String?) -> Unit,
+) {
+    var rating by remember { mutableStateOf(5) }
+    var comment by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("ثبتِ نظر", fontWeight = FontWeight.Bold) },
+        text = {
+            Column {
+                Row {
+                    (1..5).forEach { star ->
+                        IconButton(onClick = { rating = star }) {
+                            Icon(
+                                if (star <= rating) Icons.Default.Star else Icons.Default.StarBorder,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.secondary,
+                            )
+                        }
+                    }
+                }
+                Spacer(Modifier.height(8.dp))
+                TextField(
+                    value = comment,
+                    onValueChange = { comment = it },
+                    placeholder = { Text("توضیح (اختیاری)") },
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { onSubmit(rating, comment.ifBlank { null }) }, enabled = !submitting) {
+                Text("ثبت")
+            }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text("انصراف") } },
     )

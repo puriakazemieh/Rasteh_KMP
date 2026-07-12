@@ -61,6 +61,7 @@ fun MoreScreen(
     onAdminShopsClick: () -> Unit = {},
     onChatsClick: () -> Unit = {},
     onBookmarksClick: () -> Unit = {},
+    onMarketOrdersClick: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -102,8 +103,14 @@ fun MoreScreen(
             Spacer(Modifier.height(12.dp))
         }
 
-        // ---- گفت‌وگوها و نشان‌شده‌ها ----
+        // ---- سفارش‌ها، گفت‌وگوها و نشان‌شده‌ها ----
         if (isLoggedIn) {
+            AccountRow(
+                title = "سفارش‌های من",
+                subtitle = "پیگیری سفارش‌های شما",
+                onClick = onMarketOrdersClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
             AccountRow(
                 title = "گفت‌وگوها",
                 subtitle = "پیام‌های شما با فروشگاه‌ها",

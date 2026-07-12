@@ -68,6 +68,21 @@ interface MarketplaceRepository {
 
     suspend fun deleteProduct(id: Long): AppResult<Unit>
 
+    // نظرات
+    suspend fun getReviews(shopId: Long): AppResult<List<Review>>
+    suspend fun createReview(shopId: Long, rating: Int, comment: String?): AppResult<Review>
+
+    // جست‌وجو
+    suspend fun searchShops(query: String?, rastehId: Long?, locationId: Long?, type: String?, sort: String?): AppResult<List<Shop>>
+    suspend fun searchProducts(query: String?, shopId: Long?, condition: String?, minPrice: Long?, maxPrice: Long?, sort: String?): AppResult<List<Product>>
+
+    // سفارش
+    suspend fun createOrder(shopId: Long, items: List<Pair<Long, Int>>, note: String?): AppResult<Order>
+    suspend fun getMyOrders(): AppResult<List<Order>>
+    suspend fun getOrder(id: Long): AppResult<Order>
+    suspend fun getVendorOrders(shopId: Long): AppResult<List<Order>>
+    suspend fun updateOrderStatus(id: Long, status: String): AppResult<Order>
+
     // admin
     suspend fun getAdminShops(status: String): AppResult<List<Shop>>
     suspend fun approveShop(id: Long): AppResult<Shop>

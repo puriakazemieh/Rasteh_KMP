@@ -3,8 +3,10 @@ package com.kazemieh.data.marketplace.source
 import com.kazemieh.common.AppResult
 import com.kazemieh.domain.marketplace.City
 import com.kazemieh.domain.marketplace.MarketplaceLocation
+import com.kazemieh.domain.marketplace.Order
 import com.kazemieh.domain.marketplace.Product
 import com.kazemieh.domain.marketplace.Rasteh
+import com.kazemieh.domain.marketplace.Review
 import com.kazemieh.domain.marketplace.Shop
 
 interface MarketplaceDataSource {
@@ -33,6 +35,15 @@ interface MarketplaceDataSource {
         imageUrl: String?, active: Boolean?,
     ): AppResult<Product>
     suspend fun deleteProduct(id: Long): AppResult<Unit>
+    suspend fun getReviews(shopId: Long): AppResult<List<Review>>
+    suspend fun createReview(shopId: Long, rating: Int, comment: String?): AppResult<Review>
+    suspend fun searchShops(query: String?, rastehId: Long?, locationId: Long?, type: String?, sort: String?): AppResult<List<Shop>>
+    suspend fun searchProducts(query: String?, shopId: Long?, condition: String?, minPrice: Long?, maxPrice: Long?, sort: String?): AppResult<List<Product>>
+    suspend fun createOrder(shopId: Long, items: List<Pair<Long, Int>>, note: String?): AppResult<Order>
+    suspend fun getMyOrders(): AppResult<List<Order>>
+    suspend fun getOrder(id: Long): AppResult<Order>
+    suspend fun getVendorOrders(shopId: Long): AppResult<List<Order>>
+    suspend fun updateOrderStatus(id: Long, status: String): AppResult<Order>
     suspend fun getAdminShops(status: String): AppResult<List<Shop>>
     suspend fun approveShop(id: Long): AppResult<Shop>
     suspend fun rejectShop(id: Long): AppResult<Shop>

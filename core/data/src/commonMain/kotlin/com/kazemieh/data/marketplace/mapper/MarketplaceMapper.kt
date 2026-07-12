@@ -2,13 +2,18 @@ package com.kazemieh.data.marketplace.mapper
 
 import com.kazemieh.domain.marketplace.City
 import com.kazemieh.domain.marketplace.MarketplaceLocation
+import com.kazemieh.domain.marketplace.Order
+import com.kazemieh.domain.marketplace.OrderItem
 import com.kazemieh.domain.marketplace.Product
 import com.kazemieh.domain.marketplace.Rasteh
+import com.kazemieh.domain.marketplace.Review
 import com.kazemieh.domain.marketplace.Shop
 import com.kazemieh.network.marketplace.dto.response.CityResponse
 import com.kazemieh.network.marketplace.dto.response.LocationResponse
+import com.kazemieh.network.marketplace.dto.response.OrderResponse
 import com.kazemieh.network.marketplace.dto.response.ProductResponse
 import com.kazemieh.network.marketplace.dto.response.RastehResponse
+import com.kazemieh.network.marketplace.dto.response.ReviewResponse
 import com.kazemieh.network.marketplace.dto.response.ShopResponse
 
 fun RastehResponse.toDomain() = Rasteh(
@@ -82,4 +87,16 @@ fun ProductResponse.toDomain() = Product(
     imageUrl = imageUrl,
     active = active,
     purchasable = purchasable,
+)
+
+fun ReviewResponse.toDomain() = Review(
+    id = id, shopId = shopId, userId = userId, authorName = authorName,
+    rating = rating, comment = comment, createdAt = createdAt,
+)
+
+fun OrderResponse.toDomain() = Order(
+    id = id, shopId = shopId, shopName = shopName, customerUserId = customerUserId,
+    customerName = customerName, status = status, totalAmount = totalAmount, note = note,
+    createdAt = createdAt,
+    items = items.map { OrderItem(it.id, it.productId, it.productName, it.unitPrice, it.quantity, it.lineTotal) },
 )

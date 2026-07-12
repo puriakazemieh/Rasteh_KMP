@@ -1,13 +1,18 @@
 package com.kazemieh.network.marketplace
 
 import com.kazemieh.network.common.safeApiCallRaw
+import com.kazemieh.network.marketplace.dto.request.CreateOrderRequest
 import com.kazemieh.network.marketplace.dto.request.CreateProductRequest
+import com.kazemieh.network.marketplace.dto.request.CreateReviewRequest
 import com.kazemieh.network.marketplace.dto.request.CreateShopRequest
+import com.kazemieh.network.marketplace.dto.request.UpdateOrderStatusRequest
 import com.kazemieh.network.marketplace.dto.request.UpdateProductRequest
 import com.kazemieh.network.marketplace.dto.response.CityResponse
 import com.kazemieh.network.marketplace.dto.response.LocationResponse
+import com.kazemieh.network.marketplace.dto.response.OrderResponse
 import com.kazemieh.network.marketplace.dto.response.ProductResponse
 import com.kazemieh.network.marketplace.dto.response.RastehResponse
+import com.kazemieh.network.marketplace.dto.response.ReviewResponse
 import com.kazemieh.network.marketplace.dto.response.ShopResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.request.delete
@@ -92,6 +97,64 @@ class MarketplaceApiImpl(
 
     override suspend fun deleteProduct(id: Long) = safeApiCallRaw<Unit> {
         client.delete("/api/vendor/products/$id")
+    }
+
+    override suspend fun getReviews(shopId: Long): List<ReviewResponse> = safeApiCallRaw {
+        client.get("/api/reviews") { parameter("shopId", shopId) }
+    }
+
+    override suspend fun createReview(request: CreateReviewRequest): ReviewResponse = safeApiCallRaw {
+        client.post("/api/reviews") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+    }
+
+    override suspend fun searchShops(query: String?, rastehId: Long?, locationId: Long?, type: String?, sort: String?): List<ShopResponse> = safeApiCallRaw {
+        client.get("/api/search/shops") {
+            if (!query.isNullOrBlank()) parameter("query", query)
+            if (rastehId != null) parameter("rastehId", rastehId)
+            if (locationId != null) parameter("locationId", locationId)
+            if (type != null) parameter("type", type)
+            if (sort != null) parameter("sort", sort)
+        }
+    }
+
+    override suspend fun searchProducts(query: String?, shopId: Long?, condition: String?, minPrice: Long?, maxPrice: Long?, sort: String?): List<ProductResponse> = safeApiCallRaw {
+        client.get("/api/search/products") {
+            if (!query.isNullOrBlank()) parameter("query", query)
+            if (shopId != null) parameter("shopId", shopId)
+            if (condition != null) parameter("condition", condition)
+            if (minPrice != null) parameter("minPrice", minPrice)
+            if (maxPrice != null) parameter("maxPrice", maxPrice)
+            if (sort != null) parameter("sort", sort)
+        }
+    }
+
+    override suspend fun createOrder(request: CreateOrderRequest): OrderResponse = safeApiCallRaw {
+        client.post("/api/orders") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+    }
+
+    override suspend fun getMyOrders(): List<OrderResponse> = safeApiCallRaw {
+        client.get("/api/orders/mine")
+    }
+
+    override suspend fun getOrder(id: Long): OrderResponse = safeApiCallRaw {
+        client.get("/api/orders/$id")
+    }
+
+    override suspend fun getVendorOrders(shopId: Long): List<OrderResponse> = safeApiCallRaw {
+        client.get("/api/vendor/orders/shop/$shopId")
+    }
+
+    override suspend fun updateOrderStatus(id: Long, request: UpdateOrderStatusRequest): OrderResponse = safeApiCallRaw {
+        client.post("/api/orders/$id/status") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
     }
 
     override suspend fun getAdminShops(status: String): List<ShopResponse> = safeApiCallRaw {

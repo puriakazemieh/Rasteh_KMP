@@ -69,6 +69,8 @@ fun MainGraphScreen(
     navigateToAdminShops: () -> Unit,
     navigateToChats: () -> Unit,
     navigateToBookmarks: () -> Unit,
+    navigateToShopDetail: (Long) -> Unit,
+    navigateToMarketOrders: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
     val navController = rememberNavController()
@@ -150,12 +152,8 @@ fun MainGraphScreen(
                             )
                         }
                         composable<Screen.Search> {
-                            CategorySearchScreen(
-                                categoryId = 0L,
-                                categoryName = "جستجو",
-                                navigateBack = { navController.popBackStack() },
-                                navigateToDetails = navigateToDetails,
-                                navigateToAuth = navigateToAuth
+                            com.kazemieh.bazaar.SearchScreen(
+                                navigateToShop = navigateToShopDetail
                             )
                         }
                         composable<Screen.Cart> {
@@ -176,7 +174,8 @@ fun MainGraphScreen(
                                 onBecomeVendorClick = navigateToBecomeVendor,
                                 onAdminShopsClick = navigateToAdminShops,
                                 onChatsClick = navigateToChats,
-                                onBookmarksClick = navigateToBookmarks
+                                onBookmarksClick = navigateToBookmarks,
+                                onMarketOrdersClick = navigateToMarketOrders
                             )
                         }
                     }

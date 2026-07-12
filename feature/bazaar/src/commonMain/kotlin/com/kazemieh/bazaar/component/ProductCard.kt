@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +33,8 @@ import com.kazemieh.domain.marketplace.Product
 fun ProductCard(
     product: Product,
     modifier: Modifier = Modifier,
+    buying: Boolean = false,
+    onBuy: (() -> Unit)? = null,
 ) {
     Row(
         modifier = modifier
@@ -82,14 +87,24 @@ fun ProductCard(
                 )
             }
         }
-        val badge = when {
-            !product.purchasable -> null
-            product.stock in 1..3 -> "${product.stock.toFaDigits()} عدد"
-            else -> null
-        }
-        if (badge != null) {
+        if (product.purchasable && onBuy != null) {
+            Spacer(Modifier.size(8.dp))
+            Button(
+                onClick = onBuy,
+                enabled = !buying,
+                shape = RoundedCornerShape(10.dp),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 14.dp, vertical = 8.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+            ) {
+                if (buying) {
+                    CircularProgressIndicator(modifier = Modifier.size(16.dp), color = MaterialTheme.colorScheme.onPrimary)
+                } else {
+                    Text("خرید", fontSize = FontSize.SMALL)
+                }
+            }
+        } else if (product.purchasable && product.stock in 1..3) {
             Text(
-                text = badge,
+                text = "${product.stock.toFaDigits()} عدد",
                 fontSize = FontSize.EXTRA_SMALL,
                 color = MaterialTheme.colorScheme.error,
             )

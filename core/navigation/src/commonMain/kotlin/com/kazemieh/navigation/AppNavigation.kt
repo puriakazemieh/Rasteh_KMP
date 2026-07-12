@@ -32,6 +32,7 @@ import com.kazemieh.bazaar.BecomeVendorScreen
 import com.kazemieh.bazaar.BookmarksScreen
 import com.kazemieh.bazaar.ChatListScreen
 import com.kazemieh.bazaar.ChatThreadScreen
+import com.kazemieh.bazaar.MyOrdersScreen
 import com.kazemieh.bazaar.RastehSearchScreen
 import com.kazemieh.bazaar.ShopDetailScreen
 import com.kazemieh.details.DetailsScreen
@@ -156,6 +157,19 @@ fun AppNavHost(
                 navigateToBookmarks = {
                     navController.navigate(Screen.Bookmarks)
                 },
+                navigateToShopDetail = { shopId ->
+                    navController.navigate(Screen.ShopDetail(shopId))
+                },
+                navigateToMarketOrders = {
+                    navController.navigate(Screen.MarketOrders)
+                },
+            )
+        }
+
+        composable<Screen.MarketOrders> {
+            MyOrdersScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToShop = { shopId -> navController.navigate(Screen.ShopDetail(shopId)) },
             )
         }
 

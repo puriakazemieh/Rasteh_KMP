@@ -12,4 +12,6 @@ val bazaarModule = module {
     viewModel { ChatThreadViewModel(interaction = get(), profileRepository = get()) }
     viewModel { ChatListViewModel(interaction = get()) }
     viewModel { BookmarksViewModel(interaction = get()) }
+    viewModel { SearchViewModel(repository = get()) }
+    viewModel { MyOrdersViewModel(repository = get()) }
 }

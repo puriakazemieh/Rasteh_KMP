@@ -5,8 +5,10 @@ import com.kazemieh.data.marketplace.source.MarketplaceDataSource
 import com.kazemieh.domain.marketplace.City
 import com.kazemieh.domain.marketplace.MarketplaceLocation
 import com.kazemieh.domain.marketplace.MarketplaceRepository
+import com.kazemieh.domain.marketplace.Order
 import com.kazemieh.domain.marketplace.Product
 import com.kazemieh.domain.marketplace.Rasteh
+import com.kazemieh.domain.marketplace.Review
 import com.kazemieh.domain.marketplace.Shop
 
 class MarketplaceRepositoryImpl(
@@ -58,6 +60,22 @@ class MarketplaceRepositoryImpl(
     )
 
     override suspend fun deleteProduct(id: Long): AppResult<Unit> = dataSource.deleteProduct(id)
+
+    override suspend fun getReviews(shopId: Long): AppResult<List<Review>> = dataSource.getReviews(shopId)
+    override suspend fun createReview(shopId: Long, rating: Int, comment: String?): AppResult<Review> =
+        dataSource.createReview(shopId, rating, comment)
+
+    override suspend fun searchShops(query: String?, rastehId: Long?, locationId: Long?, type: String?, sort: String?): AppResult<List<Shop>> =
+        dataSource.searchShops(query, rastehId, locationId, type, sort)
+    override suspend fun searchProducts(query: String?, shopId: Long?, condition: String?, minPrice: Long?, maxPrice: Long?, sort: String?): AppResult<List<Product>> =
+        dataSource.searchProducts(query, shopId, condition, minPrice, maxPrice, sort)
+
+    override suspend fun createOrder(shopId: Long, items: List<Pair<Long, Int>>, note: String?): AppResult<Order> =
+        dataSource.createOrder(shopId, items, note)
+    override suspend fun getMyOrders(): AppResult<List<Order>> = dataSource.getMyOrders()
+    override suspend fun getOrder(id: Long): AppResult<Order> = dataSource.getOrder(id)
+    override suspend fun getVendorOrders(shopId: Long): AppResult<List<Order>> = dataSource.getVendorOrders(shopId)
+    override suspend fun updateOrderStatus(id: Long, status: String): AppResult<Order> = dataSource.updateOrderStatus(id, status)
 
     override suspend fun getAdminShops(status: String): AppResult<List<Shop>> = dataSource.getAdminShops(status)
     override suspend fun approveShop(id: Long): AppResult<Shop> = dataSource.approveShop(id)
