@@ -59,6 +59,8 @@ fun MoreScreen(
     onAdminPanelClick: () -> Unit,
     onBecomeVendorClick: () -> Unit = {},
     onAdminShopsClick: () -> Unit = {},
+    onChatsClick: () -> Unit = {},
+    onBookmarksClick: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -96,6 +98,22 @@ fun MoreScreen(
                 title = "درخواستِ فروشندگی",
                 subtitle = "فروشگاهِ خود را در راسته ثبت کنید",
                 onClick = onBecomeVendorClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+        }
+
+        // ---- گفت‌وگوها و نشان‌شده‌ها ----
+        if (isLoggedIn) {
+            AccountRow(
+                title = "گفت‌وگوها",
+                subtitle = "پیام‌های شما با فروشگاه‌ها",
+                onClick = onChatsClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+            AccountRow(
+                title = "نشان‌شده‌ها",
+                subtitle = "فروشگاه‌ها و کالاهای نشان‌شده",
+                onClick = onBookmarksClick
             ) { AccountIcon(vector = Icons.Default.Star) }
             Spacer(Modifier.height(12.dp))
         }

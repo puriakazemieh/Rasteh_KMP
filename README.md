@@ -66,7 +66,18 @@ namespace با `composeApp`) رابطِ کاربریِ کشفِ راسته را 
   (`GET /api/products?shopId=`). «تماس» شماره را نشان می‌دهد؛ چتِ «پیام» در فازِ ۳ فعال می‌شود.
 - ViewModelهای `RastehSearchViewModel`/`ShopDetailViewModel` در `bazaarModule`؛ مسیرِ `Screen.ShopDetail`.
 
-قدمِ بعدی: فازِ ۳ (چت/پیشنهادِ قیمت/بوکمارک) و پنلِ مدیریتِ کالاهایِ ونـدور (manageListings/addProduct).
+## فازِ ۳ — چت + پیشنهادِ قیمت + بوکمارک
+
+لایهٔ دادهٔ `interaction` (network/domain/data + Koin) و صفحاتِ زیر:
+- **`ChatThreadScreen`** — «پیامِ» `shopDetail` گفت‌وگو را می‌سازد/باز می‌کند؛ حباب‌های پیام
+  (خودی/طرفِ مقابل بر اساسِ id پروفایل) + ارسال (polling با refresh).
+- **`ChatListScreen`** — فهرستِ گفت‌وگوها (از تبِ حساب).
+- **`ShopDetail`** حالا: آیکونِ **نشان‌کردن** (bookmark toggle)، دکمهٔ **«پیشنهادِ قیمت»** (اگر
+  `acceptsOffers`) با دیالوگِ مبلغ/توضیح → `POST /api/offers`، و **«پیام»** → گفت‌وگو.
+- **`BookmarksScreen`** — نشان‌شده‌ها (از تبِ حساب) با حذف.
+- ViewModelها در `bazaarModule`؛ مسیرهای `ChatThread`/`ChatList`/`Bookmarks`؛ ورودی‌ها در تبِ حساب.
+
+قدمِ بعدی: فازِ ۴ (سبد/سفارشِ تک‌ونـدوری + جست‌وجو + نظرات) و پنلِ مدیریتِ کالاهایِ ونـدور.
 
 ## ساختار ماژول‌ها
 ```

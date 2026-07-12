@@ -41,6 +41,19 @@ sealed class Screen {
     data class ShopDetail(val shopId: Long) : Screen()
 
     @Serializable
+    data class ChatThread(
+        val conversationId: Long = 0,
+        val shopId: Long = 0,
+        val title: String = "",
+    ) : Screen()
+
+    @Serializable
+    data object ChatList : Screen()
+
+    @Serializable
+    data object Bookmarks : Screen()
+
+    @Serializable
     data object BlogGraph : Screen()
 
     @Serializable

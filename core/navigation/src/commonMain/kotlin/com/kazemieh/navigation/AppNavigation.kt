@@ -29,6 +29,9 @@ import com.kazemieh.common.Screen
 import com.kazemieh.common.TokenExpiredEventBus
 import com.kazemieh.bazaar.AdminShopsScreen
 import com.kazemieh.bazaar.BecomeVendorScreen
+import com.kazemieh.bazaar.BookmarksScreen
+import com.kazemieh.bazaar.ChatListScreen
+import com.kazemieh.bazaar.ChatThreadScreen
 import com.kazemieh.bazaar.RastehSearchScreen
 import com.kazemieh.bazaar.ShopDetailScreen
 import com.kazemieh.details.DetailsScreen
@@ -147,6 +150,12 @@ fun AppNavHost(
                 navigateToAdminShops = {
                     navController.navigate(Screen.AdminShops)
                 },
+                navigateToChats = {
+                    navController.navigate(Screen.ChatList)
+                },
+                navigateToBookmarks = {
+                    navController.navigate(Screen.Bookmarks)
+                },
             )
         }
 
@@ -179,6 +188,35 @@ fun AppNavHost(
             ShopDetailScreen(
                 shopId = args.shopId,
                 navigateBack = { navController.navigateBack() },
+                navigateToChat = { conversationId, title ->
+                    navController.navigate(Screen.ChatThread(conversationId = conversationId, title = title))
+                },
+            )
+        }
+
+        composable<Screen.ChatThread> {
+            val args = it.toRoute<Screen.ChatThread>()
+            ChatThreadScreen(
+                conversationId = args.conversationId,
+                shopId = args.shopId,
+                title = args.title,
+                navigateBack = { navController.navigateBack() },
+            )
+        }
+
+        composable<Screen.ChatList> {
+            ChatListScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToChat = { conversationId, title ->
+                    navController.navigate(Screen.ChatThread(conversationId = conversationId, title = title))
+                },
+            )
+        }
+
+        composable<Screen.Bookmarks> {
+            BookmarksScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToShop = { shopId -> navController.navigate(Screen.ShopDetail(shopId)) },
             )
         }
 

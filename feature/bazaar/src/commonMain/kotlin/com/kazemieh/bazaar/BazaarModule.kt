@@ -8,5 +8,8 @@ val bazaarModule = module {
     viewModel { BecomeVendorViewModel(repository = get()) }
     viewModel { AdminShopsViewModel(repository = get()) }
     viewModel { RastehSearchViewModel(repository = get()) }
-    viewModel { ShopDetailViewModel(repository = get()) }
+    viewModel { ShopDetailViewModel(repository = get(), interaction = get()) }
+    viewModel { ChatThreadViewModel(interaction = get(), profileRepository = get()) }
+    viewModel { ChatListViewModel(interaction = get()) }
+    viewModel { BookmarksViewModel(interaction = get()) }
 }

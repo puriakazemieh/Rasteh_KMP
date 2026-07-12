@@ -15,6 +15,10 @@ import com.kazemieh.domain.marketplace.MarketplaceRepository
 import com.kazemieh.data.marketplace.repository.MarketplaceRepositoryImpl
 import com.kazemieh.data.marketplace.source.MarketplaceDataSource
 import com.kazemieh.data.marketplace.source.MarketplaceDataSourceImpl
+import com.kazemieh.domain.interaction.InteractionRepository
+import com.kazemieh.data.interaction.repository.InteractionRepositoryImpl
+import com.kazemieh.data.interaction.source.InteractionDataSource
+import com.kazemieh.data.interaction.source.InteractionDataSourceImpl
 import com.kazemieh.domain.profile.ProfileRepository
 import com.kazemieh.domain.settings.SettingsRepository
 import com.kazemieh.network.common.TokenProvider
@@ -171,6 +175,14 @@ val dataModule = module {
 
     single<MarketplaceDataSource> {
         MarketplaceDataSourceImpl(get())
+    }
+
+    single<InteractionRepository> {
+        InteractionRepositoryImpl(get())
+    }
+
+    single<InteractionDataSource> {
+        InteractionDataSourceImpl(get())
     }
 
     single { ProfileLocalDataSource(get()) }

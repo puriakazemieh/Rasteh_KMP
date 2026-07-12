@@ -67,6 +67,8 @@ fun MainGraphScreen(
     navigateToRastehSearch: (rastehId: Long, rastehLabel: String, locationId: Long, locationName: String) -> Unit,
     navigateToBecomeVendor: () -> Unit,
     navigateToAdminShops: () -> Unit,
+    navigateToChats: () -> Unit,
+    navigateToBookmarks: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
     val navController = rememberNavController()
@@ -172,7 +174,9 @@ fun MainGraphScreen(
                                 onSettingsClick = navigateToSettings,
                                 onAdminPanelClick = navigateToAdminPanel,
                                 onBecomeVendorClick = navigateToBecomeVendor,
-                                onAdminShopsClick = navigateToAdminShops
+                                onAdminShopsClick = navigateToAdminShops,
+                                onChatsClick = navigateToChats,
+                                onBookmarksClick = navigateToBookmarks
                             )
                         }
                     }

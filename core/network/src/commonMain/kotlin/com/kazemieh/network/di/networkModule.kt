@@ -15,6 +15,8 @@ import com.kazemieh.network.catalog.CatalogApiImpl
 import com.kazemieh.network.catalog.InteractionApi
 import com.kazemieh.network.catalog.InteractionApiImpl
 import com.kazemieh.network.common.HttpClientFactory
+import com.kazemieh.network.interaction.InteractionApi
+import com.kazemieh.network.interaction.InteractionApiImpl
 import com.kazemieh.network.marketplace.MarketplaceApi
 import com.kazemieh.network.marketplace.MarketplaceApiImpl
 import com.kazemieh.network.favorite.FavoriteApi
@@ -98,5 +100,9 @@ val networkModule = module {
 
     single<MarketplaceApi> {
         MarketplaceApiImpl(get())
+    }
+
+    single<InteractionApi> {
+        InteractionApiImpl(get())
     }
 }
