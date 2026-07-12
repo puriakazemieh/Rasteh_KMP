@@ -2,10 +2,12 @@ package com.kazemieh.data.marketplace.mapper
 
 import com.kazemieh.domain.marketplace.City
 import com.kazemieh.domain.marketplace.MarketplaceLocation
+import com.kazemieh.domain.marketplace.Product
 import com.kazemieh.domain.marketplace.Rasteh
 import com.kazemieh.domain.marketplace.Shop
 import com.kazemieh.network.marketplace.dto.response.CityResponse
 import com.kazemieh.network.marketplace.dto.response.LocationResponse
+import com.kazemieh.network.marketplace.dto.response.ProductResponse
 import com.kazemieh.network.marketplace.dto.response.RastehResponse
 import com.kazemieh.network.marketplace.dto.response.ShopResponse
 
@@ -62,4 +64,22 @@ fun ShopResponse.toDomain() = Shop(
     coverUrl = coverUrl,
     logoUrl = logoUrl,
     status = status,
+)
+
+fun ProductResponse.toDomain() = Product(
+    id = id,
+    shopId = shopId,
+    shopName = shopName,
+    name = name,
+    description = description,
+    price = price,
+    oldPrice = oldPrice,
+    discountPercent = discountPercent,
+    condition = condition,
+    stock = stock,
+    categoryName = categoryName,
+    emoji = emoji,
+    imageUrl = imageUrl,
+    active = active,
+    purchasable = purchasable,
 )

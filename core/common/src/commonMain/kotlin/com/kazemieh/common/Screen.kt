@@ -38,6 +38,9 @@ sealed class Screen {
     data object AdminShops : Screen()
 
     @Serializable
+    data class ShopDetail(val shopId: Long) : Screen()
+
+    @Serializable
     data object BlogGraph : Screen()
 
     @Serializable

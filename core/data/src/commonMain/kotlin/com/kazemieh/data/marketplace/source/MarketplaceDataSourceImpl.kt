@@ -4,11 +4,14 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.data.marketplace.mapper.toDomain
 import com.kazemieh.domain.marketplace.City
 import com.kazemieh.domain.marketplace.MarketplaceLocation
+import com.kazemieh.domain.marketplace.Product
 import com.kazemieh.domain.marketplace.Rasteh
 import com.kazemieh.domain.marketplace.Shop
 import com.kazemieh.network.common.safeApiCall
 import com.kazemieh.network.marketplace.MarketplaceApi
+import com.kazemieh.network.marketplace.dto.request.CreateProductRequest
 import com.kazemieh.network.marketplace.dto.request.CreateShopRequest
+import com.kazemieh.network.marketplace.dto.request.UpdateProductRequest
 
 class MarketplaceDataSourceImpl(
     private val api: MarketplaceApi
@@ -51,6 +54,54 @@ class MarketplaceDataSourceImpl(
 
     override suspend fun getShop(id: Long): AppResult<Shop> = safeApiCall {
         api.getShop(id).toDomain()
+    }
+
+    override suspend fun getShopsByLocation(locationId: Long, rastehId: Long?): AppResult<List<Shop>> = safeApiCall {
+        api.getShopsByLocation(locationId, rastehId).map { it.toDomain() }
+    }
+
+    override suspend fun getProductsByShop(shopId: Long): AppResult<List<Product>> = safeApiCall {
+        api.getProductsByShop(shopId).map { it.toDomain() }
+    }
+
+    override suspend fun getProduct(id: Long): AppResult<Product> = safeApiCall {
+        api.getProduct(id).toDomain()
+    }
+
+    override suspend fun getMyShopProducts(shopId: Long): AppResult<List<Product>> = safeApiCall {
+        api.getMyShopProducts(shopId).map { it.toDomain() }
+    }
+
+    override suspend fun createProduct(
+        shopId: Long, name: String, description: String?, price: Double, oldPrice: Double?,
+        discountPercent: Int?, condition: String, stock: Int, categoryName: String?, emoji: String?, imageUrl: String?,
+    ): AppResult<Product> = safeApiCall {
+        api.createProduct(
+            CreateProductRequest(
+                shopId = shopId, name = name, description = description, price = price, oldPrice = oldPrice,
+                discountPercent = discountPercent, condition = condition, stock = stock,
+                categoryName = categoryName, emoji = emoji, imageUrl = imageUrl,
+            )
+        ).toDomain()
+    }
+
+    override suspend fun updateProduct(
+        id: Long, name: String?, description: String?, price: Double?, oldPrice: Double?,
+        discountPercent: Int?, condition: String?, stock: Int?, categoryName: String?, emoji: String?,
+        imageUrl: String?, active: Boolean?,
+    ): AppResult<Product> = safeApiCall {
+        api.updateProduct(
+            id,
+            UpdateProductRequest(
+                name = name, description = description, price = price, oldPrice = oldPrice,
+                discountPercent = discountPercent, condition = condition, stock = stock,
+                categoryName = categoryName, emoji = emoji, imageUrl = imageUrl, active = active,
+            )
+        ).toDomain()
+    }
+
+    override suspend fun deleteProduct(id: Long): AppResult<Unit> = safeApiCall {
+        api.deleteProduct(id)
     }
 
     override suspend fun getAdminShops(status: String): AppResult<List<Shop>> = safeApiCall {

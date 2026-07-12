@@ -7,4 +7,6 @@ val bazaarModule = module {
     viewModel { RastehHomeViewModel(repository = get()) }
     viewModel { BecomeVendorViewModel(repository = get()) }
     viewModel { AdminShopsViewModel(repository = get()) }
+    viewModel { RastehSearchViewModel(repository = get()) }
+    viewModel { ShopDetailViewModel(repository = get()) }
 }

@@ -56,8 +56,17 @@ namespace با `composeApp`) رابطِ کاربریِ کشفِ راسته را 
 با این فاز، حلقهٔ فازِ ۱ کامل است: کاربر درخواستِ فروشندگی می‌دهد → ادمین تأیید می‌کند →
 حساب به فروشنده ارتقا می‌یابد.
 
-قدمِ بعدی: `shopDetail` v2 (پیام/تماس)، و فعال‌سازیِ فهرستِ فروشگاه‌ها در `RastehSearch`
-پس از افزودنِ endpointِ مرورِ کاتالوگ در سرور (فازِ ۲).
+## فازِ ۲ — کاتالوگ: فهرستِ فروشگاهِ محل + صفحهٔ فروشگاه
+
+لایهٔ داده گسترش یافت (مدلِ `Product`، DTOها، `getShopsByLocation`/`getProductsByShop`/`getProduct`
+و CRUDِ کالایِ ونـدور) و صفحاتِ زیر ساخته شدند:
+- **`RastehSearchScreen`** حالا فهرستِ **واقعیِ** فروشگاه‌های محل را از `GET /api/locations/{id}/shops`
+  می‌گیرد (کارتِ فروشگاه با امتیاز/نوع)؛ انتخابِ فروشگاه → `ShopDetail`.
+- **`ShopDetailScreen`** (shopDetail v2): سربرگِ فروشگاه + دکمه‌هایِ **«پیام»/«تماس»** + فهرستِ کالاها
+  (`GET /api/products?shopId=`). «تماس» شماره را نشان می‌دهد؛ چتِ «پیام» در فازِ ۳ فعال می‌شود.
+- ViewModelهای `RastehSearchViewModel`/`ShopDetailViewModel` در `bazaarModule`؛ مسیرِ `Screen.ShopDetail`.
+
+قدمِ بعدی: فازِ ۳ (چت/پیشنهادِ قیمت/بوکمارک) و پنلِ مدیریتِ کالاهایِ ونـدور (manageListings/addProduct).
 
 ## ساختار ماژول‌ها
 ```
