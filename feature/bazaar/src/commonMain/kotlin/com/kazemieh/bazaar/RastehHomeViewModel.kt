@@ -3,6 +3,7 @@ package com.kazemieh.bazaar
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazemieh.common.AppResult
+import com.kazemieh.domain.interaction.InteractionRepository
 import com.kazemieh.domain.marketplace.MarketplaceRepository
 import com.kazemieh.domain.marketplace.Rasteh
 import kotlinx.coroutines.channels.Channel
@@ -14,6 +15,7 @@ import kotlinx.coroutines.launch
 
 class RastehHomeViewModel(
     private val repository: MarketplaceRepository,
+    private val interaction: InteractionRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(RastehHomeState())
@@ -23,13 +25,16 @@ class RastehHomeViewModel(
     val effect = _effect.receiveAsFlow()
 
     init {
-        handleIntent(RastehHomeIntent.LoadRastehs)
+        loadRastehs()
+        loadNewest()
+        loadBookmarks()
     }
 
     fun handleIntent(intent: RastehHomeIntent) {
         when (intent) {
             is RastehHomeIntent.LoadRastehs -> loadRastehs()
             is RastehHomeIntent.OnQueryChange -> _state.update { it.copy(query = intent.value) }
+            is RastehHomeIntent.OnHomeTab -> _state.update { it.copy(homeTab = intent.tab) }
             is RastehHomeIntent.OnRastehClick -> openSheet(intent.rasteh)
             is RastehHomeIntent.DismissSheet ->
                 _state.update { it.copy(sheetRasteh = null, locations = AppResult.Loading) }
@@ -56,6 +61,24 @@ class RastehHomeViewModel(
         viewModelScope.launch {
             _state.update { it.copy(rastehs = AppResult.Loading) }
             _state.update { it.copy(rastehs = repository.getRastehs()) }
+        }
+    }
+
+    private fun loadNewest() {
+        viewModelScope.launch {
+            _state.update { it.copy(newestShops = repository.searchShops(null, null, null, null, "newest")) }
+        }
+        viewModelScope.launch {
+            _state.update { it.copy(newestProducts = repository.searchProducts(null, null, null, null, null, "newest")) }
+        }
+    }
+
+    private fun loadBookmarks() {
+        viewModelScope.launch {
+            when (val res = interaction.getBookmarks()) {
+                is AppResult.Success -> _state.update { it.copy(bookmarks = res.data) }
+                else -> {}
+            }
         }
     }
 

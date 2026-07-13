@@ -179,7 +179,9 @@ fun MainGraphScreen(
                     ) {
                         composable<Screen.ProductsOverview> {
                             RastehHomeScreen(
-                                navigateToRastehSearch = navigateToRastehSearch
+                                navigateToRastehSearch = navigateToRastehSearch,
+                                navigateToShop = navigateToShopDetail,
+                                navigateToBookmarks = navigateToBookmarks
                             )
                         }
                         composable<Screen.Search> {
