@@ -194,6 +194,10 @@ val dataModule = module {
 
     single { FeaturesDataSource(get()) }
 
+    single<com.kazemieh.domain.services.ServicesRepository> {
+        com.kazemieh.data.services.ServicesRepositoryImpl(get())
+    }
+
     single { ProfileLocalDataSource(get()) }
 
     single { TokenManager(settings = get()) }

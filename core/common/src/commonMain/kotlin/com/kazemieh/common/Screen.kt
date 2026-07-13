@@ -63,6 +63,9 @@ sealed class Screen {
     data object PriceAlerts : Screen()
 
     @Serializable
+    data object GiftCards : Screen()
+
+    @Serializable
     data object BlogGraph : Screen()
 
     @Serializable

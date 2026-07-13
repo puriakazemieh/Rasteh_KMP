@@ -64,6 +64,7 @@ fun MoreScreen(
     onMarketOrdersClick: () -> Unit = {},
     onDealsClick: () -> Unit = {},
     onPriceAlertsClick: () -> Unit = {},
+    onGiftCardsClick: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -135,6 +136,12 @@ fun MoreScreen(
                 title = "هشدارهای قیمت",
                 subtitle = "اطلاع از کاهشِ قیمت",
                 onClick = onPriceAlertsClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+            AccountRow(
+                title = "کارت‌های هدیه",
+                subtitle = "ساخت و دریافتِ کارتِ هدیه",
+                onClick = onGiftCardsClick
             ) { AccountIcon(vector = Icons.Default.Star) }
             Spacer(Modifier.height(12.dp))
         }
