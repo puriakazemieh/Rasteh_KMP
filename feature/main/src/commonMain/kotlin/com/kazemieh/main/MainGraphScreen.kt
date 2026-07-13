@@ -71,6 +71,8 @@ fun MainGraphScreen(
     navigateToBookmarks: () -> Unit,
     navigateToShopDetail: (Long) -> Unit,
     navigateToMarketOrders: () -> Unit,
+    navigateToDeals: () -> Unit,
+    navigateToPriceAlerts: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
     val navController = rememberNavController()
@@ -175,7 +177,9 @@ fun MainGraphScreen(
                                 onAdminShopsClick = navigateToAdminShops,
                                 onChatsClick = navigateToChats,
                                 onBookmarksClick = navigateToBookmarks,
-                                onMarketOrdersClick = navigateToMarketOrders
+                                onMarketOrdersClick = navigateToMarketOrders,
+                                onDealsClick = navigateToDeals,
+                                onPriceAlertsClick = navigateToPriceAlerts
                             )
                         }
                     }

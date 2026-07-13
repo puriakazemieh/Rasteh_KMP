@@ -62,6 +62,8 @@ fun MoreScreen(
     onChatsClick: () -> Unit = {},
     onBookmarksClick: () -> Unit = {},
     onMarketOrdersClick: () -> Unit = {},
+    onDealsClick: () -> Unit = {},
+    onPriceAlertsClick: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -121,6 +123,18 @@ fun MoreScreen(
                 title = "نشان‌شده‌ها",
                 subtitle = "فروشگاه‌ها و کالاهای نشان‌شده",
                 onClick = onBookmarksClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+            AccountRow(
+                title = "پیشنهادها و جوایز",
+                subtitle = "فلش، خریدِ گروهی و امتیاز",
+                onClick = onDealsClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+            AccountRow(
+                title = "هشدارهای قیمت",
+                subtitle = "اطلاع از کاهشِ قیمت",
+                onClick = onPriceAlertsClick
             ) { AccountIcon(vector = Icons.Default.Star) }
             Spacer(Modifier.height(12.dp))
         }

@@ -14,4 +14,6 @@ val bazaarModule = module {
     viewModel { BookmarksViewModel(interaction = get()) }
     viewModel { SearchViewModel(repository = get()) }
     viewModel { MyOrdersViewModel(repository = get()) }
+    viewModel { DealsViewModel(repository = get()) }
+    viewModel { PriceAlertsViewModel(repository = get()) }
 }

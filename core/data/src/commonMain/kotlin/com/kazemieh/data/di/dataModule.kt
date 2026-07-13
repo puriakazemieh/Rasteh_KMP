@@ -19,6 +19,9 @@ import com.kazemieh.domain.interaction.InteractionRepository
 import com.kazemieh.data.interaction.repository.InteractionRepositoryImpl
 import com.kazemieh.data.interaction.source.InteractionDataSource
 import com.kazemieh.data.interaction.source.InteractionDataSourceImpl
+import com.kazemieh.domain.features.FeaturesRepository
+import com.kazemieh.data.features.repository.FeaturesRepositoryImpl
+import com.kazemieh.data.features.source.FeaturesDataSource
 import com.kazemieh.domain.profile.ProfileRepository
 import com.kazemieh.domain.settings.SettingsRepository
 import com.kazemieh.network.common.TokenProvider
@@ -184,6 +187,12 @@ val dataModule = module {
     single<InteractionDataSource> {
         InteractionDataSourceImpl(get())
     }
+
+    single<FeaturesRepository> {
+        FeaturesRepositoryImpl(get())
+    }
+
+    single { FeaturesDataSource(get()) }
 
     single { ProfileLocalDataSource(get()) }
 
