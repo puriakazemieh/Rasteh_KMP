@@ -112,6 +112,16 @@ namespace با `composeApp`) رابطِ کاربریِ کشفِ راسته را 
 **همهٔ فازهای پلن (۰–۸) پیاده شد.** قابلیت‌های نیازمندِ زیرساختِ سنگین
 (live/escrow/concierge/visualsearch/parking) طبقِ پلن به‌عنوانِ «آینده» باقی می‌مانند.
 
+## هم‌ترازسازی با پایهٔ جدیدِ فروشگاه (ریسپانسیو + وایت‌لیبل)
+
+اسپکِ مارکت‌پلیس (`design_handoff_v2`) تغییری نکرد؛ این دو ارتقاء از پایهٔ به‌روزِ اپِ فروشگاه آمدند:
+- **فازِ R — ریسپانسیو:** `core/designSystem/WindowSize.kt` (WindowSizeClass بدونِ وابستگی)،
+  `ProvideWindowSizeClass` در ریشه، گریدِ خانه با `adaptiveGridColumns`، **`SideNavRail`** روی
+  نمایشگرهای بزرگ به‌جای نوارِ پایین، و `responsiveMaxWidth` روی صفحاتِ لیست/جزئیات.
+- **فازِ WL — وایت‌لیبل/برند:** `core/designSystem/brand/Brand.kt` (`BrandFeatures`/`BrandConfig`/
+  `BrandRegistry` + `RastehBrand`)، `ProvideBrand` در ریشه، و گیت‌کردنِ ردیف‌های تبِ حساب پشتِ
+  پرچم‌های برند — آماده برای وایت‌لیبلِ چندبرندی در آینده.
+
 ## ساختار ماژول‌ها
 ```
 core/common         AppResult، Roles، faDigits، Screen، EventBusها

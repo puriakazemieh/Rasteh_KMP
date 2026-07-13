@@ -68,6 +68,7 @@ fun MoreScreen(
     onCommunityClick: () -> Unit = {},
     onNotificationsClick: () -> Unit = {},
 ) {
+    val features = com.kazemieh.designsystem.brand.LocalBrand.current.features
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -99,7 +100,7 @@ fun MoreScreen(
         }
 
         // ---- (کاربرِ عادیِ واردشده) درخواستِ فروشندگی ----
-        if (isLoggedIn && !isAdmin) {
+        if (isLoggedIn && !isAdmin && features.vendorOnboarding) {
             AccountRow(
                 title = "درخواستِ فروشندگی",
                 subtitle = "فروشگاهِ خود را در راسته ثبت کنید",
@@ -116,51 +117,65 @@ fun MoreScreen(
                 onClick = onMarketOrdersClick
             ) { AccountIcon(vector = Icons.Default.Star) }
             Spacer(Modifier.height(12.dp))
-            AccountRow(
-                title = "گفت‌وگوها",
-                subtitle = "پیام‌های شما با فروشگاه‌ها",
-                onClick = onChatsClick
-            ) { AccountIcon(vector = Icons.Default.Star) }
-            Spacer(Modifier.height(12.dp))
-            AccountRow(
-                title = "نشان‌شده‌ها",
-                subtitle = "فروشگاه‌ها و کالاهای نشان‌شده",
-                onClick = onBookmarksClick
-            ) { AccountIcon(vector = Icons.Default.Star) }
-            Spacer(Modifier.height(12.dp))
-            AccountRow(
-                title = "پیشنهادها و جوایز",
-                subtitle = "فلش، خریدِ گروهی و امتیاز",
-                onClick = onDealsClick
-            ) { AccountIcon(vector = Icons.Default.Star) }
-            Spacer(Modifier.height(12.dp))
-            AccountRow(
-                title = "هشدارهای قیمت",
-                subtitle = "اطلاع از کاهشِ قیمت",
-                onClick = onPriceAlertsClick
-            ) { AccountIcon(vector = Icons.Default.Star) }
-            Spacer(Modifier.height(12.dp))
-            AccountRow(
-                title = "کارت‌های هدیه",
-                subtitle = "ساخت و دریافتِ کارتِ هدیه",
-                onClick = onGiftCardsClick
-            ) { AccountIcon(vector = Icons.Default.Star) }
-            Spacer(Modifier.height(12.dp))
-            AccountRow(
-                title = "اعلان‌ها",
-                subtitle = "پیام‌ها و رویدادهای شما",
-                onClick = onNotificationsClick
-            ) { AccountIcon(vector = Icons.Default.Star) }
-            Spacer(Modifier.height(12.dp))
+            if (features.chat) {
+                AccountRow(
+                    title = "گفت‌وگوها",
+                    subtitle = "پیام‌های شما با فروشگاه‌ها",
+                    onClick = onChatsClick
+                ) { AccountIcon(vector = Icons.Default.Star) }
+                Spacer(Modifier.height(12.dp))
+            }
+            if (features.bookmarks) {
+                AccountRow(
+                    title = "نشان‌شده‌ها",
+                    subtitle = "فروشگاه‌ها و کالاهای نشان‌شده",
+                    onClick = onBookmarksClick
+                ) { AccountIcon(vector = Icons.Default.Star) }
+                Spacer(Modifier.height(12.dp))
+            }
+            if (features.deals) {
+                AccountRow(
+                    title = "پیشنهادها و جوایز",
+                    subtitle = "فلش، خریدِ گروهی و امتیاز",
+                    onClick = onDealsClick
+                ) { AccountIcon(vector = Icons.Default.Star) }
+                Spacer(Modifier.height(12.dp))
+            }
+            if (features.priceAlerts) {
+                AccountRow(
+                    title = "هشدارهای قیمت",
+                    subtitle = "اطلاع از کاهشِ قیمت",
+                    onClick = onPriceAlertsClick
+                ) { AccountIcon(vector = Icons.Default.Star) }
+                Spacer(Modifier.height(12.dp))
+            }
+            if (features.giftCards) {
+                AccountRow(
+                    title = "کارت‌های هدیه",
+                    subtitle = "ساخت و دریافتِ کارتِ هدیه",
+                    onClick = onGiftCardsClick
+                ) { AccountIcon(vector = Icons.Default.Star) }
+                Spacer(Modifier.height(12.dp))
+            }
+            if (features.notifications) {
+                AccountRow(
+                    title = "اعلان‌ها",
+                    subtitle = "پیام‌ها و رویدادهای شما",
+                    onClick = onNotificationsClick
+                ) { AccountIcon(vector = Icons.Default.Star) }
+                Spacer(Modifier.height(12.dp))
+            }
         }
 
         // ---- انجمن (برای همه) ----
-        AccountRow(
-            title = "انجمنِ بازارچه",
-            subtitle = "گفت‌وگو با دیگر کاربران",
-            onClick = onCommunityClick
-        ) { AccountIcon(vector = Icons.Default.Star) }
-        Spacer(Modifier.height(12.dp))
+        if (features.community) {
+            AccountRow(
+                title = "انجمنِ بازارچه",
+                subtitle = "گفت‌وگو با دیگر کاربران",
+                onClick = onCommunityClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+        }
 
         // ---- باشگاه مشتریان و پشتیبانی ----
         if (isLoggedIn) {
