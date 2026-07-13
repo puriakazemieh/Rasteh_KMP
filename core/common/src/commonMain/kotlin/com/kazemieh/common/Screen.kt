@@ -66,6 +66,12 @@ sealed class Screen {
     data object GiftCards : Screen()
 
     @Serializable
+    data object Community : Screen()
+
+    @Serializable
+    data object Notifications : Screen()
+
+    @Serializable
     data object BlogGraph : Screen()
 
     @Serializable

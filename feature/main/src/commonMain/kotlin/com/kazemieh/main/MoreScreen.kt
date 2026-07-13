@@ -65,6 +65,8 @@ fun MoreScreen(
     onDealsClick: () -> Unit = {},
     onPriceAlertsClick: () -> Unit = {},
     onGiftCardsClick: () -> Unit = {},
+    onCommunityClick: () -> Unit = {},
+    onNotificationsClick: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -144,7 +146,21 @@ fun MoreScreen(
                 onClick = onGiftCardsClick
             ) { AccountIcon(vector = Icons.Default.Star) }
             Spacer(Modifier.height(12.dp))
+            AccountRow(
+                title = "اعلان‌ها",
+                subtitle = "پیام‌ها و رویدادهای شما",
+                onClick = onNotificationsClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
         }
+
+        // ---- انجمن (برای همه) ----
+        AccountRow(
+            title = "انجمنِ بازارچه",
+            subtitle = "گفت‌وگو با دیگر کاربران",
+            onClick = onCommunityClick
+        ) { AccountIcon(vector = Icons.Default.Star) }
+        Spacer(Modifier.height(12.dp))
 
         // ---- باشگاه مشتریان و پشتیبانی ----
         if (isLoggedIn) {

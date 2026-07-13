@@ -198,6 +198,10 @@ val dataModule = module {
         com.kazemieh.data.services.ServicesRepositoryImpl(get())
     }
 
+    single<com.kazemieh.domain.advanced.AdvancedRepository> {
+        com.kazemieh.data.advanced.AdvancedRepositoryImpl(get())
+    }
+
     single { ProfileLocalDataSource(get()) }
 
     single { TokenManager(settings = get()) }

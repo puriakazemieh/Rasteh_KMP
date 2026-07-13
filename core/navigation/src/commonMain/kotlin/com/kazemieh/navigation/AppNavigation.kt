@@ -32,7 +32,9 @@ import com.kazemieh.bazaar.BecomeVendorScreen
 import com.kazemieh.bazaar.BookmarksScreen
 import com.kazemieh.bazaar.ChatListScreen
 import com.kazemieh.bazaar.ChatThreadScreen
+import com.kazemieh.bazaar.CommunityScreen
 import com.kazemieh.bazaar.DealsScreen
+import com.kazemieh.bazaar.NotificationsScreen
 import com.kazemieh.bazaar.GiftCardsScreen
 import com.kazemieh.bazaar.MyOrdersScreen
 import com.kazemieh.bazaar.PriceAlertsScreen
@@ -175,11 +177,25 @@ fun AppNavHost(
                 navigateToGiftCards = {
                     navController.navigate(Screen.GiftCards)
                 },
+                navigateToCommunity = {
+                    navController.navigate(Screen.Community)
+                },
+                navigateToNotifications = {
+                    navController.navigate(Screen.Notifications)
+                },
             )
         }
 
         composable<Screen.GiftCards> {
             GiftCardsScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.Community> {
+            CommunityScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.Notifications> {
+            NotificationsScreen(navigateBack = { navController.navigateBack() })
         }
 
         composable<Screen.MarketOrders> {

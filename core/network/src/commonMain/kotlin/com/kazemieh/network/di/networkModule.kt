@@ -115,4 +115,8 @@ val networkModule = module {
     single<com.kazemieh.network.services.ServicesApi> {
         com.kazemieh.network.services.ServicesApiImpl(get())
     }
+
+    single<com.kazemieh.network.advanced.AdvancedApi> {
+        com.kazemieh.network.advanced.AdvancedApiImpl(get())
+    }
 }
