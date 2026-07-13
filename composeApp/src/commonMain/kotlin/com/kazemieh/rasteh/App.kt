@@ -18,6 +18,7 @@ import com.kazemieh.common.AppThemeMode
 import com.kazemieh.data.di.dataModule
 import com.kazemieh.data.di.platformModule
 import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.ProvideWindowSizeClass
 import com.kazemieh.details.di.detailsModule
 import com.kazemieh.domain.settings.ObserveLanguageUseCase
 import com.kazemieh.domain.settings.ObserveThemeModeUseCase
@@ -45,7 +46,9 @@ fun App() {
         themeMode = themeMode,
         language = language
     ) {
-        AppNavHost()
+        ProvideWindowSizeClass {
+            AppNavHost()
+        }
     }
 }
 

@@ -244,3 +244,25 @@ wayfind/appointment/returns/warranty/giftcard/events/stories →
 live/escrow/tracking/vipsub/parking/community/concierge/visualsearch) + wallet/referral.
 
 **آینده:** نقشهٔ گرافیکیِ پاساژ، اپِ ونـدورِ جدا از اپِ خریدار، آنالیتیکسِ ونـدور، featured-listingِ پولی، چند-پاساژ/چندشهری.
+
+---
+
+## ۹) هم‌ترازسازی با پایهٔ جدیدِ فروشگاه (برنچِ `admin-profile-pages-redesign`)
+
+> اسپکِ مارکت‌پلیس (`design_handoff_v2`) **تغییری نکرده** — کلِ فازهای ۰–۸ روی همان ساخته شد.
+> ورودیِ تازه فقط **پایهٔ به‌روزترِ اپِ فروشگاه** است (دیزاین‌سیستمِ کارمیلا + ریسپانسیو + وایت‌لیبل).
+> این دو ارتقاء عرضی‌اند و مستقل از دامنهٔ راسته؛ به‌صورتِ دو فازِ جدید افزوده می‌شوند.
+
+### فازِ R — لایه‌بندیِ ریسپانسیو/تطبیقی (چندصفحه‌ای)
+- انتقالِ `core/designSystem/WindowSize.kt` از پایهٔ فروشگاه (بدونِ وابستگیِ اضافه؛ `BoxWithConstraints`،
+  رده‌های Material3: Compact `<600` / Medium `600–840` / Expanded `≥840`).
+- `ProvideWindowSizeClass` در ریشهٔ `App()` دورِ `AppNavHost`.
+- خانهٔ راسته: `adaptiveGridColumns` (۲/۳/۴ ستون بر اساسِ عرض) به‌جای ۳ ستونِ ثابت.
+- پوستهٔ اصلی: روی صفحاتِ بزرگ نوارِ پایین با **`SideNavRail`** جایگزین می‌شود (rail روی تبلت/دسکتاپ).
+- صفحاتِ لیست/جزئیات/فرم: `responsiveMaxWidth()` تا روی نمایشگرِ پهن مرکزی و خوانا بمانند.
+
+### فازِ WL — معماریِ وایت‌لیبل/برند (سبک‌شده برای راسته)
+- `core/designSystem/brand/Brand.kt`: `BrandPalette`/`BrandColors`/`BrandFeatures`/`BrandConfig`/`BrandRegistry`
+  هم‌الگو با پایهٔ فروشگاه، اما با پرچم‌های **مرتبط با راسته** (chat/offers/bookmarks/loyalty/community/...).
+- `RastehBrand` پیش‌فرض با پالتِ بنفشِ مارکت‌پلیس (oklch) و نامِ «راسته».
+- تزریق در Koin؛ گیت‌کردنِ چند بخشِ UI پشتِ پرچم‌های برند (برای وایت‌لیبلِ آینده).

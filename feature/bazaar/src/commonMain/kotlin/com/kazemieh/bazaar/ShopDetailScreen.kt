@@ -57,6 +57,7 @@ import com.kazemieh.bazaar.component.ProductCard
 import com.kazemieh.common.AppResult
 import com.kazemieh.common.util.toFaDigits
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.domain.marketplace.Product
 import com.kazemieh.domain.marketplace.Shop
 import kotlinx.coroutines.flow.collectLatest
@@ -172,7 +173,7 @@ private fun Content(
     onAddReview: () -> Unit,
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().responsiveMaxWidth(),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {

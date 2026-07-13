@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.kazemieh.bazaar.component.ShopCard
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.responsiveMaxWidth
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -85,7 +86,7 @@ fun RastehSearchScreen(
                         }
                     } else {
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier.fillMaxSize().responsiveMaxWidth(),
                             contentPadding = PaddingValues(16.dp),
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                         ) {

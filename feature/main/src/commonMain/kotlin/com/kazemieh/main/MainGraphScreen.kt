@@ -34,12 +34,15 @@ import com.kazemieh.bazaar.RastehHomeScreen
 import com.kazemieh.cart.CartScreen
 import com.kazemieh.catalog.CategorySearchScreen
 import com.kazemieh.common.Screen
+import androidx.compose.foundation.layout.Row
 import com.kazemieh.designsystem.AppFont
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
+import com.kazemieh.designsystem.windowSizeClass
 import com.kazemieh.main.component.BottomBar
 import com.kazemieh.main.component.BottomBarDestination
+import com.kazemieh.main.component.SideNavRail
 import com.kazemieh.main.component.TitleTopBar
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
@@ -117,12 +120,35 @@ fun MainGraphScreen(
         }
     }
 
-    Box(
+    val sizeClass = windowSizeClass()
+    val isLarge = sizeClass.isLarge
+
+    val onSelectDestination: (BottomBarDestination) -> Unit = { destination ->
+        navController.navigate(destination.screen) {
+            launchSingleTop = true
+            popUpTo<Screen.ProductsOverview> {
+                saveState = true
+                inclusive = false
+            }
+            restoreState = true
+        }
+    }
+
+    Row(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
             .systemBarsPadding()
     ) {
+        if (isLarge) {
+            SideNavRail(
+                cartItemCount = state.cartItemCount,
+                selected = selectedDestination,
+                onSelect = onSelectDestination,
+                expandedLabels = sizeClass.isExpanded,
+            )
+        }
+        Box(modifier = Modifier.weight(1f).fillMaxSize()) {
         Scaffold(
             containerColor = MaterialTheme.colorScheme.surface,
             topBar = {
@@ -190,30 +216,25 @@ fun MainGraphScreen(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(all = 12.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        BottomBar(
-                            cartItemCount = state.cartItemCount,
-                            selected = selectedDestination,
-                            onSelect = { destination ->
-                                navController.navigate(destination.screen) {
-                                    launchSingleTop = true
-                                    popUpTo<Screen.ProductsOverview> {
-                                        saveState = true
-                                        inclusive = false
-                                    }
-                                    restoreState = true
-                                }
-                            }
-                        )
+                    // نوارِ پایین فقط روی موبایل؛ روی نمایشگرهای بزرگ نوارِ کناری جایگزین است.
+                    if (!isLarge) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(all = 12.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            BottomBar(
+                                cartItemCount = state.cartItemCount,
+                                selected = selectedDestination,
+                                onSelect = onSelectDestination
+                            )
+                        }
                     }
                 }
             }
+        }
         }
     }
 }

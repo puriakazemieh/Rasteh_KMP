@@ -32,6 +32,7 @@ import com.kazemieh.bazaar.component.LocationPickerSheet
 import com.kazemieh.bazaar.component.RastehCard
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.adaptiveGridColumns
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -95,7 +96,7 @@ fun RastehHomeScreen(
 
             is AppResult.Success -> {
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(3),
+                    columns = GridCells.Fixed(adaptiveGridColumns(compact = 3, medium = 4, expanded = 6)),
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
