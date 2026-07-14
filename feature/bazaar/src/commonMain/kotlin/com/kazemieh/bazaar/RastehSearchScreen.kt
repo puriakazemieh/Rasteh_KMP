@@ -1,13 +1,18 @@
 package com.kazemieh.bazaar
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -24,8 +29,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.kazemieh.bazaar.component.ProductCard
 import com.kazemieh.bazaar.component.ShopCard
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.FontSize
@@ -33,7 +41,7 @@ import com.kazemieh.designsystem.responsiveMaxWidth
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
- * فهرستِ فروشگاه‌هایِ یک راسته در یک محل (rastehSearch) — دادهٔ واقعی از سرور.
+ * جست‌وجوی درون‌محلی (rastehSearch v3): دو تبِ فروشگاه/محصول.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,29 +77,62 @@ fun RastehSearchScreen(
             )
         },
     ) { padding ->
-        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
-            when (val s = state) {
-                is AppResult.Loading -> Center { CircularProgressIndicator() }
-                is AppResult.Error -> Center {
-                    Text("خطا در دریافتِ فروشگاه‌ها", color = MaterialTheme.colorScheme.error, fontSize = FontSize.REGULAR)
+        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+            // تب‌های فروشگاه/محصول
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(16.dp).clip(RoundedCornerShape(10.dp)).background(MaterialTheme.colorScheme.surfaceVariant).padding(3.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                HomeTab.entries.forEach { tab ->
+                    val isSel = tab == state.tab
+                    Box(
+                        modifier = Modifier.weight(1f).clip(RoundedCornerShape(8.dp))
+                            .background(if (isSel) MaterialTheme.colorScheme.surface else Color.Transparent)
+                            .clickable { viewModel.onTab(tab) }.padding(vertical = 9.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = if (tab == HomeTab.SHOPS) "فروشگاه‌ها" else "محصولات",
+                            fontSize = FontSize.SMALL,
+                            fontWeight = FontWeight.Bold,
+                            color = if (isSel) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
-                is AppResult.Success -> {
-                    if (s.data.isEmpty()) {
-                        Center {
-                            Text(
-                                "هنوز فروشگاهی در این محل ثبت نشده است",
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                fontSize = FontSize.REGULAR,
-                            )
+            }
+
+            Box(modifier = Modifier.fillMaxSize()) {
+                if (state.tab == HomeTab.SHOPS) {
+                    when (val s = state.shops) {
+                        is AppResult.Loading -> Center { CircularProgressIndicator() }
+                        is AppResult.Error -> Center { Text("خطا در دریافتِ فروشگاه‌ها", color = MaterialTheme.colorScheme.error, fontSize = FontSize.REGULAR) }
+                        is AppResult.Success -> {
+                            if (s.data.isEmpty()) Center { Text("فروشگاهی در این محل نیست", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = FontSize.REGULAR) }
+                            else LazyColumn(
+                                modifier = Modifier.fillMaxSize().responsiveMaxWidth(),
+                                contentPadding = PaddingValues(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(12.dp),
+                            ) {
+                                items(s.data, key = { it.id }) { shop -> ShopCard(shop = shop, onClick = { navigateToShop(shop.id) }) }
+                            }
                         }
-                    } else {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize().responsiveMaxWidth(),
-                            contentPadding = PaddingValues(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
-                        ) {
-                            items(s.data, key = { it.id }) { shop ->
-                                ShopCard(shop = shop, onClick = { navigateToShop(shop.id) })
+                    }
+                } else {
+                    when (val p = state.products) {
+                        is AppResult.Loading -> Center { CircularProgressIndicator() }
+                        is AppResult.Error -> Center { Text("خطا در دریافتِ محصولات", color = MaterialTheme.colorScheme.error, fontSize = FontSize.REGULAR) }
+                        is AppResult.Success -> {
+                            if (p.data.isEmpty()) Center { Text("محصولی در این محل نیست", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = FontSize.REGULAR) }
+                            else LazyColumn(
+                                modifier = Modifier.fillMaxSize().responsiveMaxWidth(),
+                                contentPadding = PaddingValues(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(10.dp),
+                            ) {
+                                items(p.data, key = { it.id }) { product ->
+                                    Box(modifier = Modifier.clickable { product.shopId?.let(navigateToShop) }) {
+                                        ProductCard(product = product)
+                                    }
+                                }
                             }
                         }
                     }

@@ -94,6 +94,11 @@ fun ReviewResponse.toDomain() = Review(
     rating = rating, comment = comment, createdAt = createdAt,
 )
 
+fun com.kazemieh.network.marketplace.dto.response.ReportResponse.toDomain() = com.kazemieh.domain.marketplace.Report(
+    id = id, userId = userId, targetType = targetType, targetId = targetId,
+    reason = reason, status = status, createdAt = createdAt,
+)
+
 fun OrderResponse.toDomain() = Order(
     id = id, shopId = shopId, shopName = shopName, customerUserId = customerUserId,
     customerName = customerName, status = status, totalAmount = totalAmount, note = note,

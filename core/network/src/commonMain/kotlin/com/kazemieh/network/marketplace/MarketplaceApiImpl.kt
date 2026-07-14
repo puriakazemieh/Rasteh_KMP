@@ -73,8 +73,52 @@ class MarketplaceApiImpl(
         }
     }
 
+    override suspend fun getProductsByLocation(locationId: Long): List<ProductResponse> = safeApiCallRaw {
+        client.get("/api/search/products") { parameter("locationId", locationId) }
+    }
+
     override suspend fun getProduct(id: Long): ProductResponse = safeApiCallRaw {
         client.get("/api/products/$id")
+    }
+
+    override suspend fun getOtherSellers(id: Long): List<ProductResponse> = safeApiCallRaw {
+        client.get("/api/products/$id/other-sellers")
+    }
+
+    override suspend fun createReport(request: com.kazemieh.network.marketplace.dto.request.CreateReportRequest): com.kazemieh.network.marketplace.dto.response.ReportResponse = safeApiCallRaw {
+        client.post("/api/reports") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+    }
+
+    override suspend fun getAdminReports(status: String?): List<com.kazemieh.network.marketplace.dto.response.ReportResponse> = safeApiCallRaw {
+        client.get("/api/admin/reports") { if (status != null) parameter("status", status) }
+    }
+
+    override suspend fun resolveReport(id: Long, status: String): com.kazemieh.network.marketplace.dto.response.ReportResponse = safeApiCallRaw {
+        client.post("/api/admin/reports/$id/resolve") {
+            contentType(ContentType.Application.Json)
+            setBody(com.kazemieh.network.marketplace.dto.request.ResolveReportRequest(status))
+        }
+    }
+
+    override suspend fun adminCreateRasteh(request: com.kazemieh.network.marketplace.dto.request.CreateRastehRequest): RastehResponse = safeApiCallRaw {
+        client.post("/api/admin/rastehs") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+    }
+
+    override suspend fun adminCreateLocation(request: com.kazemieh.network.marketplace.dto.request.CreateLocationRequest): LocationResponse = safeApiCallRaw {
+        client.post("/api/admin/locations") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+    }
+
+    override suspend fun adminMapLocation(rastehId: Long, locationId: Long) = safeApiCallRaw<Unit> {
+        client.post("/api/admin/rastehs/$rastehId/locations/$locationId")
     }
 
     override suspend fun getMyShopProducts(shopId: Long): List<ProductResponse> = safeApiCallRaw {

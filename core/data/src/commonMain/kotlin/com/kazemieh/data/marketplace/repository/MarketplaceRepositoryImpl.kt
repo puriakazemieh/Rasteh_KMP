@@ -39,7 +39,9 @@ class MarketplaceRepositoryImpl(
     override suspend fun getProductsByShop(shopId: Long): AppResult<List<Product>> =
         dataSource.getProductsByShop(shopId)
 
+    override suspend fun getProductsByLocation(locationId: Long): AppResult<List<Product>> = dataSource.getProductsByLocation(locationId)
     override suspend fun getProduct(id: Long): AppResult<Product> = dataSource.getProduct(id)
+    override suspend fun getOtherSellers(id: Long): AppResult<List<Product>> = dataSource.getOtherSellers(id)
 
     override suspend fun getMyShopProducts(shopId: Long): AppResult<List<Product>> =
         dataSource.getMyShopProducts(shopId)
@@ -77,7 +79,18 @@ class MarketplaceRepositoryImpl(
     override suspend fun getVendorOrders(shopId: Long): AppResult<List<Order>> = dataSource.getVendorOrders(shopId)
     override suspend fun updateOrderStatus(id: Long, status: String): AppResult<Order> = dataSource.updateOrderStatus(id, status)
 
+    override suspend fun createReport(targetType: String, targetId: Long, reason: String?): AppResult<com.kazemieh.domain.marketplace.Report> =
+        dataSource.createReport(targetType, targetId, reason)
+
     override suspend fun getAdminShops(status: String): AppResult<List<Shop>> = dataSource.getAdminShops(status)
+
+    override suspend fun getAdminReports(status: String?): AppResult<List<com.kazemieh.domain.marketplace.Report>> = dataSource.getAdminReports(status)
+    override suspend fun resolveReport(id: Long, status: String): AppResult<com.kazemieh.domain.marketplace.Report> = dataSource.resolveReport(id, status)
+    override suspend fun adminCreateRasteh(label: String, colorOklch: String?, iconKey: String?, sortOrder: Int): AppResult<Rasteh> =
+        dataSource.adminCreateRasteh(label, colorOklch, iconKey, sortOrder)
+    override suspend fun adminCreateLocation(cityId: Long, name: String, kind: String, address: String?, floorCount: Int): AppResult<MarketplaceLocation> =
+        dataSource.adminCreateLocation(cityId, name, kind, address, floorCount)
+    override suspend fun adminMapLocation(rastehId: Long, locationId: Long): AppResult<Unit> = dataSource.adminMapLocation(rastehId, locationId)
     override suspend fun approveShop(id: Long): AppResult<Shop> = dataSource.approveShop(id)
     override suspend fun rejectShop(id: Long): AppResult<Shop> = dataSource.rejectShop(id)
     override suspend fun suspendShop(id: Long): AppResult<Shop> = dataSource.suspendShop(id)

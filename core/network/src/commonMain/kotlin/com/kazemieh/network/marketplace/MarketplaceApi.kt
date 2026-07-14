@@ -29,7 +29,9 @@ interface MarketplaceApi {
 
     // کاتالوگ
     suspend fun getProductsByShop(shopId: Long): List<ProductResponse>
+    suspend fun getProductsByLocation(locationId: Long): List<ProductResponse>
     suspend fun getProduct(id: Long): ProductResponse
+    suspend fun getOtherSellers(id: Long): List<ProductResponse>
 
     // مدیریتِ کالا (ونـدور)
     suspend fun getMyShopProducts(shopId: Long): List<ProductResponse>
@@ -52,8 +54,18 @@ interface MarketplaceApi {
     suspend fun getVendorOrders(shopId: Long): List<OrderResponse>
     suspend fun updateOrderStatus(id: Long, request: UpdateOrderStatusRequest): OrderResponse
 
+    // گزارشِ تخلف
+    suspend fun createReport(request: com.kazemieh.network.marketplace.dto.request.CreateReportRequest): com.kazemieh.network.marketplace.dto.response.ReportResponse
+
     // admin
     suspend fun getAdminShops(status: String): List<ShopResponse>
+
+    // ادمین: گزارش‌ها + مدیریتِ راسته/محل
+    suspend fun getAdminReports(status: String?): List<com.kazemieh.network.marketplace.dto.response.ReportResponse>
+    suspend fun resolveReport(id: Long, status: String): com.kazemieh.network.marketplace.dto.response.ReportResponse
+    suspend fun adminCreateRasteh(request: com.kazemieh.network.marketplace.dto.request.CreateRastehRequest): RastehResponse
+    suspend fun adminCreateLocation(request: com.kazemieh.network.marketplace.dto.request.CreateLocationRequest): LocationResponse
+    suspend fun adminMapLocation(rastehId: Long, locationId: Long)
     suspend fun approveShop(id: Long): ShopResponse
     suspend fun rejectShop(id: Long): ShopResponse
     suspend fun suspendShop(id: Long): ShopResponse

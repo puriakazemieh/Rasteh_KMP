@@ -70,8 +70,40 @@ class MarketplaceDataSourceImpl(
         api.getProductsByShop(shopId).map { it.toDomain() }
     }
 
+    override suspend fun getProductsByLocation(locationId: Long): AppResult<List<Product>> = safeApiCall {
+        api.getProductsByLocation(locationId).map { it.toDomain() }
+    }
+
     override suspend fun getProduct(id: Long): AppResult<Product> = safeApiCall {
         api.getProduct(id).toDomain()
+    }
+
+    override suspend fun getOtherSellers(id: Long): AppResult<List<Product>> = safeApiCall {
+        api.getOtherSellers(id).map { it.toDomain() }
+    }
+
+    override suspend fun createReport(targetType: String, targetId: Long, reason: String?): AppResult<com.kazemieh.domain.marketplace.Report> = safeApiCall {
+        api.createReport(com.kazemieh.network.marketplace.dto.request.CreateReportRequest(targetType, targetId, reason)).toDomain()
+    }
+
+    override suspend fun getAdminReports(status: String?): AppResult<List<com.kazemieh.domain.marketplace.Report>> = safeApiCall {
+        api.getAdminReports(status).map { it.toDomain() }
+    }
+
+    override suspend fun resolveReport(id: Long, status: String): AppResult<com.kazemieh.domain.marketplace.Report> = safeApiCall {
+        api.resolveReport(id, status).toDomain()
+    }
+
+    override suspend fun adminCreateRasteh(label: String, colorOklch: String?, iconKey: String?, sortOrder: Int): AppResult<Rasteh> = safeApiCall {
+        api.adminCreateRasteh(com.kazemieh.network.marketplace.dto.request.CreateRastehRequest(label, colorOklch, iconKey, sortOrder)).toDomain()
+    }
+
+    override suspend fun adminCreateLocation(cityId: Long, name: String, kind: String, address: String?, floorCount: Int): AppResult<MarketplaceLocation> = safeApiCall {
+        api.adminCreateLocation(com.kazemieh.network.marketplace.dto.request.CreateLocationRequest(cityId, name, kind, address, floorCount)).toDomain()
+    }
+
+    override suspend fun adminMapLocation(rastehId: Long, locationId: Long): AppResult<Unit> = safeApiCall {
+        api.adminMapLocation(rastehId, locationId)
     }
 
     override suspend fun getMyShopProducts(shopId: Long): AppResult<List<Product>> = safeApiCall {

@@ -23,7 +23,9 @@ interface MarketplaceDataSource {
     suspend fun getShop(id: Long): AppResult<Shop>
     suspend fun getShopsByLocation(locationId: Long, rastehId: Long?): AppResult<List<Shop>>
     suspend fun getProductsByShop(shopId: Long): AppResult<List<Product>>
+    suspend fun getProductsByLocation(locationId: Long): AppResult<List<Product>>
     suspend fun getProduct(id: Long): AppResult<Product>
+    suspend fun getOtherSellers(id: Long): AppResult<List<Product>>
     suspend fun getMyShopProducts(shopId: Long): AppResult<List<Product>>
     suspend fun createProduct(
         shopId: Long, name: String, description: String?, price: Double, oldPrice: Double?,
@@ -44,7 +46,13 @@ interface MarketplaceDataSource {
     suspend fun getOrder(id: Long): AppResult<Order>
     suspend fun getVendorOrders(shopId: Long): AppResult<List<Order>>
     suspend fun updateOrderStatus(id: Long, status: String): AppResult<Order>
+    suspend fun createReport(targetType: String, targetId: Long, reason: String?): AppResult<com.kazemieh.domain.marketplace.Report>
     suspend fun getAdminShops(status: String): AppResult<List<Shop>>
+    suspend fun getAdminReports(status: String?): AppResult<List<com.kazemieh.domain.marketplace.Report>>
+    suspend fun resolveReport(id: Long, status: String): AppResult<com.kazemieh.domain.marketplace.Report>
+    suspend fun adminCreateRasteh(label: String, colorOklch: String?, iconKey: String?, sortOrder: Int): AppResult<Rasteh>
+    suspend fun adminCreateLocation(cityId: Long, name: String, kind: String, address: String?, floorCount: Int): AppResult<MarketplaceLocation>
+    suspend fun adminMapLocation(rastehId: Long, locationId: Long): AppResult<Unit>
     suspend fun approveShop(id: Long): AppResult<Shop>
     suspend fun rejectShop(id: Long): AppResult<Shop>
     suspend fun suspendShop(id: Long): AppResult<Shop>
