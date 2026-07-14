@@ -129,5 +129,14 @@ class ShopDetailViewModel(
         }
     }
 
+    fun reportShop(reason: String?) {
+        viewModelScope.launch {
+            when (repository.createReport("SHOP", shopId, reason)) {
+                is AppResult.Success -> _state.update { it.copy(message = "گزارشِ شما ثبت شد") }
+                else -> _state.update { it.copy(message = "ثبتِ گزارش ناموفق بود") }
+            }
+        }
+    }
+
     fun consumeMessage() = _state.update { it.copy(message = null) }
 }

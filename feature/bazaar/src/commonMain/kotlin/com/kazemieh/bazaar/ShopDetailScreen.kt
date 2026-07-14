@@ -1,6 +1,8 @@
 package com.kazemieh.bazaar
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -59,12 +62,16 @@ import com.kazemieh.common.util.toFaDigits
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.responsiveMaxWidth
 import com.kazemieh.domain.marketplace.Product
+import com.kazemieh.domain.marketplace.Review
 import com.kazemieh.domain.marketplace.Shop
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.compose.viewmodel.koinViewModel
 
+private val SHOP_TABS = listOf("محصولات", "حراجی", "ویترینو", "نظرات", "اطلاعات")
+
 /**
- * صفحهٔ فروشگاه (shopDetail v2): سربرگ + نشان‌کردن + «پیام»/«تماس»/«پیشنهادِ قیمت» + فهرستِ کالاها.
+ * صفحهٔ فروشگاه (shopDetail v3): کاور + بلوکِ هویت + اکشن‌ها + ۵ تب
+ * (محصولات/حراجی/ویترینو/نظرات/اطلاعات).
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -86,14 +93,13 @@ fun ShopDetailScreen(
         }
     }
     LaunchedEffect(state.message) {
-        state.message?.let {
-            snackbar.showSnackbar(it)
-            viewModel.consumeMessage()
-        }
+        state.message?.let { snackbar.showSnackbar(it); viewModel.consumeMessage() }
     }
 
     var showOffer by remember { mutableStateOf(false) }
     var showReview by remember { mutableStateOf(false) }
+    var showReport by remember { mutableStateOf(false) }
+    var tab by remember { mutableStateOf(0) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -102,9 +108,7 @@ fun ShopDetailScreen(
             TopAppBar(
                 title = { Text("فروشگاه", fontSize = FontSize.EXTRA_REGULAR, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
-                    IconButton(onClick = navigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "بازگشت")
-                    }
+                    IconButton(onClick = navigateBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "بازگشت") }
                 },
                 actions = {
                     IconButton(onClick = { viewModel.toggleBookmark() }, enabled = !state.bookmarkBusy) {
@@ -122,42 +126,38 @@ fun ShopDetailScreen(
         Box(modifier = Modifier.fillMaxSize().padding(padding)) {
             when (val shop = state.shop) {
                 is AppResult.Loading -> Center { CircularProgressIndicator() }
-                is AppResult.Error -> Center {
-                    Text("خطا در دریافتِ فروشگاه", color = MaterialTheme.colorScheme.error, fontSize = FontSize.REGULAR)
-                }
+                is AppResult.Error -> Center { Text("خطا در دریافتِ فروشگاه", color = MaterialTheme.colorScheme.error, fontSize = FontSize.REGULAR) }
                 is AppResult.Success -> Content(
                     shop = shop.data,
                     products = state.products,
                     reviews = state.reviews,
+                    tab = tab,
+                    onTab = { tab = it },
                     orderBusyProductId = state.orderBusyProductId,
                     onMessage = { viewModel.startChat(shop.data.name) },
                     onOffer = { showOffer = true },
                     onBuy = { viewModel.quickOrder(it) },
                     onAddReview = { showReview = true },
+                    onReport = { showReport = true },
                 )
             }
         }
     }
 
     if (showOffer) {
-        OfferDialog(
-            submitting = state.offerSubmitting,
-            onDismiss = { showOffer = false },
-            onSubmit = { amount, msg ->
-                viewModel.submitOffer(amount, msg)
-                showOffer = false
-            },
-        )
+        OfferDialog(state.offerSubmitting, onDismiss = { showOffer = false }) { amount, msg ->
+            viewModel.submitOffer(amount, msg); showOffer = false
+        }
     }
     if (showReview) {
-        ReviewDialog(
-            submitting = state.reviewSubmitting,
-            onDismiss = { showReview = false },
-            onSubmit = { rating, comment ->
-                viewModel.submitReview(rating, comment)
-                showReview = false
-            },
-        )
+        ReviewDialog(state.reviewSubmitting, onDismiss = { showReview = false }) { rating, comment ->
+            viewModel.submitReview(rating, comment); showReview = false
+        }
+    }
+    if (showReport) {
+        ReportDialog(onDismiss = { showReport = false }) { reason ->
+            viewModel.reportShop(reason); showReport = false
+        }
     }
 }
 
@@ -165,85 +165,80 @@ fun ShopDetailScreen(
 private fun Content(
     shop: Shop,
     products: AppResult<List<Product>>,
-    reviews: AppResult<List<com.kazemieh.domain.marketplace.Review>>,
+    reviews: AppResult<List<Review>>,
+    tab: Int,
+    onTab: (Int) -> Unit,
     orderBusyProductId: Long?,
     onMessage: () -> Unit,
     onOffer: () -> Unit,
     onBuy: (Product) -> Unit,
     onAddReview: () -> Unit,
+    onReport: () -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize().responsiveMaxWidth(),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        contentPadding = PaddingValues(bottom = 24.dp),
     ) {
         item { ShopHeader(shop = shop, onMessage = onMessage, onOffer = onOffer) }
-        item {
-            Text("کالاها", fontSize = FontSize.EXTRA_REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-        }
-        when (products) {
-            is AppResult.Loading -> item {
-                Box(Modifier.fillMaxWidth().height(80.dp), Alignment.Center) { CircularProgressIndicator() }
-            }
-            is AppResult.Error -> item {
-                Text("خطا در دریافتِ کالاها", color = MaterialTheme.colorScheme.error, fontSize = FontSize.SMALL)
-            }
-            is AppResult.Success -> {
-                if (products.data.isEmpty()) {
-                    item { Text("کالایی ثبت نشده است", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = FontSize.SMALL) }
-                } else {
-                    items(products.data, key = { it.id }) { product ->
-                        ProductCard(
-                            product = product,
-                            buying = orderBusyProductId == product.id,
-                            onBuy = { onBuy(product) },
-                        )
+        item { TabRow(tab = tab, onTab = onTab) }
+
+        when (tab) {
+            0 -> productItems(products, orderBusyProductId, onBuy) { true }
+            1 -> productItems(products, orderBusyProductId, onBuy) { it.oldPrice != null && it.oldPrice > it.price }
+            2 -> productItems(products, orderBusyProductId, onBuy) { !it.purchasable }
+            3 -> {
+                item {
+                    Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Text("نظرات", modifier = Modifier.weight(1f), fontSize = FontSize.EXTRA_REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                        TextButton(onClick = onAddReview) { Text("افزودنِ نظر") }
                     }
                 }
+                reviewItems(reviews)
             }
+            else -> item { InfoTab(shop = shop, onReport = onReport) }
         }
+    }
+}
 
-        // ---- نظرات ----
-        item {
-            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text("نظرات", fontSize = FontSize.EXTRA_REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f))
-                TextButton(onClick = onAddReview) { Text("افزودنِ نظر") }
-            }
-        }
-        when (reviews) {
-            is AppResult.Loading -> item {
-                Box(Modifier.fillMaxWidth().height(60.dp), Alignment.Center) { CircularProgressIndicator() }
-            }
-            is AppResult.Error -> item {
-                Text("خطا در دریافتِ نظرات", color = MaterialTheme.colorScheme.error, fontSize = FontSize.SMALL)
-            }
-            is AppResult.Success -> {
-                if (reviews.data.isEmpty()) {
-                    item { Text("هنوز نظری ثبت نشده است", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = FontSize.SMALL) }
-                } else {
-                    items(reviews.data, key = { "r-${it.id}" }) { review -> ReviewRow(review) }
+private fun androidx.compose.foundation.lazy.LazyListScope.productItems(
+    products: AppResult<List<Product>>,
+    orderBusyProductId: Long?,
+    onBuy: (Product) -> Unit,
+    filter: (Product) -> Boolean,
+) {
+    when (products) {
+        is AppResult.Loading -> item { Box(Modifier.fillMaxWidth().height(80.dp), Alignment.Center) { CircularProgressIndicator() } }
+        is AppResult.Error -> item { PadText("خطا در دریافتِ کالاها") }
+        is AppResult.Success -> {
+            val list = products.data.filter(filter)
+            if (list.isEmpty()) item { PadText("موردی نیست") }
+            else items(list, key = { it.id }) { product ->
+                Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
+                    ProductCard(product = product, buying = orderBusyProductId == product.id, onBuy = { onBuy(product) })
                 }
             }
         }
     }
 }
 
-@Composable
-private fun ReviewRow(review: com.kazemieh.domain.marketplace.Review) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(14.dp),
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(review.authorName ?: "کاربر", fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f))
-            Text("★ ${review.rating.toFaDigits()}", fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.secondary)
-        }
-        review.comment?.let {
-            Spacer(Modifier.height(4.dp))
-            Text(it, fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant)
+private fun androidx.compose.foundation.lazy.LazyListScope.reviewItems(reviews: AppResult<List<Review>>) {
+    when (reviews) {
+        is AppResult.Loading -> item { Box(Modifier.fillMaxWidth().height(60.dp), Alignment.Center) { CircularProgressIndicator() } }
+        is AppResult.Error -> item { PadText("خطا در دریافتِ نظرات") }
+        is AppResult.Success -> {
+            if (reviews.data.isEmpty()) item { PadText("هنوز نظری ثبت نشده است") }
+            else items(reviews.data, key = { "r-${it.id}" }) { review ->
+                Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp).clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.surface).padding(14.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(review.authorName ?: "کاربر", modifier = Modifier.weight(1f), fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                        Text("★ ${review.rating.toFaDigits()}", fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.secondary)
+                    }
+                    review.comment?.let {
+                        Spacer(Modifier.height(4.dp))
+                        Text(it, fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                }
+            }
         }
     }
 }
@@ -251,130 +246,121 @@ private fun ReviewRow(review: com.kazemieh.domain.marketplace.Review) {
 @Composable
 private fun ShopHeader(shop: Shop, onMessage: () -> Unit, onOffer: () -> Unit) {
     var showPhone by remember { mutableStateOf(false) }
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(16.dp),
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(
-                modifier = Modifier.size(64.dp).clip(RoundedCornerShape(16.dp)).background(MaterialTheme.colorScheme.primaryContainer),
-                contentAlignment = Alignment.Center,
-            ) { Text(shop.emoji ?: "🏬", fontSize = FontSize.EXTRA_MEDIUM) }
-            Spacer(Modifier.size(14.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(shop.name, fontSize = FontSize.MEDIUM, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-                    if (shop.verified) {
-                        Spacer(Modifier.size(6.dp))
-                        Text("✔", fontSize = FontSize.REGULAR, color = MaterialTheme.colorScheme.primary)
+    Column {
+        // کاور رنگی
+        Box(modifier = Modifier.fillMaxWidth().height(110.dp).background(MaterialTheme.colorScheme.primaryContainer))
+        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier.size(64.dp).clip(RoundedCornerShape(16.dp)).background(MaterialTheme.colorScheme.surface),
+                    contentAlignment = Alignment.Center,
+                ) { Text(shop.emoji ?: "🏬", fontSize = FontSize.EXTRA_MEDIUM) }
+                Spacer(Modifier.size(14.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(shop.name, fontSize = FontSize.MEDIUM, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                        if (shop.verified) { Spacer(Modifier.size(6.dp)); Text("✔", fontSize = FontSize.REGULAR, color = MaterialTheme.colorScheme.primary) }
+                    }
+                    val loc = listOfNotNull(shop.rastehLabel, shop.locationName, shop.floor).joinToString(" · ")
+                    if (loc.isNotBlank()) { Spacer(Modifier.height(4.dp)); Text(loc, fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    Spacer(Modifier.height(2.dp))
+                    Text("★ ${shop.rating.toString().toFaDigits()} · ${shop.reviewsCount.toFaDigits()} نظر", fontSize = FontSize.EXTRA_SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+            Spacer(Modifier.height(14.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                if (shop.hasChat) {
+                    Button(onClick = onMessage, modifier = Modifier.weight(1f), shape = RoundedCornerShape(11.dp)) {
+                        Icon(Icons.AutoMirrored.Filled.Message, contentDescription = null, modifier = Modifier.size(16.dp))
+                        Spacer(Modifier.size(8.dp)); Text("پیام به فروشگاه")
                     }
                 }
-                Spacer(Modifier.height(4.dp))
-                val loc = listOfNotNull(shop.rastehLabel, shop.locationName, shop.floor).joinToString(" · ")
-                if (loc.isNotBlank()) Text(loc, fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Spacer(Modifier.height(2.dp))
-                Text(
-                    "★ ${shop.rating.toString().toFaDigits()} · ${shop.reviewsCount.toFaDigits()} نظر",
-                    fontSize = FontSize.EXTRA_SMALL,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-
-        shop.about?.let {
-            Spacer(Modifier.height(12.dp))
-            Text(it, fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
-
-        Spacer(Modifier.height(14.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            if (shop.hasChat) {
-                Button(onClick = onMessage, modifier = Modifier.weight(1f), shape = RoundedCornerShape(12.dp)) {
-                    Icon(Icons.AutoMirrored.Filled.Message, contentDescription = null, modifier = Modifier.size(16.dp))
-                    Spacer(Modifier.size(8.dp))
-                    Text("پیام")
+                OutlinedButton(onClick = { showPhone = true }, modifier = Modifier.weight(1f), shape = RoundedCornerShape(11.dp)) {
+                    Icon(Icons.Default.Call, contentDescription = null, modifier = Modifier.size(16.dp)); Spacer(Modifier.size(8.dp)); Text("تماس")
                 }
             }
-            OutlinedButton(onClick = { showPhone = true }, modifier = Modifier.weight(1f), shape = RoundedCornerShape(12.dp)) {
-                Icon(Icons.Default.Call, contentDescription = null, modifier = Modifier.size(16.dp))
-                Spacer(Modifier.size(8.dp))
-                Text("تماس")
+            if (shop.acceptsOffers) {
+                Spacer(Modifier.height(10.dp))
+                OutlinedButton(onClick = onOffer, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(11.dp)) {
+                    Icon(Icons.Default.Sell, contentDescription = null, modifier = Modifier.size(16.dp)); Spacer(Modifier.size(8.dp)); Text("پیشنهادِ قیمت")
+                }
+            }
+            if (showPhone) {
+                Spacer(Modifier.height(10.dp))
+                Text(shop.phone?.let { "شمارهٔ تماس: ${it.toFaDigits()}" } ?: "شماره‌ای ثبت نشده است", fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onSurface)
             }
         }
-        if (shop.acceptsOffers) {
-            Spacer(Modifier.height(10.dp))
-            OutlinedButton(onClick = onOffer, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp)) {
-                Icon(Icons.Default.Sell, contentDescription = null, modifier = Modifier.size(16.dp))
-                Spacer(Modifier.size(8.dp))
-                Text("پیشنهادِ قیمت")
+    }
+}
+
+@Composable
+private fun TabRow(tab: Int, onTab: (Int) -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 6.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        SHOP_TABS.forEachIndexed { i, title ->
+            val sel = i == tab
+            Box(
+                modifier = Modifier.clip(RoundedCornerShape(10.dp))
+                    .background(if (sel) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant)
+                    .clickable { onTab(i) }.padding(horizontal = 16.dp, vertical = 8.dp),
+            ) {
+                Text(title, fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = if (sel) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-        if (showPhone) {
-            Spacer(Modifier.height(10.dp))
-            Text(
-                text = shop.phone?.let { "شمارهٔ تماس: ${it.toFaDigits()}" } ?: "شماره‌ای ثبت نشده است",
-                fontSize = FontSize.SMALL,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
+    }
+}
+
+@Composable
+private fun InfoTab(shop: Shop, onReport: () -> Unit) {
+    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+        shop.about?.let { InfoRow("درباره", it) }
+        shop.workingHoursJson?.let { InfoRow("ساعاتِ کاری", it) }
+        shop.address?.let { InfoRow("آدرس", it) }
+        shop.phone?.let { InfoRow("تلفن", it.toFaDigits()) }
+        Spacer(Modifier.height(12.dp))
+        OutlinedButton(onClick = onReport, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(11.dp)) {
+            Text("گزارشِ تخلف", color = MaterialTheme.colorScheme.error)
         }
+    }
+}
+
+@Composable
+private fun InfoRow(label: String, value: String) {
+    Column(modifier = Modifier.padding(vertical = 6.dp)) {
+        Text(label, fontSize = FontSize.EXTRA_SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Spacer(Modifier.height(2.dp))
+        Text(value, fontSize = FontSize.REGULAR, color = MaterialTheme.colorScheme.onSurface)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun OfferDialog(
-    submitting: Boolean,
-    onDismiss: () -> Unit,
-    onSubmit: (amount: Double, message: String?) -> Unit,
-) {
+private fun OfferDialog(submitting: Boolean, onDismiss: () -> Unit, onSubmit: (Double, String?) -> Unit) {
     var amount by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
     val amountValue = amount.toDoubleOrNull()
-
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("پیشنهادِ قیمت", fontWeight = FontWeight.Bold) },
         text = {
             Column {
-                TextField(
-                    value = amount,
-                    onValueChange = { amount = it.filter { c -> c.isDigit() } },
-                    placeholder = { Text("مبلغِ پیشنهادی (تومان)") },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                )
+                TextField(value = amount, onValueChange = { amount = it.filter { c -> c.isDigit() } }, placeholder = { Text("مبلغِ پیشنهادی (تومان)") }, singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
                 Spacer(Modifier.height(10.dp))
-                TextField(
-                    value = message,
-                    onValueChange = { message = it },
-                    placeholder = { Text("توضیح (اختیاری)") },
-                )
+                TextField(value = message, onValueChange = { message = it }, placeholder = { Text("توضیح (اختیاری)") })
             }
         },
-        confirmButton = {
-            TextButton(
-                onClick = { amountValue?.let { onSubmit(it, message.ifBlank { null }) } },
-                enabled = !submitting && amountValue != null && amountValue > 0,
-            ) { Text("ثبتِ پیشنهاد") }
-        },
+        confirmButton = { TextButton(onClick = { amountValue?.let { onSubmit(it, message.ifBlank { null }) } }, enabled = !submitting && amountValue != null && amountValue > 0) { Text("ثبتِ پیشنهاد") } },
         dismissButton = { TextButton(onClick = onDismiss) { Text("انصراف") } },
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ReviewDialog(
-    submitting: Boolean,
-    onDismiss: () -> Unit,
-    onSubmit: (rating: Int, comment: String?) -> Unit,
-) {
+private fun ReviewDialog(submitting: Boolean, onDismiss: () -> Unit, onSubmit: (Int, String?) -> Unit) {
     var rating by remember { mutableStateOf(5) }
     var comment by remember { mutableStateOf("") }
-
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("ثبتِ نظر", fontWeight = FontWeight.Bold) },
@@ -383,29 +369,35 @@ private fun ReviewDialog(
                 Row {
                     (1..5).forEach { star ->
                         IconButton(onClick = { rating = star }) {
-                            Icon(
-                                if (star <= rating) Icons.Default.Star else Icons.Default.StarBorder,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.secondary,
-                            )
+                            Icon(if (star <= rating) Icons.Default.Star else Icons.Default.StarBorder, contentDescription = null, tint = MaterialTheme.colorScheme.secondary)
                         }
                     }
                 }
                 Spacer(Modifier.height(8.dp))
-                TextField(
-                    value = comment,
-                    onValueChange = { comment = it },
-                    placeholder = { Text("توضیح (اختیاری)") },
-                )
+                TextField(value = comment, onValueChange = { comment = it }, placeholder = { Text("توضیح (اختیاری)") })
             }
         },
-        confirmButton = {
-            TextButton(onClick = { onSubmit(rating, comment.ifBlank { null }) }, enabled = !submitting) {
-                Text("ثبت")
-            }
-        },
+        confirmButton = { TextButton(onClick = { onSubmit(rating, comment.ifBlank { null }) }, enabled = !submitting) { Text("ثبت") } },
         dismissButton = { TextButton(onClick = onDismiss) { Text("انصراف") } },
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ReportDialog(onDismiss: () -> Unit, onSubmit: (String?) -> Unit) {
+    var reason by remember { mutableStateOf("") }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("گزارشِ تخلف", fontWeight = FontWeight.Bold) },
+        text = { TextField(value = reason, onValueChange = { reason = it }, placeholder = { Text("علتِ گزارش") }) },
+        confirmButton = { TextButton(onClick = { onSubmit(reason.ifBlank { null }) }) { Text("ارسال") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("انصراف") } },
+    )
+}
+
+@Composable
+private fun PadText(text: String) {
+    Text(text, modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = FontSize.SMALL)
 }
 
 @Composable
