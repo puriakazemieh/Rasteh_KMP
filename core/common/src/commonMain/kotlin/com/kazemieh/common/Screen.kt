@@ -38,6 +38,12 @@ sealed class Screen {
     data object AdminShops : Screen()
 
     @Serializable
+    data object VendorPanel : Screen()
+
+    @Serializable
+    data object AdminManage : Screen()
+
+    @Serializable
     data class ShopDetail(val shopId: Long) : Screen()
 
     @Serializable

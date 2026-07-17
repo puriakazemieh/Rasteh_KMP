@@ -27,8 +27,10 @@ import com.kazemieh.common.AuthState
 import com.kazemieh.common.PaymentEventBus
 import com.kazemieh.common.Screen
 import com.kazemieh.common.TokenExpiredEventBus
+import com.kazemieh.bazaar.AdminManageScreen
 import com.kazemieh.bazaar.AdminShopsScreen
 import com.kazemieh.bazaar.BecomeVendorScreen
+import com.kazemieh.bazaar.VendorPanelScreen
 import com.kazemieh.bazaar.BookmarksScreen
 import com.kazemieh.bazaar.ChatListScreen
 import com.kazemieh.bazaar.ChatThreadScreen
@@ -188,6 +190,12 @@ fun AppNavHost(
                 navigateToNotifications = {
                     navController.navigate(Screen.Notifications)
                 },
+                navigateToVendorPanel = {
+                    navController.navigate(Screen.VendorPanel)
+                },
+                navigateToAdminManage = {
+                    navController.navigate(Screen.AdminManage)
+                },
             )
         }
 
@@ -275,6 +283,17 @@ fun AppNavHost(
                 navigateBack = { navController.navigateBack() },
                 navigateToShop = { shopId -> navController.navigate(Screen.ShopDetail(shopId)) },
             )
+        }
+
+        composable<Screen.VendorPanel> {
+            VendorPanelScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToBecomeVendor = { navController.navigate(Screen.BecomeVendor) },
+            )
+        }
+
+        composable<Screen.AdminManage> {
+            AdminManageScreen(navigateBack = { navController.navigateBack() })
         }
 
         composable<Screen.ChatThread> {

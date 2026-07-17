@@ -67,6 +67,8 @@ fun MoreScreen(
     onGiftCardsClick: () -> Unit = {},
     onCommunityClick: () -> Unit = {},
     onNotificationsClick: () -> Unit = {},
+    onVendorPanelClick: () -> Unit = {},
+    onAdminManageClick: () -> Unit = {},
 ) {
     val features = com.kazemieh.designsystem.brand.LocalBrand.current.features
     Column(
@@ -95,6 +97,22 @@ fun MoreScreen(
                 title = "تأییدِ فروشندگان",
                 subtitle = "بررسی و تأییدِ درخواست‌های فروشگاه",
                 onClick = onAdminShopsClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+            AccountRow(
+                title = "مدیریتِ بازارچه",
+                subtitle = "راسته/محل و رسیدگی به گزارش‌ها",
+                onClick = onAdminManageClick
+            ) { AccountIcon(vector = Icons.Default.Star) }
+            Spacer(Modifier.height(12.dp))
+        }
+
+        // ---- پنلِ فروشنده (کاربرِ واردشده) ----
+        if (isLoggedIn) {
+            AccountRow(
+                title = "پنلِ فروشنده",
+                subtitle = "داشبورد، محصولات، سفارش‌ها و پیشنهادها",
+                onClick = onVendorPanelClick
             ) { AccountIcon(vector = Icons.Default.Star) }
             Spacer(Modifier.height(12.dp))
         }
