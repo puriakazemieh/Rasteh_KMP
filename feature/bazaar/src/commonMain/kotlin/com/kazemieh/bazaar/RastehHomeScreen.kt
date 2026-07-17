@@ -39,6 +39,7 @@ import com.kazemieh.bazaar.component.ProductCard
 import com.kazemieh.bazaar.component.RastehCard
 import com.kazemieh.bazaar.component.ShopCard
 import com.kazemieh.common.AppResult
+import com.kazemieh.common.util.toFaPrice
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.domain.interaction.Bookmark
 import com.kazemieh.domain.marketplace.Product
@@ -133,6 +134,22 @@ fun RastehHomeScreen(
                 ) {
                     items(shopBookmarks, key = { "bm-${it.id}" }) { bm ->
                         BookmarkChip(bm = bm, onClick = { bm.shopId?.let(navigateToShop) })
+                    }
+                }
+            }
+        }
+
+        // به‌تازگی دیده‌شده (محلی)
+        if (state.recentProducts.isNotEmpty()) {
+            item {
+                SectionTitle("به‌تازگی دیده‌شده")
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    items(state.recentProducts, key = { "rv-${it.id}" }) { product ->
+                        RecentlyViewedChip(product = product, onClick = { navigateToProduct(product.id) })
                     }
                 }
             }
@@ -255,6 +272,33 @@ private fun BookmarkChip(bm: Bookmark, onClick: () -> Unit) {
             text = bm.shopName ?: "فروشگاه",
             fontSize = FontSize.EXTRA_SMALL,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+        )
+    }
+}
+
+@Composable
+private fun RecentlyViewedChip(product: Product, onClick: () -> Unit) {
+    Column(
+        modifier = Modifier.width(96.dp).clickable(onClick = onClick),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Box(
+            modifier = Modifier.size(80.dp).clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.primaryContainer),
+            contentAlignment = Alignment.Center,
+        ) { Text(product.emoji ?: "🛍️", fontSize = FontSize.MEDIUM) }
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = product.name,
+            fontSize = FontSize.EXTRA_SMALL,
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 1,
+        )
+        Text(
+            text = "${product.price.toLong().toFaPrice()} تومان",
+            fontSize = FontSize.EXTRA_SMALL,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
             maxLines = 1,
         )
     }

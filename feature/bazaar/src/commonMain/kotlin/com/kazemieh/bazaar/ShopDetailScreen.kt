@@ -250,6 +250,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.reviewItems(reviews: 
 @Composable
 private fun ShopHeader(shop: Shop, onMessage: () -> Unit, onOffer: () -> Unit) {
     var showPhone by remember { mutableStateOf(false) }
+    val dial = com.kazemieh.bazaar.util.rememberPhoneDialer()
     Column {
         // کاور رنگی
         Box(modifier = Modifier.fillMaxWidth().height(110.dp).background(MaterialTheme.colorScheme.primaryContainer))
@@ -279,7 +280,14 @@ private fun ShopHeader(shop: Shop, onMessage: () -> Unit, onOffer: () -> Unit) {
                         Spacer(Modifier.size(8.dp)); Text("پیام به فروشگاه")
                     }
                 }
-                OutlinedButton(onClick = { showPhone = true }, modifier = Modifier.weight(1f), shape = RoundedCornerShape(11.dp)) {
+                OutlinedButton(
+                    onClick = {
+                        showPhone = true
+                        shop.phone?.let { dial(it) }
+                    },
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(11.dp),
+                ) {
                     Icon(Icons.Default.Call, contentDescription = null, modifier = Modifier.size(16.dp)); Spacer(Modifier.size(8.dp)); Text("تماس")
                 }
             }

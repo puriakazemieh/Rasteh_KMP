@@ -6,9 +6,11 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.domain.interaction.InteractionRepository
 import com.kazemieh.domain.marketplace.MarketplaceRepository
 import com.kazemieh.domain.marketplace.Rasteh
+import com.kazemieh.domain.marketplace.RecentlyViewedMarketRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -16,6 +18,7 @@ import kotlinx.coroutines.launch
 class RastehHomeViewModel(
     private val repository: MarketplaceRepository,
     private val interaction: InteractionRepository,
+    private val recentlyViewed: RecentlyViewedMarketRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(RastehHomeState())
@@ -28,6 +31,15 @@ class RastehHomeViewModel(
         loadRastehs()
         loadNewest()
         loadBookmarks()
+        observeRecentlyViewed()
+    }
+
+    private fun observeRecentlyViewed() {
+        viewModelScope.launch {
+            recentlyViewed.observe().collectLatest { list ->
+                _state.update { it.copy(recentProducts = list) }
+            }
+        }
     }
 
     fun handleIntent(intent: RastehHomeIntent) {

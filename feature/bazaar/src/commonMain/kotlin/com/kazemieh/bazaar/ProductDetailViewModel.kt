@@ -6,6 +6,7 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.domain.interaction.InteractionRepository
 import com.kazemieh.domain.marketplace.MarketplaceRepository
 import com.kazemieh.domain.marketplace.Product
+import com.kazemieh.domain.marketplace.RecentlyViewedMarketRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,6 +28,7 @@ sealed interface ProductDetailEffect {
 class ProductDetailViewModel(
     private val repository: MarketplaceRepository,
     private val interaction: InteractionRepository,
+    private val recentlyViewed: RecentlyViewedMarketRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProductDetailState())
@@ -43,7 +45,10 @@ class ProductDetailViewModel(
         loaded = true
         viewModelScope.launch {
             val res = repository.getProduct(productId)
-            if (res is AppResult.Success) shopId = res.data.shopId ?: 0
+            if (res is AppResult.Success) {
+                shopId = res.data.shopId ?: 0
+                recentlyViewed.add(res.data)
+            }
             _state.update { it.copy(product = res) }
         }
         viewModelScope.launch {

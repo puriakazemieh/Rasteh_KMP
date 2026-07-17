@@ -4,7 +4,7 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val bazaarModule = module {
-    viewModel { RastehHomeViewModel(repository = get(), interaction = get()) }
+    viewModel { RastehHomeViewModel(repository = get(), interaction = get(), recentlyViewed = get()) }
     viewModel { BecomeVendorViewModel(repository = get()) }
     viewModel { AdminShopsViewModel(repository = get()) }
     viewModel { RastehSearchViewModel(repository = get()) }
@@ -19,7 +19,7 @@ val bazaarModule = module {
     viewModel { GiftCardsViewModel(repository = get()) }
     viewModel { CommunityViewModel(repository = get()) }
     viewModel { NotificationsViewModel(repository = get()) }
-    viewModel { ProductDetailViewModel(repository = get(), interaction = get()) }
+    viewModel { ProductDetailViewModel(repository = get(), interaction = get(), recentlyViewed = get()) }
     viewModel { CompareViewModel(repository = get()) }
     viewModel { VendorPanelViewModel(repository = get(), interaction = get(), advanced = get()) }
     viewModel { AdminManageViewModel(repository = get()) }

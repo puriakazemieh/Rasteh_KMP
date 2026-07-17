@@ -75,6 +75,7 @@ fun ProductDetailScreen(
 ) {
     LaunchedEffect(productId) { viewModel.load(productId) }
     val state by viewModel.state.collectAsState()
+    val dial = com.kazemieh.bazaar.util.rememberPhoneDialer()
     val snackbar = remember { SnackbarHostState() }
     var showOffer by remember { mutableStateOf(false) }
     var showReport by remember { mutableStateOf(false) }
@@ -143,7 +144,17 @@ fun ProductDetailScreen(
                                 }
                             }
                         }
-                        StickyBar(product = product, busy = state.busy, onBuy = { viewModel.buy(product) }, onOffer = { showOffer = true }, onChat = { viewModel.startChat(product.shopName ?: "فروشگاه") })
+                        StickyBar(
+                            product = product,
+                            busy = state.busy,
+                            onBuy = { viewModel.buy(product) },
+                            onOffer = { showOffer = true },
+                            onChat = { viewModel.startChat(product.shopName ?: "فروشگاه") },
+                            onCall = {
+                                val phone = product.shopPhone
+                                if (!phone.isNullOrBlank()) dial(phone) else product.shopId?.let(navigateToShop)
+                            },
+                        )
                     }
                 }
             }
@@ -210,7 +221,7 @@ private fun OtherSellerRow(seller: Product, cheapest: Boolean, onClick: () -> Un
 }
 
 @Composable
-private fun StickyBar(product: Product, busy: Boolean, onBuy: () -> Unit, onOffer: () -> Unit, onChat: () -> Unit) {
+private fun StickyBar(product: Product, busy: Boolean, onBuy: () -> Unit, onOffer: () -> Unit, onChat: () -> Unit, onCall: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surface).padding(12.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -228,7 +239,7 @@ private fun StickyBar(product: Product, busy: Boolean, onBuy: () -> Unit, onOffe
             Button(onClick = onChat, modifier = Modifier.weight(1f), shape = RoundedCornerShape(11.dp)) {
                 Icon(Icons.AutoMirrored.Filled.Message, contentDescription = null, modifier = Modifier.size(16.dp)); Spacer(Modifier.size(8.dp)); Text("چت با فروشگاه")
             }
-            OutlinedButton(onClick = {}, shape = RoundedCornerShape(11.dp)) {
+            OutlinedButton(onClick = onCall, shape = RoundedCornerShape(11.dp)) {
                 Icon(Icons.Default.Call, contentDescription = null, modifier = Modifier.size(16.dp)); Spacer(Modifier.size(6.dp)); Text("تماس")
             }
         }

@@ -19,6 +19,7 @@ data class RastehHomeState(
     val homeTab: HomeTab = HomeTab.SHOPS,
     val newestShops: AppResult<List<Shop>> = AppResult.Loading,
     val newestProducts: AppResult<List<Product>> = AppResult.Loading,
+    val recentProducts: List<Product> = emptyList(),
     val bookmarks: List<Bookmark> = emptyList(),
     // باتم‌شیتِ انتخابِ محل برای راستهٔ انتخاب‌شده
     val sheetRasteh: Rasteh? = null,

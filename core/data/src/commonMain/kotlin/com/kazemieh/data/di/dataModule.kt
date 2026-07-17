@@ -12,6 +12,8 @@ import com.kazemieh.domain.order.OrderRepository
 import com.kazemieh.domain.payment.PaymentRepository
 import com.kazemieh.domain.address.AddressRepository
 import com.kazemieh.domain.marketplace.MarketplaceRepository
+import com.kazemieh.domain.marketplace.RecentlyViewedMarketRepository
+import com.kazemieh.data.marketplace.RecentlyViewedMarketRepositoryImpl
 import com.kazemieh.data.marketplace.repository.MarketplaceRepositoryImpl
 import com.kazemieh.data.marketplace.source.MarketplaceDataSource
 import com.kazemieh.data.marketplace.source.MarketplaceDataSourceImpl
@@ -178,6 +180,10 @@ val dataModule = module {
 
     single<MarketplaceDataSource> {
         MarketplaceDataSourceImpl(get())
+    }
+
+    single<RecentlyViewedMarketRepository> {
+        RecentlyViewedMarketRepositoryImpl(get())
     }
 
     single<InteractionRepository> {

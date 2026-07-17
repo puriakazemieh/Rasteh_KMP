@@ -75,6 +75,7 @@ fun ProductResponse.toDomain() = Product(
     id = id,
     shopId = shopId,
     shopName = shopName,
+    shopPhone = shopPhone,
     name = name,
     description = description,
     price = price,
