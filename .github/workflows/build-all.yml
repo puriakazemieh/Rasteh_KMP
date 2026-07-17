@@ -1,0 +1,232 @@
+name: Build All (server + clients)
+
+# One-click builds of the whole Rasteh stack. Run it from the Actions tab
+# (Run workflow), tick what you want, then download the artifacts from the
+# finished run. Every job is independent and always uploads whatever it
+# produced, so a failure in one target still surfaces its logs without
+# blocking the others.
+#
+#   - server  : Spring Boot bootJar (runnable with `java -jar`).
+#   - android : debug APK.
+#   - desktop : runnable uber-jar for the runner OS (Linux) — `java -jar …`.
+#   - web     : Compose/JS static site, zipped.
+#   - ios     : shared ComposeApp framework (device + simulator) and a
+#               best-effort unsigned simulator .app build of iosApp.
+#
+# The optional `base_url` input is baked into the CLIENT builds so the app
+# talks to that backend with no source edits (e.g. a serve-live tunnel URL,
+# your Liara server, etc.). Empty = leave each platform's default in code.
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'API base URL baked into the client builds (e.g. https://xxxx.trycloudflare.com/). Empty = code default.'
+        type: string
+        default: ''
+      server_ref:
+        description: 'Branch/ref of the server repo to build & run'
+        type: string
+        default: develop
+      server:
+        description: 'Build the Spring Boot server (bootJar)'
+        type: boolean
+        default: true
+      android:
+        description: 'Build Android debug APK'
+        type: boolean
+        default: true
+      desktop:
+        description: 'Build Desktop uber-jar'
+        type: boolean
+        default: true
+      web:
+        description: 'Build Compose-Web (zip)'
+        type: boolean
+        default: true
+      ios:
+        description: 'Build iOS framework + simulator app (macOS runner)'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  # ---------------------------------------------------------------- server
+  server:
+    if: ${{ inputs.server }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Checkout server
+        uses: actions/checkout@v4
+        with:
+          repository: puriakazemieh/Rasteh_Kotlin_Spring_Boot
+          ref: ${{ inputs.server_ref }}
+          # A PAT is only needed if the server repo is private. Add it as a
+          # secret named CROSS_REPO_TOKEN; otherwise the run token is used.
+          token: ${{ secrets.CROSS_REPO_TOKEN || github.token }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build server bootJar
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon --stacktrace bootJar
+          mkdir -p out
+          cp "$(find build/libs -name '*.jar' ! -name '*-plain.jar' | head -1)" out/rasteh-server.jar
+          ls -la out
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: server-jar
+          path: out/*.jar
+          if-no-files-found: warn
+
+  # --------------------------------------------------------------- android
+  android:
+    needs: server
+    if: ${{ always() && inputs.android }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Bake API base URL (android)
+        run: |
+          BASE="${{ inputs.base_url }}"
+          [ -n "$BASE" ] && bash .github/scripts/bake-base-url.sh androidMain "$BASE" || echo "no base_url — keeping code default"
+      - name: Build debug APK
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon --stacktrace :composeApp:assembleDebug
+      - name: Collect APKs
+        if: always()
+        run: |
+          mkdir -p out
+          find composeApp/build/outputs/apk -name '*.apk' -exec cp {} out/ \; 2>/dev/null || true
+          ls -la out || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: android-apk
+          path: out/*.apk
+          if-no-files-found: warn
+
+  # --------------------------------------------------------------- desktop
+  desktop:
+    needs: server
+    if: ${{ always() && inputs.desktop }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Bake API base URL (desktop)
+        run: |
+          BASE="${{ inputs.base_url }}"
+          [ -n "$BASE" ] && bash .github/scripts/bake-base-url.sh jvmMain "$BASE" || echo "no base_url — keeping code default"
+      - name: Build desktop uber-jar
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon --stacktrace :composeApp:packageUberJarForCurrentOS
+      - name: Collect jar
+        if: always()
+        run: |
+          mkdir -p out
+          find composeApp/build/compose/jars -name '*.jar' -exec cp {} out/ \; 2>/dev/null || true
+          ls -la out || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: desktop-jar
+          path: out/*.jar
+          if-no-files-found: warn
+
+  # ------------------------------------------------------------------- web
+  web:
+    needs: server
+    if: ${{ always() && inputs.web }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Bake API base URL (web)
+        run: |
+          BASE="${{ inputs.base_url }}"
+          [ -n "$BASE" ] && bash .github/scripts/bake-base-url.sh jsMain "$BASE" || echo "no base_url — keeping code default"
+      - name: Build Compose-Web
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon --stacktrace :composeApp:jsBrowserDistribution
+      - name: Zip web dist
+        if: always()
+        run: |
+          DIST=composeApp/build/dist/js/productionExecutable
+          if [ -d "$DIST" ]; then (cd "$DIST" && zip -rq "$GITHUB_WORKSPACE/rasteh-web.zip" .); fi
+          ls -la rasteh-web.zip || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: web-dist
+          path: rasteh-web.zip
+          if-no-files-found: warn
+
+  # ------------------------------------------------------------------- ios
+  ios:
+    needs: server
+    if: ${{ always() && inputs.ios }}
+    runs-on: macos-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Bake API base URL (ios)
+        run: |
+          BASE="${{ inputs.base_url }}"
+          [ -n "$BASE" ] && bash .github/scripts/bake-base-url.sh iosMain "$BASE" || echo "no base_url — keeping code default"
+      - name: Build shared ComposeApp framework
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon --stacktrace \
+            :composeApp:linkDebugFrameworkIosSimulatorArm64 \
+            :composeApp:linkDebugFrameworkIosArm64
+      - name: Build unsigned simulator app (best effort)
+        continue-on-error: true
+        run: |
+          xcodebuild -project iosApp/iosApp.xcodeproj -scheme iosApp \
+            -sdk iphonesimulator -configuration Debug \
+            -derivedDataPath build/ddata \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build
+      - name: Collect iOS outputs
+        if: always()
+        run: |
+          mkdir -p out
+          find composeApp/build/bin -type d -name '*.framework' -exec cp -R {} out/ \; 2>/dev/null || true
+          find build/ddata -type d -name 'iosApp.app' -exec cp -R {} out/ \; 2>/dev/null || true
+          ls -la out || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ios-framework
+          path: out/**
+          if-no-files-found: warn

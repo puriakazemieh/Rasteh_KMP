@@ -1,0 +1,194 @@
+name: Serve Live (server + web)
+
+# One-click live test environment for Rasteh:
+#   1. builds & runs the Spring Boot server + PostgreSQL,
+#   2. exposes the API on a free Cloudflare tunnel (a public URL),
+#   3. builds the Compose-Web app with that API URL baked in,
+#   4. serves the web on a second tunnel,
+#   5. prints one FINAL LINK you can open to use the app against the live API.
+#
+# Everything is temporary: it lives only while the job runs (the minutes you
+# choose, max 350) and the URLs change every run. The live URLs are also
+# pushed to the `claude/live-url` branch so you can read them the moment the
+# tunnels are up — long before the web build finishes.
+on:
+  workflow_dispatch:
+    inputs:
+      minutes:
+        description: 'How long to keep everything up (minutes, max 350)'
+        type: string
+        default: '90'
+      server_ref:
+        description: 'Branch/ref of the server repo to run'
+        type: string
+        default: develop
+      seed_enabled:
+        description: 'Seed demo data on the server'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: rastehdb
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d rastehdb" --health-interval=10s
+          --health-timeout=5s --health-retries=10
+    steps:
+      - name: Checkout app (KMP)
+        uses: actions/checkout@v4
+      - name: Checkout server
+        uses: actions/checkout@v4
+        with:
+          repository: puriakazemieh/Rasteh_Kotlin_Spring_Boot
+          ref: ${{ inputs.server_ref }}
+          path: server
+          token: ${{ secrets.CROSS_REPO_TOKEN || github.token }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build server jar
+        run: |
+          cd server
+          chmod +x gradlew
+          ./gradlew --no-daemon --stacktrace bootJar
+          cp "$(find build/libs -name '*.jar' ! -name '*-plain.jar' | head -1)" "$GITHUB_WORKSPACE/app.jar"
+
+      - name: Start Cloudflare tunnels
+        run: |
+          curl -fsSL https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o cloudflared
+          chmod +x cloudflared
+          grab() { for i in $(seq 1 40); do U=$(grep -oE 'https://[a-z0-9-]+\.trycloudflare\.com' "$1" | head -1 || true); [ -n "$U" ] && { echo "$U"; return; }; sleep 2; done; }
+          ./cloudflared tunnel --no-autoupdate --url http://localhost:8080 > api-tunnel.log 2>&1 &
+          ./cloudflared tunnel --no-autoupdate --url http://localhost:8090 > web-tunnel.log 2>&1 &
+          API_URL="$(grab api-tunnel.log)"
+          WEB_URL="$(grab web-tunnel.log)"
+          echo "API_URL=$API_URL" >> "$GITHUB_ENV"
+          echo "WEB_URL=$WEB_URL" >> "$GITHUB_ENV"
+          echo "api=$API_URL  web=$WEB_URL"
+
+      - name: Publish tunnel URLs to claude/live-url
+        run: |
+          RUN="${GITHUB_RUN_ID}"
+          {
+            echo "run_id: $RUN"
+            echo "api_url: ${API_URL}/"
+            echo "web_url: ${WEB_URL}"
+            echo "swagger: ${API_URL}/api/swagger-ui.html"
+            echo "status: tunnels-up-web-building"
+            echo "updated: $(date -u +%FT%TZ)"
+          } > live-url.txt
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan live-url-tmp
+          git rm -rf --cached . >/dev/null 2>&1 || true
+          git add -f live-url.txt
+          git commit -q -m "live urls (run $RUN)"
+          git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:refs/heads/claude/live-url
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Start server (CORS allows the web tunnel)
+        env:
+          DATASOURCE_URL: jdbc:postgresql://localhost:5432/rastehdb
+          DATASOURCE_USERNAME: postgres
+          DATASOURCE_PASSWORD: postgres
+          SERVER_PORT: '8080'
+        run: |
+          SEED="${{ inputs.seed_enabled }}"
+          APP_CORS_ORIGINS="$WEB_URL" FRONTEND_URL="$WEB_URL" NGROK_URL="$API_URL" SEED_ENABLED="$SEED" \
+            nohup java -jar app.jar > server.log 2>&1 &
+          echo "waiting for server…"
+          for i in $(seq 1 80); do
+            if curl -sSf http://localhost:8080/api/rastehs >/dev/null 2>&1 || curl -sSf http://localhost:8080/ >/dev/null 2>&1; then echo "server up"; break; fi
+            sleep 3
+          done
+          tail -40 server.log || true
+
+      - name: Mark API live on the branch
+        run: |
+          {
+            echo "run_id: ${GITHUB_RUN_ID}"
+            echo "api_url: ${API_URL}/"
+            echo "web_url: ${WEB_URL}"
+            echo "swagger: ${API_URL}/api/swagger-ui.html"
+            echo "status: api-live-web-building"
+            echo "updated: $(date -u +%FT%TZ)"
+          } > live-url.txt
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan live-url-tmp2
+          git rm -rf --cached . >/dev/null 2>&1 || true
+          git add -f live-url.txt
+          git commit -q -m "api live (run ${GITHUB_RUN_ID})"
+          git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:refs/heads/claude/live-url
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Compose-Web (pointed at the live API)
+        run: |
+          chmod +x gradlew
+          # bake the API tunnel URL into the JS platform config, then build
+          bash .github/scripts/bake-base-url.sh jsMain "${API_URL}/"
+          ./gradlew --no-daemon --stacktrace :composeApp:jsBrowserDistribution
+          mkdir -p web && cp -r composeApp/build/dist/js/productionExecutable/* web/
+          # Serve the static web on :8090 (the second tunnel points here).
+          nohup python3 -m http.server 8090 --directory web > web-server.log 2>&1 &
+          sleep 2
+          curl -sS -o /dev/null -w "web local: %{http_code}\n" http://localhost:8090/ || true
+
+      - name: Mark everything live on the branch
+        run: |
+          {
+            echo "run_id: ${GITHUB_RUN_ID}"
+            echo "api_url: ${API_URL}/"
+            echo "web_url: ${WEB_URL}"
+            echo "swagger: ${API_URL}/api/swagger-ui.html"
+            echo "status: live"
+            echo "updated: $(date -u +%FT%TZ)"
+          } > live-url.txt
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan live-url-tmp3
+          git rm -rf --cached . >/dev/null 2>&1 || true
+          git add -f live-url.txt
+          git commit -q -m "fully live (run ${GITHUB_RUN_ID})"
+          git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:refs/heads/claude/live-url
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish the final link
+        run: |
+          {
+            echo "## Rasteh live test environment"
+            echo ""
+            echo "**FINAL LINK (open this):** ${WEB_URL}"
+            echo ""
+            echo "- API base: ${API_URL}/"
+            echo "- Swagger:  ${API_URL}/api/swagger-ui.html"
+            echo "- The web app is built pointing at the live API above."
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "FINAL LINK => ${WEB_URL}"
+          echo "API => ${API_URL}/"
+
+      - name: Keep alive
+        run: |
+          MIN="${{ inputs.minutes }}"; MIN=${MIN:-90}
+          if [ "$MIN" -gt 350 ]; then MIN=350; fi
+          echo "staying up for ${MIN} minutes — WEB ${WEB_URL} / API ${API_URL}"
+          sleep "$((MIN*60))" || true
