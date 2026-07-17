@@ -19,4 +19,6 @@ val bazaarModule = module {
     viewModel { GiftCardsViewModel(repository = get()) }
     viewModel { CommunityViewModel(repository = get()) }
     viewModel { NotificationsViewModel(repository = get()) }
+    viewModel { ProductDetailViewModel(repository = get(), interaction = get()) }
+    viewModel { CompareViewModel(repository = get()) }
 }

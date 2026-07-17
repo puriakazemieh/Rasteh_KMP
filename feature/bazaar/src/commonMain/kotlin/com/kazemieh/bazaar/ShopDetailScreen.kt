@@ -78,6 +78,7 @@ private val SHOP_TABS = listOf("محصولات", "حراجی", "ویترینو",
 fun ShopDetailScreen(
     shopId: Long,
     navigateBack: () -> Unit,
+    navigateToProduct: (Long) -> Unit,
     navigateToChat: (conversationId: Long, title: String) -> Unit,
     viewModel: ShopDetailViewModel = koinViewModel(),
 ) {
@@ -137,6 +138,7 @@ fun ShopDetailScreen(
                     onMessage = { viewModel.startChat(shop.data.name) },
                     onOffer = { showOffer = true },
                     onBuy = { viewModel.quickOrder(it) },
+                    onProduct = navigateToProduct,
                     onAddReview = { showReview = true },
                     onReport = { showReport = true },
                 )
@@ -172,6 +174,7 @@ private fun Content(
     onMessage: () -> Unit,
     onOffer: () -> Unit,
     onBuy: (Product) -> Unit,
+    onProduct: (Long) -> Unit,
     onAddReview: () -> Unit,
     onReport: () -> Unit,
 ) {
@@ -183,9 +186,9 @@ private fun Content(
         item { TabRow(tab = tab, onTab = onTab) }
 
         when (tab) {
-            0 -> productItems(products, orderBusyProductId, onBuy) { true }
-            1 -> productItems(products, orderBusyProductId, onBuy) { it.oldPrice != null && it.oldPrice > it.price }
-            2 -> productItems(products, orderBusyProductId, onBuy) { !it.purchasable }
+            0 -> productItems(products, orderBusyProductId, onBuy, onProduct) { true }
+            1 -> productItems(products, orderBusyProductId, onBuy, onProduct) { it.oldPrice != null && it.oldPrice > it.price }
+            2 -> productItems(products, orderBusyProductId, onBuy, onProduct) { !it.purchasable }
             3 -> {
                 item {
                     Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -204,6 +207,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.productItems(
     products: AppResult<List<Product>>,
     orderBusyProductId: Long?,
     onBuy: (Product) -> Unit,
+    onProduct: (Long) -> Unit,
     filter: (Product) -> Boolean,
 ) {
     when (products) {
@@ -214,7 +218,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.productItems(
             if (list.isEmpty()) item { PadText("موردی نیست") }
             else items(list, key = { it.id }) { product ->
                 Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
-                    ProductCard(product = product, buying = orderBusyProductId == product.id, onBuy = { onBuy(product) })
+                    ProductCard(product = product, buying = orderBusyProductId == product.id, onClick = { onProduct(product.id) }, onBuy = { onBuy(product) })
                 }
             }
         }

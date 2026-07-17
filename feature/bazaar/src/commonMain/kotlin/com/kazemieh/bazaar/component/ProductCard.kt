@@ -1,6 +1,7 @@
 package com.kazemieh.bazaar.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,7 @@ fun ProductCard(
     product: Product,
     modifier: Modifier = Modifier,
     buying: Boolean = false,
+    onClick: (() -> Unit)? = null,
     onBuy: (() -> Unit)? = null,
 ) {
     Row(
@@ -41,6 +43,7 @@ fun ProductCard(
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(MaterialTheme.colorScheme.surface)
+            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

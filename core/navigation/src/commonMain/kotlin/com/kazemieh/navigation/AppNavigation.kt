@@ -36,8 +36,10 @@ import com.kazemieh.bazaar.CommunityScreen
 import com.kazemieh.bazaar.DealsScreen
 import com.kazemieh.bazaar.NotificationsScreen
 import com.kazemieh.bazaar.GiftCardsScreen
+import com.kazemieh.bazaar.CompareScreen
 import com.kazemieh.bazaar.MyOrdersScreen
 import com.kazemieh.bazaar.PriceAlertsScreen
+import com.kazemieh.bazaar.ProductDetailScreen
 import com.kazemieh.bazaar.RastehSearchScreen
 import com.kazemieh.bazaar.ShopDetailScreen
 import com.kazemieh.details.DetailsScreen
@@ -165,6 +167,9 @@ fun AppNavHost(
                 navigateToShopDetail = { shopId ->
                     navController.navigate(Screen.ShopDetail(shopId))
                 },
+                navigateToProduct = { productId ->
+                    navController.navigate(Screen.ProductDetail(productId))
+                },
                 navigateToMarketOrders = {
                     navController.navigate(Screen.MarketOrders)
                 },
@@ -234,6 +239,7 @@ fun AppNavHost(
                 locationName = args.locationName,
                 navigateBack = { navController.navigateBack() },
                 navigateToShop = { shopId -> navController.navigate(Screen.ShopDetail(shopId)) },
+                navigateToProduct = { productId -> navController.navigate(Screen.ProductDetail(productId)) },
             )
         }
 
@@ -242,9 +248,32 @@ fun AppNavHost(
             ShopDetailScreen(
                 shopId = args.shopId,
                 navigateBack = { navController.navigateBack() },
+                navigateToProduct = { productId -> navController.navigate(Screen.ProductDetail(productId)) },
                 navigateToChat = { conversationId, title ->
                     navController.navigate(Screen.ChatThread(conversationId = conversationId, title = title))
                 },
+            )
+        }
+
+        composable<Screen.ProductDetail> {
+            val args = it.toRoute<Screen.ProductDetail>()
+            ProductDetailScreen(
+                productId = args.productId,
+                navigateBack = { navController.navigateBack() },
+                navigateToShop = { shopId -> navController.navigate(Screen.ShopDetail(shopId)) },
+                navigateToCompare = { productId -> navController.navigate(Screen.Compare(productId)) },
+                navigateToChat = { conversationId, title ->
+                    navController.navigate(Screen.ChatThread(conversationId = conversationId, title = title))
+                },
+            )
+        }
+
+        composable<Screen.Compare> {
+            val args = it.toRoute<Screen.Compare>()
+            CompareScreen(
+                productId = args.productId,
+                navigateBack = { navController.navigateBack() },
+                navigateToShop = { shopId -> navController.navigate(Screen.ShopDetail(shopId)) },
             )
         }
 

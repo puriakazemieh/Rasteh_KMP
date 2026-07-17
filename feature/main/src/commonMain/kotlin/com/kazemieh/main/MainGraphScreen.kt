@@ -73,6 +73,7 @@ fun MainGraphScreen(
     navigateToChats: () -> Unit,
     navigateToBookmarks: () -> Unit,
     navigateToShopDetail: (Long) -> Unit,
+    navigateToProduct: (Long) -> Unit,
     navigateToMarketOrders: () -> Unit,
     navigateToDeals: () -> Unit,
     navigateToPriceAlerts: () -> Unit,
@@ -181,6 +182,7 @@ fun MainGraphScreen(
                             RastehHomeScreen(
                                 navigateToRastehSearch = navigateToRastehSearch,
                                 navigateToShop = navigateToShopDetail,
+                                navigateToProduct = navigateToProduct,
                                 navigateToBookmarks = navigateToBookmarks
                             )
                         }

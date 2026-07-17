@@ -52,6 +52,7 @@ fun RastehSearchScreen(
     locationName: String,
     navigateBack: () -> Unit,
     navigateToShop: (Long) -> Unit,
+    navigateToProduct: (Long) -> Unit,
     viewModel: RastehSearchViewModel = koinViewModel(),
 ) {
     LaunchedEffect(locationId, rastehId) {
@@ -129,9 +130,7 @@ fun RastehSearchScreen(
                                 verticalArrangement = Arrangement.spacedBy(10.dp),
                             ) {
                                 items(p.data, key = { it.id }) { product ->
-                                    Box(modifier = Modifier.clickable { product.shopId?.let(navigateToShop) }) {
-                                        ProductCard(product = product)
-                                    }
+                                    ProductCard(product = product, onClick = { navigateToProduct(product.id) })
                                 }
                             }
                         }

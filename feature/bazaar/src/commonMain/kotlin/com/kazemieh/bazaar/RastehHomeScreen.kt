@@ -54,6 +54,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun RastehHomeScreen(
     navigateToRastehSearch: (rastehId: Long, rastehLabel: String, locationId: Long, locationName: String) -> Unit,
     navigateToShop: (Long) -> Unit,
+    navigateToProduct: (Long) -> Unit,
     navigateToBookmarks: () -> Unit,
     viewModel: RastehHomeViewModel = koinViewModel(),
 ) {
@@ -165,8 +166,8 @@ fun RastehHomeScreen(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
                             rowItems.forEach { product ->
-                                Box(modifier = Modifier.weight(1f).clickable { product.shopId?.let(navigateToShop) }) {
-                                    ProductCard(product = product)
+                                Box(modifier = Modifier.weight(1f)) {
+                                    ProductCard(product = product, onClick = { navigateToProduct(product.id) })
                                 }
                             }
                             if (rowItems.size == 1) Spacer(Modifier.weight(1f))
