@@ -47,7 +47,7 @@ sealed class Screen {
     data class ShopDetail(val shopId: Long) : Screen()
 
     @Serializable
-    data class ProductDetail(val productId: Long) : Screen()
+    data class MarketProductDetail(val productId: Long) : Screen()
 
     @Serializable
     data class Compare(val productId: Long) : Screen()

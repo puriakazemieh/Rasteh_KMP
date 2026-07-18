@@ -170,7 +170,7 @@ fun AppNavHost(
                     navController.navigate(Screen.ShopDetail(shopId))
                 },
                 navigateToProduct = { productId ->
-                    navController.navigate(Screen.ProductDetail(productId))
+                    navController.navigate(Screen.MarketProductDetail(productId))
                 },
                 navigateToMarketOrders = {
                     navController.navigate(Screen.MarketOrders)
@@ -247,7 +247,7 @@ fun AppNavHost(
                 locationName = args.locationName,
                 navigateBack = { navController.navigateBack() },
                 navigateToShop = { shopId -> navController.navigate(Screen.ShopDetail(shopId)) },
-                navigateToProduct = { productId -> navController.navigate(Screen.ProductDetail(productId)) },
+                navigateToProduct = { productId -> navController.navigate(Screen.MarketProductDetail(productId)) },
             )
         }
 
@@ -256,15 +256,15 @@ fun AppNavHost(
             ShopDetailScreen(
                 shopId = args.shopId,
                 navigateBack = { navController.navigateBack() },
-                navigateToProduct = { productId -> navController.navigate(Screen.ProductDetail(productId)) },
+                navigateToProduct = { productId -> navController.navigate(Screen.MarketProductDetail(productId)) },
                 navigateToChat = { conversationId, title ->
                     navController.navigate(Screen.ChatThread(conversationId = conversationId, title = title))
                 },
             )
         }
 
-        composable<Screen.ProductDetail> {
-            val args = it.toRoute<Screen.ProductDetail>()
+        composable<Screen.MarketProductDetail> {
+            val args = it.toRoute<Screen.MarketProductDetail>()
             ProductDetailScreen(
                 productId = args.productId,
                 navigateBack = { navController.navigateBack() },
