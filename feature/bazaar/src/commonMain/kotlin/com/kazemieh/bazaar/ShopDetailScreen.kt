@@ -187,7 +187,7 @@ private fun Content(
 
         when (tab) {
             0 -> productItems(products, orderBusyProductId, onBuy, onProduct) { true }
-            1 -> productItems(products, orderBusyProductId, onBuy, onProduct) { it.oldPrice != null && it.oldPrice > it.price }
+            1 -> productItems(products, orderBusyProductId, onBuy, onProduct) { p -> p.oldPrice?.let { it > p.price } ?: false }
             2 -> productItems(products, orderBusyProductId, onBuy, onProduct) { !it.purchasable }
             3 -> {
                 item {

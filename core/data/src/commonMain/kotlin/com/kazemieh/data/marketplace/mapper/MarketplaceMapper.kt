@@ -76,6 +76,7 @@ fun ProductResponse.toDomain() = Product(
     shopId = shopId,
     shopName = shopName,
     shopPhone = shopPhone,
+    isBuyable = isBuyable,
     name = name,
     description = description,
     price = price,

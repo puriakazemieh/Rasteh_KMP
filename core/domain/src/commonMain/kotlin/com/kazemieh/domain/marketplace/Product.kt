@@ -9,6 +9,7 @@ data class Product(
     val shopId: Long?,
     val shopName: String?,
     val shopPhone: String? = null,
+    val isBuyable: Boolean = false,
     val name: String,
     val description: String?,
     val price: Double,
