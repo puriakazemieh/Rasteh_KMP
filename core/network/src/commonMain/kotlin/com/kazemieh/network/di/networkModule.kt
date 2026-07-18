@@ -12,8 +12,8 @@ import com.kazemieh.network.cart.CartApi
 import com.kazemieh.network.cart.CartApiImpl
 import com.kazemieh.network.catalog.CatalogApi
 import com.kazemieh.network.catalog.CatalogApiImpl
-import com.kazemieh.network.catalog.InteractionApi
-import com.kazemieh.network.catalog.InteractionApiImpl
+import com.kazemieh.network.catalog.InteractionApi as CatalogInteractionApi
+import com.kazemieh.network.catalog.InteractionApiImpl as CatalogInteractionApiImpl
 import com.kazemieh.network.common.HttpClientFactory
 import com.kazemieh.network.features.FeaturesApi
 import com.kazemieh.network.features.FeaturesApiImpl
@@ -64,8 +64,8 @@ val networkModule = module {
         CatalogApiImpl(get())
     }
 
-    single<InteractionApi> {
-        InteractionApiImpl(get())
+    single<CatalogInteractionApi> {
+        CatalogInteractionApiImpl(get())
     }
 
     single<FavoriteApi> {
