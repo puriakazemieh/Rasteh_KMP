@@ -171,13 +171,19 @@ jobs:
           BASE="${{ inputs.base_url }}"
           [ -n "$BASE" ] && bash .github/scripts/bake-base-url.sh jsMain "$BASE" || echo "no base_url — keeping code default"
       - name: Build Compose-Web
+        # Use the development distribution: it skips the Terser production
+        # minification (jsBrowserProductionWebpack), which OOMs Node on the large
+        # Compose/JS bundle. The dev bundle is unminified but fully runnable —
+        # ideal for test/preview builds. NODE_OPTIONS raises the heap as a guard.
+        env:
+          NODE_OPTIONS: "--max-old-space-size=6144"
         run: |
           chmod +x gradlew
-          ./gradlew --no-daemon --stacktrace :composeApp:jsBrowserDistribution
+          ./gradlew --no-daemon --stacktrace :composeApp:jsBrowserDevelopmentExecutableDistribution
       - name: Zip web dist
         if: always()
         run: |
-          DIST=composeApp/build/dist/js/productionExecutable
+          DIST=composeApp/build/dist/js/developmentExecutable
           if [ -d "$DIST" ]; then (cd "$DIST" && zip -rq "$GITHUB_WORKSPACE/rasteh-web.zip" .); fi
           ls -la rasteh-web.zip || true
       - uses: actions/upload-artifact@v4

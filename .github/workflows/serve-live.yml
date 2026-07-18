@@ -143,10 +143,12 @@ jobs:
       - name: Build Compose-Web (pointed at the live API)
         run: |
           chmod +x gradlew
-          # bake the API tunnel URL into the JS platform config, then build
+          # bake the API tunnel URL into the JS platform config, then build.
+          # Use the development distribution (no Terser minification) so the
+          # webpack step doesn't OOM Node on the large Compose/JS bundle.
           bash .github/scripts/bake-base-url.sh jsMain "${API_URL}/"
-          ./gradlew --no-daemon --stacktrace :composeApp:jsBrowserDistribution
-          mkdir -p web && cp -r composeApp/build/dist/js/productionExecutable/* web/
+          NODE_OPTIONS="--max-old-space-size=6144" ./gradlew --no-daemon --stacktrace :composeApp:jsBrowserDevelopmentExecutableDistribution
+          mkdir -p web && cp -r composeApp/build/dist/js/developmentExecutable/* web/
           # Serve the static web on :8090 (the second tunnel points here).
           nohup python3 -m http.server 8090 --directory web > web-server.log 2>&1 &
           sleep 2
