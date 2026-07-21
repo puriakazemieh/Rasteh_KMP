@@ -99,6 +99,12 @@ sealed class Screen {
     data class Wayfind(val locationId: Long, val locationName: String) : Screen()
 
     @Serializable
+    data object Events : Screen()
+
+    @Serializable
+    data object Referral : Screen()
+
+    @Serializable
     data object BlogGraph : Screen()
 
     @Serializable

@@ -4,6 +4,7 @@ import com.kazemieh.network.advanced.dto.*
 import com.kazemieh.network.common.safeApiCallRaw
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
+import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -19,6 +20,9 @@ interface AdvancedApi {
     suspend fun getNotifications(): List<NotificationResponse>
     suspend fun markNotificationRead(id: Long)
     suspend fun getVendorAnalytics(shopId: Long): VendorAnalyticsResponse
+    suspend fun getEvents(locationId: Long?): List<EventResponse>
+    suspend fun getMyReferral(): ReferralResponse
+    suspend fun redeemReferral(request: RedeemReferralRequest): ReferralResponse
 }
 
 class AdvancedApiImpl(private val client: HttpClient) : AdvancedApi {
@@ -35,4 +39,11 @@ class AdvancedApiImpl(private val client: HttpClient) : AdvancedApi {
     override suspend fun getNotifications(): List<NotificationResponse> = safeApiCallRaw { client.get("/api/notifications") }
     override suspend fun markNotificationRead(id: Long) = safeApiCallRaw<Unit> { client.post("/api/notifications/$id/read") }
     override suspend fun getVendorAnalytics(shopId: Long): VendorAnalyticsResponse = safeApiCallRaw { client.get("/api/vendor/analytics/shop/$shopId") }
+    override suspend fun getEvents(locationId: Long?): List<EventResponse> = safeApiCallRaw {
+        client.get("/api/events") { if (locationId != null) parameter("locationId", locationId) }
+    }
+    override suspend fun getMyReferral(): ReferralResponse = safeApiCallRaw { client.get("/api/referral/me") }
+    override suspend fun redeemReferral(request: RedeemReferralRequest): ReferralResponse = safeApiCallRaw {
+        client.post("/api/referral/redeem") { contentType(ContentType.Application.Json); setBody(request) }
+    }
 }

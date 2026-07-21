@@ -12,4 +12,7 @@ interface AdvancedRepository {
     suspend fun getNotifications(): AppResult<List<NotificationItem>>
     suspend fun markNotificationRead(id: Long): AppResult<Unit>
     suspend fun getVendorAnalytics(shopId: Long): AppResult<VendorAnalytics>
+    suspend fun getEvents(locationId: Long?): AppResult<List<MallEvent>>
+    suspend fun getMyReferral(): AppResult<Referral>
+    suspend fun redeemReferral(code: String): AppResult<Referral>
 }
