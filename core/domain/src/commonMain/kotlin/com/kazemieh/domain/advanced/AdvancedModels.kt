@@ -7,3 +7,5 @@ data class NotificationItem(val id: Long, val title: String, val body: String?, 
 data class VendorAnalytics(val shopId: Long, val productCount: Int, val orderCount: Int, val revenue: Double, val pendingOffers: Int, val reviewsCount: Int, val rating: Double)
 data class MallEvent(val id: Long, val locationId: Long?, val title: String, val description: String?, val eventDate: String, val createdAt: String?)
 data class Referral(val code: String, val invitedCount: Long, val rewardStatus: String)
+data class Warranty(val id: Long, val title: String, val serial: String?, val validUntil: String?, val createdAt: String?)
+data class ActivityItem(val type: String, val title: String, val subtitle: String?, val createdAt: String?)

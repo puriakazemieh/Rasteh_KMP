@@ -23,6 +23,9 @@ interface AdvancedApi {
     suspend fun getEvents(locationId: Long?): List<EventResponse>
     suspend fun getMyReferral(): ReferralResponse
     suspend fun redeemReferral(request: RedeemReferralRequest): ReferralResponse
+    suspend fun getWarranties(): List<WarrantyResponse>
+    suspend fun createWarranty(request: CreateWarrantyRequest): WarrantyResponse
+    suspend fun getActivity(): List<ActivityItemResponse>
 }
 
 class AdvancedApiImpl(private val client: HttpClient) : AdvancedApi {
@@ -46,4 +49,9 @@ class AdvancedApiImpl(private val client: HttpClient) : AdvancedApi {
     override suspend fun redeemReferral(request: RedeemReferralRequest): ReferralResponse = safeApiCallRaw {
         client.post("/api/referral/redeem") { contentType(ContentType.Application.Json); setBody(request) }
     }
+    override suspend fun getWarranties(): List<WarrantyResponse> = safeApiCallRaw { client.get("/api/warranties/mine") }
+    override suspend fun createWarranty(request: CreateWarrantyRequest): WarrantyResponse = safeApiCallRaw {
+        client.post("/api/warranties") { contentType(ContentType.Application.Json); setBody(request) }
+    }
+    override suspend fun getActivity(): List<ActivityItemResponse> = safeApiCallRaw { client.get("/api/activity") }
 }

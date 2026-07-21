@@ -15,4 +15,7 @@ interface AdvancedRepository {
     suspend fun getEvents(locationId: Long?): AppResult<List<MallEvent>>
     suspend fun getMyReferral(): AppResult<Referral>
     suspend fun redeemReferral(code: String): AppResult<Referral>
+    suspend fun getWarranties(): AppResult<List<Warranty>>
+    suspend fun createWarranty(title: String, serial: String?): AppResult<Warranty>
+    suspend fun getActivity(): AppResult<List<ActivityItem>>
 }

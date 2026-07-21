@@ -105,6 +105,12 @@ sealed class Screen {
     data object Referral : Screen()
 
     @Serializable
+    data object Warranty : Screen()
+
+    @Serializable
+    data object Activity : Screen()
+
+    @Serializable
     data object BlogGraph : Screen()
 
     @Serializable

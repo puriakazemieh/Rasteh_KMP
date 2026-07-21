@@ -25,6 +25,8 @@ val bazaarModule = module {
     viewModel { WayfindViewModel(repository = get()) }
     viewModel { EventsViewModel(repository = get()) }
     viewModel { ReferralViewModel(repository = get()) }
+    viewModel { WarrantyViewModel(repository = get()) }
+    viewModel { ActivityViewModel(repository = get()) }
     viewModel { ProductDetailViewModel(repository = get(), interaction = get(), recentlyViewed = get()) }
     viewModel { CompareViewModel(repository = get()) }
     viewModel { VendorPanelViewModel(repository = get(), interaction = get(), advanced = get()) }

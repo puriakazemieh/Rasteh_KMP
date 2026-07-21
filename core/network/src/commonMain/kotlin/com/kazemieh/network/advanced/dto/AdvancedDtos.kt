@@ -12,3 +12,6 @@ import kotlinx.serialization.Serializable
 @Serializable data class EventResponse(val id: Long, val locationId: Long?, val title: String, val description: String?, val eventDate: String, val createdAt: String?)
 @Serializable data class ReferralResponse(val code: String, val invitedCount: Long, val rewardStatus: String)
 @Serializable data class RedeemReferralRequest(val code: String)
+@Serializable data class WarrantyResponse(val id: Long, val title: String, val serial: String?, val validUntil: String?, val createdAt: String?)
+@Serializable data class CreateWarrantyRequest(val title: String, val serial: String? = null, val validUntil: String? = null)
+@Serializable data class ActivityItemResponse(val type: String, val title: String, val subtitle: String?, val createdAt: String?)

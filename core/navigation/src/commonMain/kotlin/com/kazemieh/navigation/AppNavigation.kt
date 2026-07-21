@@ -45,6 +45,8 @@ import com.kazemieh.bazaar.VipSubScreen
 import com.kazemieh.bazaar.WayfindScreen
 import com.kazemieh.bazaar.EventsScreen
 import com.kazemieh.bazaar.ReferralScreen
+import com.kazemieh.bazaar.WarrantyScreen
+import com.kazemieh.bazaar.ActivityScreen
 import com.kazemieh.bazaar.CompareScreen
 import com.kazemieh.bazaar.MyOrdersScreen
 import com.kazemieh.bazaar.PriceAlertsScreen
@@ -235,6 +237,8 @@ fun AppNavHost(
                         "community" -> navController.navigate(Screen.Community)
                         "events" -> navController.navigate(Screen.Events)
                         "referral" -> navController.navigate(Screen.Referral)
+                        "warranty" -> navController.navigate(Screen.Warranty)
+                        "activity" -> navController.navigate(Screen.Activity)
                     }
                 },
             )
@@ -268,6 +272,14 @@ fun AppNavHost(
 
         composable<Screen.Referral> {
             ReferralScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.Warranty> {
+            WarrantyScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.Activity> {
+            ActivityScreen(navigateBack = { navController.navigateBack() })
         }
 
         composable<Screen.MarketOrders> {

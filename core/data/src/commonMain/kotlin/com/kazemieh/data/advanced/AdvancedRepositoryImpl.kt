@@ -5,6 +5,7 @@ import com.kazemieh.domain.advanced.*
 import com.kazemieh.network.advanced.AdvancedApi
 import com.kazemieh.network.advanced.dto.CreateCommentRequest
 import com.kazemieh.network.advanced.dto.CreatePostRequest
+import com.kazemieh.network.advanced.dto.CreateWarrantyRequest
 import com.kazemieh.network.advanced.dto.RedeemReferralRequest
 import com.kazemieh.network.common.safeApiCall
 
@@ -42,5 +43,14 @@ class AdvancedRepositoryImpl(private val api: AdvancedApi) : AdvancedRepository 
     }
     override suspend fun redeemReferral(code: String): AppResult<Referral> = safeApiCall {
         api.redeemReferral(RedeemReferralRequest(code)).let { Referral(it.code, it.invitedCount, it.rewardStatus) }
+    }
+    override suspend fun getWarranties(): AppResult<List<Warranty>> = safeApiCall {
+        api.getWarranties().map { Warranty(it.id, it.title, it.serial, it.validUntil, it.createdAt) }
+    }
+    override suspend fun createWarranty(title: String, serial: String?): AppResult<Warranty> = safeApiCall {
+        api.createWarranty(CreateWarrantyRequest(title, serial)).let { Warranty(it.id, it.title, it.serial, it.validUntil, it.createdAt) }
+    }
+    override suspend fun getActivity(): AppResult<List<ActivityItem>> = safeApiCall {
+        api.getActivity().map { ActivityItem(it.type, it.title, it.subtitle, it.createdAt) }
     }
 }
