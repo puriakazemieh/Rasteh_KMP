@@ -84,6 +84,18 @@ sealed class Screen {
     data object Notifications : Screen()
 
     @Serializable
+    data object FeaturesLauncher : Screen()
+
+    @Serializable
+    data object Appointments : Screen()
+
+    @Serializable
+    data object Returns : Screen()
+
+    @Serializable
+    data object VipSub : Screen()
+
+    @Serializable
     data object BlogGraph : Screen()
 
     @Serializable

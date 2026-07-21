@@ -1,0 +1,147 @@
+package com.kazemieh.bazaar
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import com.kazemieh.designsystem.FontSize
+import kotlinx.coroutines.launch
+
+/**
+ * لانچرِ «قابلیت‌ها» (features): گریدِ دوستونهٔ کاشی‌ها.
+ * کاشی‌های فعال → صفحهٔ مربوطه؛ بقیه «به‌زودی» را نشان می‌دهند.
+ * `onOpen` کلیدِ کاشیِ فعال را می‌فرستد و ناوبری در لایهٔ navigation انجام می‌شود.
+ */
+private data class FeatureTile(val key: String, val label: String, val emoji: String, val enabled: Boolean)
+
+private val FEATURE_TILES = listOf(
+    FeatureTile("deals", "پیشنهادها و جوایز", "🔥", true),
+    FeatureTile("pricealert", "هشدارِ قیمت", "🔔", true),
+    FeatureTile("giftcard", "کارتِ هدیه", "🎁", true),
+    FeatureTile("appointment", "نوبتِ بازدید", "📅", true),
+    FeatureTile("returns", "بازگشتِ کالا", "↩️", true),
+    FeatureTile("vipsub", "بازارچه پلاس", "⭐", true),
+    FeatureTile("community", "انجمنِ محله", "💬", true),
+    FeatureTile("loyalty", "باشگاهِ وفاداری", "🏅", true),
+    FeatureTile("wayfind", "مسیریابِ پاساژ", "🗺️", false),
+    FeatureTile("live", "لایوشاپینگ", "🔴", false),
+    FeatureTile("warranty", "ضمانت‌نامه", "🛡️", false),
+    FeatureTile("events", "رویدادها", "🎉", false),
+    FeatureTile("stories", "استوریِ فروشگاه‌ها", "📸", false),
+    FeatureTile("tracking", "ردیابیِ سفارش", "🚚", false),
+    FeatureTile("escrow", "پرداختِ امانی", "🔒", false),
+    FeatureTile("parking", "پارکینگِ من", "🅿️", false),
+    FeatureTile("concierge", "دستیارِ خرید", "🤖", false),
+    FeatureTile("visualsearch", "جست‌وجوی تصویری", "🔎", false),
+)
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FeaturesLauncherScreen(
+    navigateBack: () -> Unit,
+    onOpen: (String) -> Unit,
+) {
+    val snackbar = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        snackbarHost = { SnackbarHost(snackbar) },
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { Text("قابلیت‌ها", fontSize = FontSize.EXTRA_REGULAR, fontWeight = FontWeight.Bold) },
+                navigationIcon = {
+                    IconButton(onClick = navigateBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "بازگشت") }
+                },
+            )
+        },
+    ) { padding ->
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier.fillMaxSize().padding(padding),
+            contentPadding = PaddingValues(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            items(FEATURE_TILES, key = { it.key }) { tile ->
+                FeatureTileCard(
+                    tile = tile,
+                    onClick = {
+                        if (tile.enabled) onOpen(tile.key)
+                        else scope.launch { snackbar.showSnackbar("به‌زودی") }
+                    },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FeatureTileCard(tile: FeatureTile, onClick: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(1.1f)
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .clickable(onClick = onClick)
+            .alpha(if (tile.enabled) 1f else 0.55f)
+            .padding(12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Box(
+            modifier = Modifier.height(44.dp),
+            contentAlignment = Alignment.Center,
+        ) { Text(tile.emoji, fontSize = FontSize.LARGE) }
+        Spacer(Modifier.height(8.dp))
+        Text(
+            tile.label,
+            fontSize = FontSize.SMALL,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center,
+        )
+        if (!tile.enabled) {
+            Spacer(Modifier.height(4.dp))
+            Text("به‌زودی", fontSize = FontSize.EXTRA_SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+}

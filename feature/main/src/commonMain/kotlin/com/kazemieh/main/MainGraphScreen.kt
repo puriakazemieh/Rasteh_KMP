@@ -80,6 +80,7 @@ fun MainGraphScreen(
     navigateToGiftCards: () -> Unit,
     navigateToCommunity: () -> Unit,
     navigateToNotifications: () -> Unit,
+    navigateToFeatures: () -> Unit,
     navigateToVendorPanel: () -> Unit,
     navigateToAdminManage: () -> Unit,
 ) {
@@ -218,6 +219,7 @@ fun MainGraphScreen(
                                 onGiftCardsClick = navigateToGiftCards,
                                 onCommunityClick = navigateToCommunity,
                                 onNotificationsClick = navigateToNotifications,
+                                onFeaturesClick = navigateToFeatures,
                                 onVendorPanelClick = navigateToVendorPanel,
                                 onAdminManageClick = navigateToAdminManage
                             )

@@ -8,4 +8,6 @@ interface ServicesRepository {
     suspend fun getGiftCards(): AppResult<List<GiftCard>>
     suspend fun getAppointments(): AppResult<List<Appointment>>
     suspend fun bookAppointment(shopId: Long, scheduledAt: String, note: String?): AppResult<Appointment>
+    suspend fun getReturns(): AppResult<List<ReturnRequest>>
+    suspend fun createReturn(orderId: Long, reason: String?): AppResult<ReturnRequest>
 }

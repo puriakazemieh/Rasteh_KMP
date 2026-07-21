@@ -15,6 +15,8 @@ interface ServicesApi {
     suspend fun getGiftCards(): List<GiftCardResponse>
     suspend fun getAppointments(): List<AppointmentResponse>
     suspend fun bookAppointment(request: CreateAppointmentRequest): AppointmentResponse
+    suspend fun getReturns(): List<ReturnResponse>
+    suspend fun createReturn(request: CreateReturnRequest): ReturnResponse
 }
 
 class ServicesApiImpl(private val client: HttpClient) : ServicesApi {
@@ -28,5 +30,9 @@ class ServicesApiImpl(private val client: HttpClient) : ServicesApi {
     override suspend fun getAppointments(): List<AppointmentResponse> = safeApiCallRaw { client.get("/api/appointments/mine") }
     override suspend fun bookAppointment(request: CreateAppointmentRequest): AppointmentResponse = safeApiCallRaw {
         client.post("/api/appointments") { contentType(ContentType.Application.Json); setBody(request) }
+    }
+    override suspend fun getReturns(): List<ReturnResponse> = safeApiCallRaw { client.get("/api/returns/mine") }
+    override suspend fun createReturn(request: CreateReturnRequest): ReturnResponse = safeApiCallRaw {
+        client.post("/api/returns") { contentType(ContentType.Application.Json); setBody(request) }
     }
 }

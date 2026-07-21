@@ -7,3 +7,5 @@ import kotlinx.serialization.Serializable
 @Serializable data class RedeemGiftCardRequest(val code: String)
 @Serializable data class AppointmentResponse(val id: Long, val shopId: Long?, val shopName: String?, val userId: Long, val scheduledAt: String, val note: String?, val status: String, val createdAt: String?)
 @Serializable data class CreateAppointmentRequest(val shopId: Long, val scheduledAt: String, val note: String? = null)
+@Serializable data class ReturnResponse(val id: Long, val orderId: Long, val userId: Long, val reason: String?, val status: String, val createdAt: String?)
+@Serializable data class CreateReturnRequest(val orderId: Long, val reason: String? = null)

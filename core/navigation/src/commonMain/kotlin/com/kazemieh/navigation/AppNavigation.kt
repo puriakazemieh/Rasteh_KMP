@@ -38,6 +38,10 @@ import com.kazemieh.bazaar.CommunityScreen
 import com.kazemieh.bazaar.DealsScreen
 import com.kazemieh.bazaar.NotificationsScreen
 import com.kazemieh.bazaar.GiftCardsScreen
+import com.kazemieh.bazaar.FeaturesLauncherScreen
+import com.kazemieh.bazaar.AppointmentsScreen
+import com.kazemieh.bazaar.ReturnsScreen
+import com.kazemieh.bazaar.VipSubScreen
 import com.kazemieh.bazaar.CompareScreen
 import com.kazemieh.bazaar.MyOrdersScreen
 import com.kazemieh.bazaar.PriceAlertsScreen
@@ -190,6 +194,9 @@ fun AppNavHost(
                 navigateToNotifications = {
                     navController.navigate(Screen.Notifications)
                 },
+                navigateToFeatures = {
+                    navController.navigate(Screen.FeaturesLauncher)
+                },
                 navigateToVendorPanel = {
                     navController.navigate(Screen.VendorPanel)
                 },
@@ -209,6 +216,35 @@ fun AppNavHost(
 
         composable<Screen.Notifications> {
             NotificationsScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.FeaturesLauncher> {
+            FeaturesLauncherScreen(
+                navigateBack = { navController.navigateBack() },
+                onOpen = { key ->
+                    when (key) {
+                        "deals", "loyalty" -> navController.navigate(Screen.Deals)
+                        "pricealert" -> navController.navigate(Screen.PriceAlerts)
+                        "giftcard" -> navController.navigate(Screen.GiftCards)
+                        "appointment" -> navController.navigate(Screen.Appointments)
+                        "returns" -> navController.navigate(Screen.Returns)
+                        "vipsub" -> navController.navigate(Screen.VipSub)
+                        "community" -> navController.navigate(Screen.Community)
+                    }
+                },
+            )
+        }
+
+        composable<Screen.Appointments> {
+            AppointmentsScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.Returns> {
+            ReturnsScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.VipSub> {
+            VipSubScreen(navigateBack = { navController.navigateBack() })
         }
 
         composable<Screen.MarketOrders> {

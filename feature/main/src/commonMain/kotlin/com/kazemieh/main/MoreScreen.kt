@@ -67,6 +67,7 @@ fun MoreScreen(
     onGiftCardsClick: () -> Unit = {},
     onCommunityClick: () -> Unit = {},
     onNotificationsClick: () -> Unit = {},
+    onFeaturesClick: () -> Unit = {},
     onVendorPanelClick: () -> Unit = {},
     onAdminManageClick: () -> Unit = {},
 ) {
@@ -85,6 +86,14 @@ fun MoreScreen(
         }
 
         Spacer(Modifier.height(16.dp))
+
+        // ---- لانچرِ قابلیت‌ها (گریدِ ۲۰ کاشی) ----
+        AccountRow(
+            title = "قابلیت‌ها",
+            subtitle = "همهٔ امکاناتِ ویژهٔ بازارچه در یک‌جا",
+            onClick = onFeaturesClick
+        ) { AccountIcon(vector = Icons.Default.Star) }
+        Spacer(Modifier.height(12.dp))
 
         // آیتم‌های پروفایل (سفارش‌ها، علاقه‌مندی‌ها، آدرس‌ها، کیف پول) به داخل
         // صفحه‌ی «مشخصات» منتقل شده‌اند و از طریق کارت هدر بالا در دسترس‌اند.
