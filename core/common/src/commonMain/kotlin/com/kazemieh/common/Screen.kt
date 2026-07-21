@@ -96,6 +96,9 @@ sealed class Screen {
     data object VipSub : Screen()
 
     @Serializable
+    data class Wayfind(val locationId: Long, val locationName: String) : Screen()
+
+    @Serializable
     data object BlogGraph : Screen()
 
     @Serializable

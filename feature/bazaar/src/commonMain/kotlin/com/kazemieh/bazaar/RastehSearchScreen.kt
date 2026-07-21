@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -53,6 +54,7 @@ fun RastehSearchScreen(
     navigateBack: () -> Unit,
     navigateToShop: (Long) -> Unit,
     navigateToProduct: (Long) -> Unit,
+    navigateToWayfind: (Long, String) -> Unit = { _, _ -> },
     viewModel: RastehSearchViewModel = koinViewModel(),
 ) {
     LaunchedEffect(locationId, rastehId) {
@@ -73,6 +75,11 @@ fun RastehSearchScreen(
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "بازگشت")
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { navigateToWayfind(locationId, locationName) }) {
+                        Icon(imageVector = Icons.Default.Place, contentDescription = "مسیریابِ محل")
                     }
                 },
             )

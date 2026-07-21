@@ -42,6 +42,7 @@ import com.kazemieh.bazaar.FeaturesLauncherScreen
 import com.kazemieh.bazaar.AppointmentsScreen
 import com.kazemieh.bazaar.ReturnsScreen
 import com.kazemieh.bazaar.VipSubScreen
+import com.kazemieh.bazaar.WayfindScreen
 import com.kazemieh.bazaar.CompareScreen
 import com.kazemieh.bazaar.MyOrdersScreen
 import com.kazemieh.bazaar.PriceAlertsScreen
@@ -247,6 +248,16 @@ fun AppNavHost(
             VipSubScreen(navigateBack = { navController.navigateBack() })
         }
 
+        composable<Screen.Wayfind> {
+            val args = it.toRoute<Screen.Wayfind>()
+            WayfindScreen(
+                locationId = args.locationId,
+                locationName = args.locationName,
+                navigateBack = { navController.navigateBack() },
+                navigateToShop = { shopId -> navController.navigate(Screen.ShopDetail(shopId)) },
+            )
+        }
+
         composable<Screen.MarketOrders> {
             MyOrdersScreen(
                 navigateBack = { navController.navigateBack() },
@@ -284,6 +295,7 @@ fun AppNavHost(
                 navigateBack = { navController.navigateBack() },
                 navigateToShop = { shopId -> navController.navigate(Screen.ShopDetail(shopId)) },
                 navigateToProduct = { productId -> navController.navigate(Screen.MarketProductDetail(productId)) },
+                navigateToWayfind = { locId, locName -> navController.navigate(Screen.Wayfind(locId, locName)) },
             )
         }
 
