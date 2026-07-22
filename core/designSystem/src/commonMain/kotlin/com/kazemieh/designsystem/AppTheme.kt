@@ -14,7 +14,7 @@ import com.kazemieh.common.AppThemeMode
 @Composable
 fun AppTheme(
     themeMode: AppThemeMode = AppThemeMode.LIGHT,
-    language: AppLanguage = AppLanguage.ENGLISH,
+    language: AppLanguage = AppLanguage.PERSIAN,
     content: @Composable () -> Unit
 ) {
     val darkTheme = when (themeMode) {
