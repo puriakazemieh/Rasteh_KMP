@@ -1,27 +1,35 @@
 package com.kazemieh.designsystem
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.preloadFont
 
 
 /**
  * فونتِ فارسی (وزیرمتن/IRANYekan).
  *
- * روی وب (Kotlin/JS، رندرِ canvas با Skiko) فونتِ منبع به‌صورتِ async لود می‌شود؛ اگر
- * مستقیماً `Font(Res.font.typeface_fa)` بسازیم، اولین ترکیب فونت را ندارد و چون بازترکیبی
- * برای فونتِ منبع به‌درستی تریگر نمی‌شود، متن به‌صورتِ مربع/tofu می‌ماند. `preloadFont`
- * فونت را پیش‌بارگذاری می‌کند و به‌محضِ آماده‌شدن State را به‌روز می‌کند تا کلِ اپ با فونتِ
- * درست بازرندر شود (روی همهٔ پلتفرم‌ها یکسان کار می‌کند).
+ * روی وب (Kotlin/JS، رندرِ canvas با Skiko) ساختِ مستقیمِ `Font(Res.font.typeface_fa)`
+ * به‌درستی پس از بارگذاریِ async بازرندر نمی‌شود و متن به‌صورتِ مربع/tofu می‌ماند. برای همین
+ * بایت‌های فونت را با `Res.readBytes` می‌خوانیم و FontFamily را از روی بایت‌ها می‌سازیم؛
+ * به‌محضِ آماده‌شدن State به‌روز و کلِ اپ با فونتِ درست بازرندر می‌شود (روی همهٔ پلتفرم‌ها).
  */
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun AppFont(): FontFamily {
-    val font by preloadFont(Res.font.typeface_fa)
-    return font?.let { FontFamily(it) } ?: FontFamily.Default
+    var family by remember { mutableStateOf<FontFamily?>(null) }
+    LaunchedEffect(Unit) {
+        family = runCatching {
+            FontFamily(Font("typeface_fa", Res.readBytes("font/typeface_fa.ttf")))
+        }.getOrNull()
+    }
+    return family ?: FontFamily.Default
 }
 
 object FontSize {
