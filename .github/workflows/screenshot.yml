@@ -151,12 +151,18 @@ jobs:
             await p.mouse.click(Math.round(W * 0.5), Math.round(H * 0.72));
             await p.waitForTimeout(3500);
             await p.screenshot({ path: 'shots/rasteh_search.png', fullPage: false });
-            // کلیک روی اولین کارتِ فروشگاه → صفحهٔ shopDetail.
-            await p.mouse.click(Math.round(W * 0.5), 200);
+          } catch (e) { errs.push('SHEET/SEARCH: ' + e.message); }
+
+          // shopDetail را مستقیم از خانه باز می‌کنیم: اولین کارتِ «جدیدترین فروشگاه‌ها»
+          // (که همیشه داده دارد) حدودِ y≈470 در ویوپورت است.
+          try {
+            await p.mouse.click(cx(9), tabY); // بازگشت به خانه
+            await p.waitForTimeout(2500);
+            await p.mouse.click(Math.round(W * 0.5), 470);
             await p.waitForTimeout(3500);
             await p.screenshot({ path: 'shots/shop_detail.png', fullPage: false });
             await p.screenshot({ path: 'shots/shop_detail_full.png', fullPage: true });
-          } catch (e) { errs.push('SHEET/SEARCH/SHOP: ' + e.message); }
+          } catch (e) { errs.push('SHOP DETAIL: ' + e.message); }
 
           const out = 'CONSOLE ERRORS:\n' + (errs.slice(0,40).join('\n') || '(none)');
           console.log(out);
