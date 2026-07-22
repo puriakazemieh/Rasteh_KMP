@@ -1,0 +1,117 @@
+name: Screenshot Web
+
+# Self-contained visual check: builds + runs the server (seeded) on localhost,
+# builds the Compose-Web app pointed at that local server, serves it, then uses
+# Playwright (Chromium) to screenshot the app at a mobile viewport. The PNGs are
+# committed to the `claude/screens` branch so they can be reviewed. No external
+# tunnel is used, so it works regardless of egress policy.
+on:
+  workflow_dispatch:
+    inputs:
+      server_ref:
+        description: 'Branch/ref of the server repo'
+        type: string
+        default: develop
+
+permissions:
+  contents: write
+
+jobs:
+  shoot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: rastehdb
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d rastehdb" --health-interval=10s
+          --health-timeout=5s --health-retries=10
+    steps:
+      - name: Checkout app (KMP)
+        uses: actions/checkout@v4
+      - name: Checkout server
+        uses: actions/checkout@v4
+        with:
+          repository: puriakazemieh/Rasteh_Kotlin_Spring_Boot
+          ref: ${{ inputs.server_ref }}
+          path: server
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build & start server (seeded, CORS *)
+        env:
+          DATASOURCE_URL: jdbc:postgresql://localhost:5432/rastehdb
+          DATASOURCE_USERNAME: postgres
+          DATASOURCE_PASSWORD: postgres
+          SERVER_PORT: '8080'
+          APP_CORS_ORIGINS: '*'
+          SEED_ENABLED: 'true'
+        run: |
+          cd server
+          chmod +x gradlew
+          ./gradlew --no-daemon --stacktrace bootJar
+          JAR="$(find build/libs -name '*.jar' ! -name '*-plain.jar' | head -1)"
+          nohup java -jar "$JAR" > "$GITHUB_WORKSPACE/server.log" 2>&1 &
+          cd "$GITHUB_WORKSPACE"
+          echo "waiting for server…"
+          for i in $(seq 1 80); do
+            if curl -sSf http://localhost:8080/api/rastehs >/dev/null 2>&1; then echo "server up"; break; fi
+            sleep 3
+          done
+          echo "rastehs sample:"; curl -s http://localhost:8080/api/rastehs | head -c 400; echo
+
+      - name: Build Compose-Web (pointed at localhost server)
+        env:
+          NODE_OPTIONS: "--max-old-space-size=6144"
+        run: |
+          chmod +x gradlew
+          bash .github/scripts/bake-base-url.sh jsMain "http://localhost:8080/"
+          ./gradlew --no-daemon --stacktrace :composeApp:jsBrowserDevelopmentExecutableDistribution
+          mkdir -p web && cp -r composeApp/build/dist/js/developmentExecutable/* web/
+          nohup python3 -m http.server 8090 --directory web > web-server.log 2>&1 &
+          sleep 3
+          curl -sS -o /dev/null -w "web local: %{http_code}\n" http://localhost:8090/ || true
+
+      - name: Screenshot with Playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm i -D playwright >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null 2>&1
+          cat > shot.mjs <<'JS'
+          import { chromium } from 'playwright';
+          const b = await chromium.launch();
+          const p = await b.newPage({ viewport: { width: 412, height: 915 }, deviceScaleFactor: 2 });
+          const errs = [];
+          p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
+          p.on('pageerror', e => errs.push('PAGEERROR ' + e.message));
+          await p.goto('http://localhost:8090/', { waitUntil: 'load', timeout: 60000 });
+          await p.waitForTimeout(9000);
+          await p.screenshot({ path: 'shots/home.png', fullPage: false });
+          await p.screenshot({ path: 'shots/home_full.png', fullPage: true });
+          console.log('CONSOLE ERRORS:\n' + (errs.slice(0,40).join('\n') || '(none)'));
+          await b.close();
+          JS
+          mkdir -p shots
+          node shot.mjs || true
+          ls -la shots || true
+
+      - name: Publish screenshots to claude/screens
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan screens-tmp
+          git rm -rf --cached . >/dev/null 2>&1 || true
+          git add -f shots/*.png
+          git commit -q -m "screens (run ${GITHUB_RUN_ID})" || echo "no screenshots to commit"
+          git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:refs/heads/claude/screens
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
