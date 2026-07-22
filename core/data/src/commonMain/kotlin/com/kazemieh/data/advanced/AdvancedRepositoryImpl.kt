@@ -5,6 +5,7 @@ import com.kazemieh.domain.advanced.*
 import com.kazemieh.network.advanced.AdvancedApi
 import com.kazemieh.network.advanced.dto.CreateCommentRequest
 import com.kazemieh.network.advanced.dto.CreatePostRequest
+import com.kazemieh.network.advanced.dto.CheckinParkingRequest
 import com.kazemieh.network.advanced.dto.CreateWarrantyRequest
 import com.kazemieh.network.advanced.dto.RedeemReferralRequest
 import com.kazemieh.network.common.safeApiCall
@@ -52,5 +53,14 @@ class AdvancedRepositoryImpl(private val api: AdvancedApi) : AdvancedRepository 
     }
     override suspend fun getActivity(): AppResult<List<ActivityItem>> = safeApiCall {
         api.getActivity().map { ActivityItem(it.type, it.title, it.subtitle, it.createdAt) }
+    }
+    override suspend fun getParking(): AppResult<List<ParkingSession>> = safeApiCall {
+        api.getParking().map { ParkingSession(it.id, it.spot, it.enteredAt, it.exitedAt, it.fee, it.paid) }
+    }
+    override suspend fun checkinParking(spot: String): AppResult<ParkingSession> = safeApiCall {
+        api.checkinParking(CheckinParkingRequest(spot)).let { ParkingSession(it.id, it.spot, it.enteredAt, it.exitedAt, it.fee, it.paid) }
+    }
+    override suspend fun payParking(id: Long): AppResult<ParkingSession> = safeApiCall {
+        api.payParking(id).let { ParkingSession(it.id, it.spot, it.enteredAt, it.exitedAt, it.fee, it.paid) }
     }
 }

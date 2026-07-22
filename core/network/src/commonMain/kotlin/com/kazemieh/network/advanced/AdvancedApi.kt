@@ -26,6 +26,9 @@ interface AdvancedApi {
     suspend fun getWarranties(): List<WarrantyResponse>
     suspend fun createWarranty(request: CreateWarrantyRequest): WarrantyResponse
     suspend fun getActivity(): List<ActivityItemResponse>
+    suspend fun getParking(): List<ParkingResponse>
+    suspend fun checkinParking(request: CheckinParkingRequest): ParkingResponse
+    suspend fun payParking(id: Long): ParkingResponse
 }
 
 class AdvancedApiImpl(private val client: HttpClient) : AdvancedApi {
@@ -54,4 +57,9 @@ class AdvancedApiImpl(private val client: HttpClient) : AdvancedApi {
         client.post("/api/warranties") { contentType(ContentType.Application.Json); setBody(request) }
     }
     override suspend fun getActivity(): List<ActivityItemResponse> = safeApiCallRaw { client.get("/api/activity") }
+    override suspend fun getParking(): List<ParkingResponse> = safeApiCallRaw { client.get("/api/parking/mine") }
+    override suspend fun checkinParking(request: CheckinParkingRequest): ParkingResponse = safeApiCallRaw {
+        client.post("/api/parking/checkin") { contentType(ContentType.Application.Json); setBody(request) }
+    }
+    override suspend fun payParking(id: Long): ParkingResponse = safeApiCallRaw { client.post("/api/parking/$id/pay") }
 }

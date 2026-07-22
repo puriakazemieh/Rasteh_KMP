@@ -47,6 +47,8 @@ import com.kazemieh.bazaar.EventsScreen
 import com.kazemieh.bazaar.ReferralScreen
 import com.kazemieh.bazaar.WarrantyScreen
 import com.kazemieh.bazaar.ActivityScreen
+import com.kazemieh.bazaar.ParkingScreen
+import com.kazemieh.bazaar.ConciergeScreen
 import com.kazemieh.bazaar.CompareScreen
 import com.kazemieh.bazaar.MyOrdersScreen
 import com.kazemieh.bazaar.PriceAlertsScreen
@@ -239,6 +241,9 @@ fun AppNavHost(
                         "referral" -> navController.navigate(Screen.Referral)
                         "warranty" -> navController.navigate(Screen.Warranty)
                         "activity" -> navController.navigate(Screen.Activity)
+                        "parking" -> navController.navigate(Screen.Parking)
+                        "concierge" -> navController.navigate(Screen.Concierge)
+                        "tracking" -> navController.navigate(Screen.MarketOrders)
                     }
                 },
             )
@@ -280,6 +285,17 @@ fun AppNavHost(
 
         composable<Screen.Activity> {
             ActivityScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.Parking> {
+            ParkingScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.Concierge> {
+            ConciergeScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToSearch = { navController.navigate(Screen.Search) },
+            )
         }
 
         composable<Screen.MarketOrders> {

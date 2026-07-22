@@ -64,13 +64,13 @@ private val FEATURE_TILES = listOf(
     FeatureTile("referral", "دعوتِ دوستان", "🤝", true),
     FeatureTile("warranty", "ضمانت‌نامه", "🛡️", true),
     FeatureTile("activity", "فعالیت‌های من", "📈", true),
+    FeatureTile("tracking", "ردیابیِ سفارش", "🚚", true),
+    FeatureTile("parking", "پارکینگِ من", "🅿️", true),
+    FeatureTile("concierge", "دستیارِ خرید", "🤖", true),
     FeatureTile("wayfind", "مسیریابِ پاساژ", "🗺️", false),
     FeatureTile("live", "لایوشاپینگ", "🔴", false),
     FeatureTile("stories", "استوریِ فروشگاه‌ها", "📸", false),
-    FeatureTile("tracking", "ردیابیِ سفارش", "🚚", false),
     FeatureTile("escrow", "پرداختِ امانی", "🔒", false),
-    FeatureTile("parking", "پارکینگِ من", "🅿️", false),
-    FeatureTile("concierge", "دستیارِ خرید", "🤖", false),
     FeatureTile("visualsearch", "جست‌وجوی تصویری", "🔎", false),
 )
 

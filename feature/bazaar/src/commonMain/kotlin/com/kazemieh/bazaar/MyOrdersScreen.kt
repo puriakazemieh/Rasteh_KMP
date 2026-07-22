@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -111,7 +112,9 @@ private fun OrderCard(order: Order, onShopClick: () -> Unit) {
         order.shopName?.let {
             Text(it, fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(10.dp))
+        OrderStatusTimeline(order.status)
+        Spacer(Modifier.height(10.dp))
         order.items.forEach { item ->
             Row(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
                 Text("${item.productName} ×${item.quantity.toFaDigits()}", fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f))
@@ -131,4 +134,31 @@ private fun OrderCard(order: Order, onShopClick: () -> Unit) {
 @Composable
 private fun Center(content: @Composable () -> Unit) {
     Box(modifier = Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) { content() }
+}
+
+/** تایم‌لاینِ رهگیریِ سفارش (tracking) — استنتاجِ کلاینت‌ساید از وضعیتِ فعلی. */
+@Composable
+private fun OrderStatusTimeline(status: String) {
+    if (status == "CANCELLED") {
+        Text("این سفارش لغو شده است.", fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
+        return
+    }
+    val stages = listOf("PENDING" to "ثبت", "CONFIRMED" to "تأیید", "PREPARING" to "آماده‌سازی", "READY" to "آمادهٔ تحویل", "COMPLETED" to "تحویل")
+    val current = stages.indexOfFirst { it.first == status }.let { if (it < 0) 0 else it }
+    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+        stages.forEachIndexed { i, stage ->
+            val reached = i <= current
+            val color = if (reached) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant
+            Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+                Box(modifier = Modifier.size(12.dp).clip(RoundedCornerShape(50)).background(color))
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    stage.second,
+                    fontSize = FontSize.EXTRA_SMALL,
+                    fontWeight = if (i == current) FontWeight.Bold else FontWeight.Normal,
+                    color = if (reached) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
 }

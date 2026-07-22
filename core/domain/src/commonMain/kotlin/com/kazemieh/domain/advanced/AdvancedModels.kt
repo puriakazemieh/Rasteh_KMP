@@ -9,3 +9,4 @@ data class MallEvent(val id: Long, val locationId: Long?, val title: String, val
 data class Referral(val code: String, val invitedCount: Long, val rewardStatus: String)
 data class Warranty(val id: Long, val title: String, val serial: String?, val validUntil: String?, val createdAt: String?)
 data class ActivityItem(val type: String, val title: String, val subtitle: String?, val createdAt: String?)
+data class ParkingSession(val id: Long, val spot: String, val enteredAt: String, val exitedAt: String?, val fee: Double, val paid: Boolean)

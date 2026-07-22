@@ -15,3 +15,5 @@ import kotlinx.serialization.Serializable
 @Serializable data class WarrantyResponse(val id: Long, val title: String, val serial: String?, val validUntil: String?, val createdAt: String?)
 @Serializable data class CreateWarrantyRequest(val title: String, val serial: String? = null, val validUntil: String? = null)
 @Serializable data class ActivityItemResponse(val type: String, val title: String, val subtitle: String?, val createdAt: String?)
+@Serializable data class ParkingResponse(val id: Long, val spot: String, val enteredAt: String, val exitedAt: String?, val fee: Double, val paid: Boolean)
+@Serializable data class CheckinParkingRequest(val spot: String)

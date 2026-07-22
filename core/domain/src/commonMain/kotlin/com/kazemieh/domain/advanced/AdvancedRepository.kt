@@ -18,4 +18,7 @@ interface AdvancedRepository {
     suspend fun getWarranties(): AppResult<List<Warranty>>
     suspend fun createWarranty(title: String, serial: String?): AppResult<Warranty>
     suspend fun getActivity(): AppResult<List<ActivityItem>>
+    suspend fun getParking(): AppResult<List<ParkingSession>>
+    suspend fun checkinParking(spot: String): AppResult<ParkingSession>
+    suspend fun payParking(id: Long): AppResult<ParkingSession>
 }

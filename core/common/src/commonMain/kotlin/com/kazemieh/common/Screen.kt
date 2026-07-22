@@ -111,6 +111,12 @@ sealed class Screen {
     data object Activity : Screen()
 
     @Serializable
+    data object Parking : Screen()
+
+    @Serializable
+    data object Concierge : Screen()
+
+    @Serializable
     data object BlogGraph : Screen()
 
     @Serializable
