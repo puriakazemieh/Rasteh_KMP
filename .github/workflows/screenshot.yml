@@ -59,15 +59,7 @@ jobs:
           cd server
           chmod +x gradlew
           ./gradlew --no-daemon --stacktrace bootJar
-          JAR="$(find build/libs -name '*.jar' ! -name '*-plain.jar' | head -1)"
-          nohup java -jar "$JAR" > "$GITHUB_WORKSPACE/server.log" 2>&1 &
-          cd "$GITHUB_WORKSPACE"
-          echo "waiting for server…"
-          for i in $(seq 1 80); do
-            if curl -sSf http://localhost:8080/api/rastehs >/dev/null 2>&1; then echo "server up"; break; fi
-            sleep 3
-          done
-          echo "rastehs sample:"; curl -s http://localhost:8080/api/rastehs | head -c 400; echo
+          cp "$(find build/libs -name '*.jar' ! -name '*-plain.jar' | head -1)" "$GITHUB_WORKSPACE/app.jar"
 
       - name: Build Compose-Web (pointed at localhost server)
         env:
@@ -77,12 +69,32 @@ jobs:
           bash .github/scripts/bake-base-url.sh jsMain "http://localhost:8080/"
           ./gradlew --no-daemon --stacktrace :composeApp:jsBrowserDevelopmentExecutableDistribution
           mkdir -p web && cp -r composeApp/build/dist/js/developmentExecutable/* web/
+
+      - name: Serve (server + web) and screenshot
+        env:
+          DATASOURCE_URL: jdbc:postgresql://localhost:5432/rastehdb
+          DATASOURCE_USERNAME: postgres
+          DATASOURCE_PASSWORD: postgres
+          SERVER_PORT: '8080'
+          APP_CORS_ORIGINS: '*'
+          SEED_ENABLED: 'true'
+        run: |
+          # Start server + web IN THIS STEP so they are guaranteed alive during
+          # the screenshot (a backgrounded server from an earlier step was not
+          # reliably reachable -> the browser got ERR_CONNECTION_REFUSED).
+          nohup java -jar app.jar > server.log 2>&1 &
+          echo "waiting for server…"
+          up=0
+          for i in $(seq 1 100); do
+            if curl -sSf http://localhost:8080/api/rastehs >/dev/null 2>&1; then up=1; echo "server up after ${i}"; break; fi
+            sleep 3
+          done
+          if [ "$up" != "1" ]; then echo "SERVER DID NOT COME UP — last 60 lines:"; tail -60 server.log; fi
+          echo "rastehs sample:"; curl -s http://localhost:8080/api/rastehs | head -c 500; echo
           nohup python3 -m http.server 8090 --directory web > web-server.log 2>&1 &
           sleep 3
           curl -sS -o /dev/null -w "web local: %{http_code}\n" http://localhost:8090/ || true
 
-      - name: Screenshot with Playwright
-        run: |
           npm init -y >/dev/null 2>&1
           npm i -D playwright >/dev/null 2>&1
           npx playwright install --with-deps chromium >/dev/null 2>&1
@@ -94,7 +106,7 @@ jobs:
           p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
           p.on('pageerror', e => errs.push('PAGEERROR ' + e.message));
           await p.goto('http://localhost:8090/', { waitUntil: 'load', timeout: 60000 });
-          await p.waitForTimeout(9000);
+          await p.waitForTimeout(18000);
           await p.screenshot({ path: 'shots/home.png', fullPage: false });
           await p.screenshot({ path: 'shots/home_full.png', fullPage: true });
           console.log('CONSOLE ERRORS:\n' + (errs.slice(0,40).join('\n') || '(none)'));
