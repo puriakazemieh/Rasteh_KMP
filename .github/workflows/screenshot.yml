@@ -113,7 +113,8 @@ jobs:
           import { chromium } from 'playwright';
           import fs from 'fs';
           const b = await chromium.launch();
-          const p = await b.newPage({ viewport: { width: 412, height: 915 }, deviceScaleFactor: 2 });
+          const W = 412, H = 915;
+          const p = await b.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: 2 });
           const errs = [];
           p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
           p.on('pageerror', e => errs.push('PAGEERROR ' + e.message));
@@ -121,6 +122,32 @@ jobs:
           await p.waitForTimeout(18000);
           await p.screenshot({ path: 'shots/home.png', fullPage: false });
           await p.screenshot({ path: 'shots/home_full.png', fullPage: true });
+
+          // نوارِ پایین: ۵ تب هم‌عرض؛ در RTL خانه سمتِ راست است.
+          // مرکزِ x هر تب ≈ W/10 * (1,3,5,7,9)؛ مرکزِ y نزدیکِ پایین.
+          const tabY = H - 48;
+          const cx = k => Math.round(W / 10 * k);
+          const clickShot = async (x, y, name, wait = 3000) => {
+            try {
+              await p.mouse.click(x, y);
+              await p.waitForTimeout(wait);
+              await p.screenshot({ path: `shots/${name}.png`, fullPage: false });
+            } catch (e) { errs.push(`CLICK ${name}: ${e.message}`); }
+          };
+          // تب‌ها (راست→چپ): خانه(9) جست‌وجو(7) پیام‌ها(5) ذخیره‌ها(3) پروفایل(1)
+          await clickShot(cx(7), tabY, 'tab_search');
+          await clickShot(cx(5), tabY, 'tab_messages');
+          await clickShot(cx(3), tabY, 'tab_bookmarks');
+          await clickShot(cx(1), tabY, 'tab_profile');
+          await clickShot(cx(9), tabY, 'tab_home');
+
+          // شیتِ انتخابِ محل: کلیک روی اولین کاشیِ راسته (ردیفِ اول، راست‌ترین ≈ x 0.88W).
+          try {
+            await p.mouse.click(Math.round(W * 0.88), 300);
+            await p.waitForTimeout(2500);
+            await p.screenshot({ path: 'shots/rasteh_sheet.png', fullPage: false });
+          } catch (e) { errs.push('RASTEH SHEET: ' + e.message); }
+
           const out = 'CONSOLE ERRORS:\n' + (errs.slice(0,40).join('\n') || '(none)');
           console.log(out);
           fs.appendFileSync('shots/diag.txt', '\n' + out + '\n');

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,6 +32,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -59,8 +61,11 @@ import androidx.compose.ui.unit.dp
 import com.kazemieh.bazaar.component.ProductCard
 import com.kazemieh.common.AppResult
 import com.kazemieh.common.util.toFaDigits
+import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.responsiveMaxWidth
+import org.jetbrains.compose.resources.painterResource
 import com.kazemieh.domain.marketplace.Product
 import com.kazemieh.domain.marketplace.Review
 import com.kazemieh.domain.marketplace.Shop
@@ -257,19 +262,26 @@ private fun ShopHeader(shop: Shop, onMessage: () -> Unit, onOffer: () -> Unit) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
-                    modifier = Modifier.size(64.dp).clip(RoundedCornerShape(16.dp)).background(MaterialTheme.colorScheme.surface),
+                    modifier = Modifier.size(64.dp).clip(RoundedCornerShape(16.dp)).background(MaterialTheme.colorScheme.primaryContainer),
                     contentAlignment = Alignment.Center,
-                ) { Text(shop.emoji ?: "🏬", fontSize = FontSize.EXTRA_MEDIUM) }
+                ) { Icon(painterResource(Resources.Icon.StorePin), contentDescription = null, tint = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.size(30.dp)) }
                 Spacer(Modifier.size(14.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(shop.name, fontSize = FontSize.MEDIUM, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-                        if (shop.verified) { Spacer(Modifier.size(6.dp)); Text("✔", fontSize = FontSize.REGULAR, color = MaterialTheme.colorScheme.primary) }
+                        if (shop.verified) {
+                            Spacer(Modifier.size(6.dp))
+                            Icon(painterResource(Resources.Icon.Checkmark), contentDescription = "تأییدشده", tint = AppTheme.colors.ok, modifier = Modifier.size(15.dp))
+                        }
                     }
                     val loc = listOfNotNull(shop.rastehLabel, shop.locationName, shop.floor).joinToString(" · ")
                     if (loc.isNotBlank()) { Spacer(Modifier.height(4.dp)); Text(loc, fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant) }
                     Spacer(Modifier.height(2.dp))
-                    Text("★ ${shop.rating.toString().toFaDigits()} · ${shop.reviewsCount.toFaDigits()} نظر", fontSize = FontSize.EXTRA_SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Star, contentDescription = null, tint = AppTheme.colors.star, modifier = Modifier.size(13.dp))
+                        Spacer(Modifier.size(3.dp))
+                        Text("${shop.rating.toString().toFaDigits()} · ${shop.reviewsCount.toFaDigits()} نظر", fontSize = FontSize.EXTRA_SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
                 }
             }
             Spacer(Modifier.height(14.dp))
@@ -307,20 +319,35 @@ private fun ShopHeader(shop: Shop, onMessage: () -> Unit, onOffer: () -> Unit) {
 
 @Composable
 private fun TabRow(tab: Int, onTab: (Int) -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 6.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
-    ) {
-        SHOP_TABS.forEachIndexed { i, title ->
-            val sel = i == tab
-            Box(
-                modifier = Modifier.clip(RoundedCornerShape(10.dp))
-                    .background(if (sel) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant)
-                    .clickable { onTab(i) }.padding(horizontal = 16.dp, vertical = 8.dp),
-            ) {
-                Text(title, fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = if (sel) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant)
+    Column {
+        Row(
+            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
+        ) {
+            SHOP_TABS.forEachIndexed { i, title ->
+                val sel = i == tab
+                Column(
+                    modifier = Modifier.clickable { onTab(i) }.padding(vertical = 10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        title,
+                        fontSize = FontSize.SMALL,
+                        fontWeight = if (sel) FontWeight.Bold else FontWeight.Medium,
+                        color = if (sel) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(Modifier.height(6.dp))
+                    Box(
+                        modifier = Modifier
+                            .height(2.dp)
+                            .width(if (sel) 20.dp else 0.dp)
+                            .clip(RoundedCornerShape(2.dp))
+                            .background(if (sel) MaterialTheme.colorScheme.primary else androidx.compose.ui.graphics.Color.Transparent),
+                    )
+                }
             }
         }
+        HorizontalDivider(color = AppTheme.colors.line)
     }
 }
 
