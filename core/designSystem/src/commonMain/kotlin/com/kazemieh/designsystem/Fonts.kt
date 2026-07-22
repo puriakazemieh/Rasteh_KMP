@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.preloadFont
 
 
@@ -16,6 +17,7 @@ import org.jetbrains.compose.resources.preloadFont
  * فونت را پیش‌بارگذاری می‌کند و به‌محضِ آماده‌شدن State را به‌روز می‌کند تا کلِ اپ با فونتِ
  * درست بازرندر شود (روی همهٔ پلتفرم‌ها یکسان کار می‌کند).
  */
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun AppFont(): FontFamily {
     val font by preloadFont(Res.font.typeface_fa)
