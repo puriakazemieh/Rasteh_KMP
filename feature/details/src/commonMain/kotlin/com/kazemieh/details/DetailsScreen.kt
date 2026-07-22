@@ -477,7 +477,7 @@ fun DetailsScreen(
                                 } else {
                                     product.categoryName?.takeIf { it.isNotBlank() }
                                         ?.let { add("دسته‌بندی" to it) }
-                                    // گزینه‌های واریانت‌ها (سایز، رنگ، …) را تجمیع می‌کنیم
+                                    // گزینه‌های واریانت‌ها (سایز، رنگ، ...) را تجمیع می‌کنیم
                                     val optionMap = linkedMapOf<String, LinkedHashSet<String>>()
                                     product.variants.forEach { v ->
                                         v.options.forEach { (k, value) ->
@@ -930,7 +930,7 @@ private fun WriteReviewCard(
             value = text,
             onValueChange = onTextChange,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("تجربه‌تان از این محصول را بنویسید…", fontSize = FontSize.SMALL, color = colors.onSurfaceVariant) },
+            placeholder = { Text("تجربه‌تان از این محصول را بنویسید...", fontSize = FontSize.SMALL, color = colors.onSurfaceVariant) },
             minLines = 2,
             shape = RoundedCornerShape(Radius.sm),
             colors = OutlinedTextFieldDefaults.colors(
@@ -1017,7 +1017,7 @@ private fun WriteQuestionCard(
             value = text,
             onValueChange = onTextChange,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("پرسش خود درباره این محصول را بنویسید…", fontSize = FontSize.SMALL, color = colors.onSurfaceVariant) },
+            placeholder = { Text("پرسش خود درباره این محصول را بنویسید...", fontSize = FontSize.SMALL, color = colors.onSurfaceVariant) },
             minLines = 2,
             shape = RoundedCornerShape(Radius.sm),
             colors = OutlinedTextFieldDefaults.colors(

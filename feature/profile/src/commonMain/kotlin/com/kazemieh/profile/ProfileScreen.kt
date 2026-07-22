@@ -622,7 +622,7 @@ private fun ProfileHeader(name: String, phone: String?) {
     }
 }
 
-/** ردیفِ تب‌های پروفایل (مثل پنل ادمین): اطلاعات شخصی / آدرس‌ها / کیف پول / … */
+/** ردیفِ تب‌های پروفایل (مثل پنل ادمین): اطلاعات شخصی / آدرس‌ها / کیف پول / ... */
 @Composable
 private fun ProfileTabs(selected: Int, onSelect: (Int) -> Unit) {
     val tabs = listOf("اطلاعات شخصی", "آدرس‌ها", "کیف پول", "سفارش‌ها", "علاقه‌مندی‌ها")

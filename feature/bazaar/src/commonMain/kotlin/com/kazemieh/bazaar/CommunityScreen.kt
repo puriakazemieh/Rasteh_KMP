@@ -91,7 +91,7 @@ fun CommunityScreen(
                     value = state.input,
                     onValueChange = viewModel::onInput,
                     modifier = Modifier.weight(1f).clip(RoundedCornerShape(24.dp)),
-                    placeholder = { Text("پستِ جدید…", fontSize = FontSize.REGULAR) },
+                    placeholder = { Text("پستِ جدید...", fontSize = FontSize.REGULAR) },
                     singleLine = true,
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,

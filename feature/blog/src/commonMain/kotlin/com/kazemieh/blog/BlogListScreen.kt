@@ -83,7 +83,7 @@ fun BlogListScreen(
                     viewModel.handleIntent(BlogListIntent.Search(it))
                 },
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
-                placeholder = "جستجو در مقالات…"
+                placeholder = "جستجو در مقالات..."
             )
 
             // Category Selector

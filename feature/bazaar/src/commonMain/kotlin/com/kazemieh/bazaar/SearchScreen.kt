@@ -30,7 +30,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
 import com.kazemieh.bazaar.component.ShopCard
 import com.kazemieh.common.AppResult
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Resources
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /** جست‌وجویِ فروشگاه‌ها (تبِ جست‌وجو). */
@@ -47,7 +51,8 @@ fun SearchScreen(
             value = state.query,
             onValueChange = viewModel::onQuery,
             modifier = Modifier.fillMaxWidth().padding(16.dp).clip(RoundedCornerShape(16.dp)),
-            placeholder = { Text("جستجوی فروشگاه…", fontSize = FontSize.REGULAR) },
+            placeholder = { Text("جست‌وجوی فروشگاه یا محصول", fontSize = FontSize.REGULAR) },
+            leadingIcon = { Icon(painterResource(Resources.Icon.Search), contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(20.dp)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions(onSearch = { viewModel.search() }),

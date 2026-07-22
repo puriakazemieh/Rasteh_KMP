@@ -102,7 +102,7 @@ fun BecomeVendorScreen(
             Spacer(Modifier.height(12.dp))
 
             SelectField(
-                label = if (state.isLocationsLoading) "در حالِ دریافتِ محل‌ها…" else "محل (پاساژ/بازار) *",
+                label = if (state.isLocationsLoading) "در حالِ دریافتِ محل‌ها..." else "محل (پاساژ/بازار) *",
                 selected = state.selectedLocation,
                 options = state.locations,
                 optionLabel = { it.name },
@@ -175,7 +175,7 @@ fun BecomeVendorScreen(
 
             Spacer(Modifier.height(20.dp))
             PrimaryButton(
-                text = if (state.isSubmitting) "در حالِ ثبت…" else "ثبتِ درخواست",
+                text = if (state.isSubmitting) "در حالِ ثبت..." else "ثبتِ درخواست",
                 enabled = state.canSubmit,
                 onClick = { viewModel.handleIntent(BecomeVendorIntent.Submit) },
             )

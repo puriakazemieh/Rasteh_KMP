@@ -140,7 +140,7 @@ private fun InputBar(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier.weight(1f).clip(RoundedCornerShape(24.dp)),
-            placeholder = { Text("پیامِ خود را بنویسید…", fontSize = FontSize.REGULAR) },
+            placeholder = { Text("پیامِ خود را بنویسید...", fontSize = FontSize.REGULAR) },
             singleLine = true,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
