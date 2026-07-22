@@ -117,6 +117,15 @@ sealed class Screen {
     data object Concierge : Screen()
 
     @Serializable
+    data object Live : Screen()
+
+    @Serializable
+    data object Escrow : Screen()
+
+    @Serializable
+    data object VisualSearch : Screen()
+
+    @Serializable
     data object BlogGraph : Screen()
 
     @Serializable

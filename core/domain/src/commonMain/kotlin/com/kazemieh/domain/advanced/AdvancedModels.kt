@@ -10,3 +10,5 @@ data class Referral(val code: String, val invitedCount: Long, val rewardStatus: 
 data class Warranty(val id: Long, val title: String, val serial: String?, val validUntil: String?, val createdAt: String?)
 data class ActivityItem(val type: String, val title: String, val subtitle: String?, val createdAt: String?)
 data class ParkingSession(val id: Long, val spot: String, val enteredAt: String, val exitedAt: String?, val fee: Double, val paid: Boolean)
+data class LiveSession(val id: Long, val shopId: Long?, val shopName: String?, val title: String, val status: String, val pinnedProductId: Long?, val viewerCount: Int)
+data class Escrow(val id: Long, val orderId: Long?, val amount: Double, val status: String, val releasedAt: String?, val createdAt: String?)

@@ -67,11 +67,11 @@ private val FEATURE_TILES = listOf(
     FeatureTile("tracking", "ردیابیِ سفارش", "🚚", true),
     FeatureTile("parking", "پارکینگِ من", "🅿️", true),
     FeatureTile("concierge", "دستیارِ خرید", "🤖", true),
+    FeatureTile("live", "لایوشاپینگ", "🔴", true),
+    FeatureTile("escrow", "پرداختِ امانی", "🔒", true),
+    FeatureTile("visualsearch", "جست‌وجوی تصویری", "🔎", true),
     FeatureTile("wayfind", "مسیریابِ پاساژ", "🗺️", false),
-    FeatureTile("live", "لایوشاپینگ", "🔴", false),
     FeatureTile("stories", "استوریِ فروشگاه‌ها", "📸", false),
-    FeatureTile("escrow", "پرداختِ امانی", "🔒", false),
-    FeatureTile("visualsearch", "جست‌وجوی تصویری", "🔎", false),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -21,4 +21,8 @@ interface AdvancedRepository {
     suspend fun getParking(): AppResult<List<ParkingSession>>
     suspend fun checkinParking(spot: String): AppResult<ParkingSession>
     suspend fun payParking(id: Long): AppResult<ParkingSession>
+    suspend fun getLive(): AppResult<List<LiveSession>>
+    suspend fun getEscrows(): AppResult<List<Escrow>>
+    suspend fun openEscrow(amount: Double, orderId: Long?): AppResult<Escrow>
+    suspend fun releaseEscrow(id: Long): AppResult<Escrow>
 }

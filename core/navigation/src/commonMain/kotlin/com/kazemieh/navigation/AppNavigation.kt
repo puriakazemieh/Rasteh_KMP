@@ -49,6 +49,9 @@ import com.kazemieh.bazaar.WarrantyScreen
 import com.kazemieh.bazaar.ActivityScreen
 import com.kazemieh.bazaar.ParkingScreen
 import com.kazemieh.bazaar.ConciergeScreen
+import com.kazemieh.bazaar.LiveScreen
+import com.kazemieh.bazaar.EscrowScreen
+import com.kazemieh.bazaar.VisualSearchScreen
 import com.kazemieh.bazaar.CompareScreen
 import com.kazemieh.bazaar.MyOrdersScreen
 import com.kazemieh.bazaar.PriceAlertsScreen
@@ -244,6 +247,9 @@ fun AppNavHost(
                         "parking" -> navController.navigate(Screen.Parking)
                         "concierge" -> navController.navigate(Screen.Concierge)
                         "tracking" -> navController.navigate(Screen.MarketOrders)
+                        "live" -> navController.navigate(Screen.Live)
+                        "escrow" -> navController.navigate(Screen.Escrow)
+                        "visualsearch" -> navController.navigate(Screen.VisualSearch)
                     }
                 },
             )
@@ -293,6 +299,24 @@ fun AppNavHost(
 
         composable<Screen.Concierge> {
             ConciergeScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToSearch = { navController.navigate(Screen.Search) },
+            )
+        }
+
+        composable<Screen.Live> {
+            LiveScreen(
+                navigateBack = { navController.navigateBack() },
+                navigateToShop = { shopId -> navController.navigate(Screen.ShopDetail(shopId)) },
+            )
+        }
+
+        composable<Screen.Escrow> {
+            EscrowScreen(navigateBack = { navController.navigateBack() })
+        }
+
+        composable<Screen.VisualSearch> {
+            VisualSearchScreen(
                 navigateBack = { navController.navigateBack() },
                 navigateToSearch = { navController.navigate(Screen.Search) },
             )

@@ -6,6 +6,7 @@ import com.kazemieh.network.advanced.AdvancedApi
 import com.kazemieh.network.advanced.dto.CreateCommentRequest
 import com.kazemieh.network.advanced.dto.CreatePostRequest
 import com.kazemieh.network.advanced.dto.CheckinParkingRequest
+import com.kazemieh.network.advanced.dto.CreateEscrowRequest
 import com.kazemieh.network.advanced.dto.CreateWarrantyRequest
 import com.kazemieh.network.advanced.dto.RedeemReferralRequest
 import com.kazemieh.network.common.safeApiCall
@@ -62,5 +63,17 @@ class AdvancedRepositoryImpl(private val api: AdvancedApi) : AdvancedRepository 
     }
     override suspend fun payParking(id: Long): AppResult<ParkingSession> = safeApiCall {
         api.payParking(id).let { ParkingSession(it.id, it.spot, it.enteredAt, it.exitedAt, it.fee, it.paid) }
+    }
+    override suspend fun getLive(): AppResult<List<LiveSession>> = safeApiCall {
+        api.getLive().map { LiveSession(it.id, it.shopId, it.shopName, it.title, it.status, it.pinnedProductId, it.viewerCount) }
+    }
+    override suspend fun getEscrows(): AppResult<List<Escrow>> = safeApiCall {
+        api.getEscrows().map { Escrow(it.id, it.orderId, it.amount, it.status, it.releasedAt, it.createdAt) }
+    }
+    override suspend fun openEscrow(amount: Double, orderId: Long?): AppResult<Escrow> = safeApiCall {
+        api.openEscrow(CreateEscrowRequest(amount, orderId)).let { Escrow(it.id, it.orderId, it.amount, it.status, it.releasedAt, it.createdAt) }
+    }
+    override suspend fun releaseEscrow(id: Long): AppResult<Escrow> = safeApiCall {
+        api.releaseEscrow(id).let { Escrow(it.id, it.orderId, it.amount, it.status, it.releasedAt, it.createdAt) }
     }
 }

@@ -28,6 +28,8 @@ val bazaarModule = module {
     viewModel { WarrantyViewModel(repository = get()) }
     viewModel { ActivityViewModel(repository = get()) }
     viewModel { ParkingViewModel(repository = get()) }
+    viewModel { LiveViewModel(repository = get()) }
+    viewModel { EscrowViewModel(repository = get()) }
     viewModel { ProductDetailViewModel(repository = get(), interaction = get(), recentlyViewed = get()) }
     viewModel { CompareViewModel(repository = get()) }
     viewModel { VendorPanelViewModel(repository = get(), interaction = get(), advanced = get()) }

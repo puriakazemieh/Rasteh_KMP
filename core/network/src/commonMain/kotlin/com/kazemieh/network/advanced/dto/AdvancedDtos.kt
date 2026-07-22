@@ -17,3 +17,6 @@ import kotlinx.serialization.Serializable
 @Serializable data class ActivityItemResponse(val type: String, val title: String, val subtitle: String?, val createdAt: String?)
 @Serializable data class ParkingResponse(val id: Long, val spot: String, val enteredAt: String, val exitedAt: String?, val fee: Double, val paid: Boolean)
 @Serializable data class CheckinParkingRequest(val spot: String)
+@Serializable data class LiveSessionResponse(val id: Long, val shopId: Long?, val shopName: String?, val title: String, val status: String, val pinnedProductId: Long?, val viewerCount: Int)
+@Serializable data class EscrowResponse(val id: Long, val orderId: Long?, val amount: Double, val status: String, val releasedAt: String?, val createdAt: String?)
+@Serializable data class CreateEscrowRequest(val amount: Double, val orderId: Long? = null)

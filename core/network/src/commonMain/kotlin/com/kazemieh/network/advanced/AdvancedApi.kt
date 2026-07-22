@@ -29,6 +29,10 @@ interface AdvancedApi {
     suspend fun getParking(): List<ParkingResponse>
     suspend fun checkinParking(request: CheckinParkingRequest): ParkingResponse
     suspend fun payParking(id: Long): ParkingResponse
+    suspend fun getLive(): List<LiveSessionResponse>
+    suspend fun getEscrows(): List<EscrowResponse>
+    suspend fun openEscrow(request: CreateEscrowRequest): EscrowResponse
+    suspend fun releaseEscrow(id: Long): EscrowResponse
 }
 
 class AdvancedApiImpl(private val client: HttpClient) : AdvancedApi {
@@ -62,4 +66,10 @@ class AdvancedApiImpl(private val client: HttpClient) : AdvancedApi {
         client.post("/api/parking/checkin") { contentType(ContentType.Application.Json); setBody(request) }
     }
     override suspend fun payParking(id: Long): ParkingResponse = safeApiCallRaw { client.post("/api/parking/$id/pay") }
+    override suspend fun getLive(): List<LiveSessionResponse> = safeApiCallRaw { client.get("/api/live") }
+    override suspend fun getEscrows(): List<EscrowResponse> = safeApiCallRaw { client.get("/api/escrow/mine") }
+    override suspend fun openEscrow(request: CreateEscrowRequest): EscrowResponse = safeApiCallRaw {
+        client.post("/api/escrow") { contentType(ContentType.Application.Json); setBody(request) }
+    }
+    override suspend fun releaseEscrow(id: Long): EscrowResponse = safeApiCallRaw { client.post("/api/escrow/$id/release") }
 }
