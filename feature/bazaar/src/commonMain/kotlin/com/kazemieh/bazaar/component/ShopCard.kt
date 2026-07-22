@@ -25,7 +25,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.util.toFaDigits
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Resources
 import com.kazemieh.domain.marketplace.Shop
+import org.jetbrains.compose.resources.painterResource
 
 /** کارتِ فروشگاه در فهرستِ محل (rastehSearch). */
 @Composable
@@ -50,7 +52,12 @@ fun ShopCard(
                 .background(MaterialTheme.colorScheme.primaryContainer),
             contentAlignment = Alignment.Center,
         ) {
-            Text(text = shop.emoji ?: "🏬", fontSize = FontSize.MEDIUM)
+            Icon(
+                painter = painterResource(Resources.Icon.StorePin),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.size(24.dp),
+            )
         }
         Spacer(Modifier.size(12.dp))
         Column(modifier = Modifier.weight(1f)) {
@@ -63,7 +70,12 @@ fun ShopCard(
                 )
                 if (shop.verified) {
                     Spacer(Modifier.size(6.dp))
-                    Text(text = "✔", fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.primary)
+                    Icon(
+                        painter = painterResource(Resources.Icon.Checkmark),
+                        contentDescription = "تأییدشده",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(14.dp),
+                    )
                 }
             }
             Spacer(Modifier.height(4.dp))

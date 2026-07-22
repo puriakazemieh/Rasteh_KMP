@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +28,9 @@ import androidx.compose.ui.unit.dp
 import com.kazemieh.common.util.toFaDigits
 import com.kazemieh.common.util.toFaPrice
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Resources
 import com.kazemieh.domain.marketplace.Product
+import org.jetbrains.compose.resources.painterResource
 
 /** کارتِ کالا در صفحهٔ فروشگاه. */
 @Composable
@@ -54,7 +57,12 @@ fun ProductCard(
                 .background(MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = Alignment.Center,
         ) {
-            Text(text = product.emoji ?: "📦", fontSize = FontSize.MEDIUM)
+            Icon(
+                painter = painterResource(Resources.Icon.Orders),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(24.dp),
+            )
         }
         Spacer(Modifier.size(12.dp))
         Column(modifier = Modifier.weight(1f)) {

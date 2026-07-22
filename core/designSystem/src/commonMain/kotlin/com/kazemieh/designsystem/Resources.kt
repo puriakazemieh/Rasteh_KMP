@@ -21,6 +21,19 @@ object Resources {
         val Home = DesignRes.drawable.home
         val Orders = DesignRes.drawable.orders
         val ShoppingCart = DesignRes.drawable.shopping_cart
+
+        // آیکونِ راسته‌ها (به‌جای اموجی که روی وب tofu می‌شود)
+        val RastehSofa = DesignRes.drawable.rasteh_sofa
+        val RastehMobile = DesignRes.drawable.rasteh_mobile
+        val RastehClothing = DesignRes.drawable.rasteh_clothing
+        val RastehGold = DesignRes.drawable.rasteh_gold
+        val RastehAppliances = DesignRes.drawable.rasteh_appliances
+        val RastehBag = DesignRes.drawable.rasteh_bag
+        val RastehCosmetics = DesignRes.drawable.rasteh_cosmetics
+        val RastehBook = DesignRes.drawable.rasteh_book
+        val RastehToy = DesignRes.drawable.rasteh_toy
+        val RastehAll = DesignRes.drawable.rasteh_all
+        val StorePin = DesignRes.drawable.store_pin
         val Categories = DesignRes.drawable.grid
         val Dollar = DesignRes.drawable.dollar
         val MapPin = DesignRes.drawable.map_pin

@@ -292,7 +292,14 @@ private fun RecentlyViewedChip(product: Product, onClick: () -> Unit) {
         Box(
             modifier = Modifier.size(80.dp).clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.primaryContainer),
             contentAlignment = Alignment.Center,
-        ) { Text(product.emoji ?: "🛍️", fontSize = FontSize.MEDIUM) }
+        ) {
+            Icon(
+                painter = painterResource(Resources.Icon.Orders),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.size(28.dp),
+            )
+        }
         Spacer(Modifier.height(4.dp))
         Text(
             text = product.name,
