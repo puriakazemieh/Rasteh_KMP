@@ -89,7 +89,7 @@ fun DealsScreen(
                 }
             }
 
-            item { SectionTitle("تخفیف‌های فلش ⚡") }
+            item { SectionTitle("تخفیف‌های فلش ") }
             when (val f = state.flash) {
                 is AppResult.Loading -> item { Loading() }
                 is AppResult.Error -> item { ErrorText("خطا در دریافتِ فلش") }
@@ -99,7 +99,7 @@ fun DealsScreen(
                 }
             }
 
-            item { SectionTitle("خریدِ گروهی 👥") }
+            item { SectionTitle("خریدِ گروهی ") }
             when (val g = state.groupBuys) {
                 is AppResult.Loading -> item { Loading() }
                 is AppResult.Error -> item { ErrorText("خطا در دریافتِ خریدِ گروهی") }

@@ -92,7 +92,7 @@ fun HomeHero(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "کالکشن پاییز ۱۴۰۴ رسید ✦",
+                text = "کالکشن پاییز ۱۴۰۴ رسید ",
                 modifier = Modifier
                     .clip(RoundedCornerShape(Radius.full))
                     .background(Color(0x29FFFFFF))
@@ -235,7 +235,7 @@ fun AmazingOffersSection(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "⚡", fontSize = FontSize.MEDIUM)
+                Text(text = "", fontSize = FontSize.MEDIUM)
                 Spacer(Modifier.width(8.dp))
                 Text(
                     text = campaign.title.ifBlank { "پیشنهاد شگفت‌انگیز" },

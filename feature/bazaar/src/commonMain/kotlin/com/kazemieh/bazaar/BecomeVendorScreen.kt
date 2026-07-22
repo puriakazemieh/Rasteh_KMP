@@ -207,7 +207,7 @@ private fun SubmittedContent(modifier: Modifier, onDone: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Text(text = "✅", fontSize = FontSize.EXTRA_LARGE)
+            Text(text = "", fontSize = FontSize.EXTRA_LARGE)
             Spacer(Modifier.height(16.dp))
             Text(
                 text = "درخواستِ شما ثبت شد",

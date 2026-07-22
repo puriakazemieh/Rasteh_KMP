@@ -42,6 +42,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.AppTheme
+import com.kazemieh.designsystem.Resources
+import androidx.compose.foundation.layout.size
+import org.jetbrains.compose.resources.painterResource
 import kotlinx.coroutines.launch
 
 /**
@@ -49,29 +53,29 @@ import kotlinx.coroutines.launch
  * کاشی‌های فعال → صفحهٔ مربوطه؛ بقیه «به‌زودی» را نشان می‌دهند.
  * `onOpen` کلیدِ کاشیِ فعال را می‌فرستد و ناوبری در لایهٔ navigation انجام می‌شود.
  */
-private data class FeatureTile(val key: String, val label: String, val emoji: String, val enabled: Boolean)
+private data class FeatureTile(val key: String, val label: String, val icon: org.jetbrains.compose.resources.DrawableResource, val enabled: Boolean)
 
 private val FEATURE_TILES = listOf(
-    FeatureTile("deals", "پیشنهادها و جوایز", "🔥", true),
-    FeatureTile("pricealert", "هشدارِ قیمت", "🔔", true),
-    FeatureTile("giftcard", "کارتِ هدیه", "🎁", true),
-    FeatureTile("appointment", "نوبتِ بازدید", "📅", true),
-    FeatureTile("returns", "بازگشتِ کالا", "↩️", true),
-    FeatureTile("vipsub", "بازارچه پلاس", "⭐", true),
-    FeatureTile("community", "انجمنِ محله", "💬", true),
-    FeatureTile("loyalty", "باشگاهِ وفاداری", "🏅", true),
-    FeatureTile("events", "رویدادها", "🎉", true),
-    FeatureTile("referral", "دعوتِ دوستان", "🤝", true),
-    FeatureTile("warranty", "ضمانت‌نامه", "🛡️", true),
-    FeatureTile("activity", "فعالیت‌های من", "📈", true),
-    FeatureTile("tracking", "ردیابیِ سفارش", "🚚", true),
-    FeatureTile("parking", "پارکینگِ من", "🅿️", true),
-    FeatureTile("concierge", "دستیارِ خرید", "🤖", true),
-    FeatureTile("live", "لایوشاپینگ", "🔴", true),
-    FeatureTile("escrow", "پرداختِ امانی", "🔒", true),
-    FeatureTile("visualsearch", "جست‌وجوی تصویری", "🔎", true),
-    FeatureTile("wayfind", "مسیریابِ پاساژ", "🗺️", false),
-    FeatureTile("stories", "استوریِ فروشگاه‌ها", "📸", false),
+    FeatureTile("deals", "پیشنهادها و جوایز", Resources.Icon.Dollar, true),
+    FeatureTile("pricealert", "هشدارِ قیمت", Resources.Icon.Warning, true),
+    FeatureTile("giftcard", "کارتِ هدیه", Resources.Icon.Orders, true),
+    FeatureTile("appointment", "نوبتِ بازدید", Resources.Icon.Clock, true),
+    FeatureTile("returns", "بازگشتِ کالا", Resources.Icon.BackArrow, true),
+    FeatureTile("vipsub", "بازارچه پلاس", Resources.Icon.Checkmark, true),
+    FeatureTile("community", "انجمنِ محله", Resources.Icon.NavChat, true),
+    FeatureTile("loyalty", "باشگاهِ وفاداری", Resources.Icon.Dollar, true),
+    FeatureTile("events", "رویدادها", Resources.Icon.Clock, true),
+    FeatureTile("referral", "دعوتِ دوستان", Resources.Icon.Person, true),
+    FeatureTile("warranty", "ضمانت‌نامه", Resources.Icon.Checkmark, true),
+    FeatureTile("activity", "فعالیت‌های من", Resources.Icon.Clock, true),
+    FeatureTile("tracking", "ردیابیِ سفارش", Resources.Icon.MapPin, true),
+    FeatureTile("parking", "پارکینگِ من", Resources.Icon.MapPin, true),
+    FeatureTile("concierge", "دستیارِ خرید", Resources.Icon.NavChat, true),
+    FeatureTile("live", "لایوشاپینگ", Resources.Icon.Warning, true),
+    FeatureTile("escrow", "پرداختِ امانی", Resources.Icon.Unlock, true),
+    FeatureTile("visualsearch", "جست‌وجوی تصویری", Resources.Icon.Search, true),
+    FeatureTile("wayfind", "مسیریابِ پاساژ", Resources.Icon.MapPin, false),
+    FeatureTile("stories", "استوریِ فروشگاه‌ها", Resources.Icon.Book, false),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -130,9 +134,9 @@ private fun FeatureTileCard(tile: FeatureTile, onClick: () -> Unit) {
         verticalArrangement = Arrangement.Center,
     ) {
         Box(
-            modifier = Modifier.height(44.dp),
+            modifier = Modifier.size(48.dp).clip(RoundedCornerShape(14.dp)).background(AppTheme.colors.accentSoft),
             contentAlignment = Alignment.Center,
-        ) { Text(tile.emoji, fontSize = FontSize.LARGE) }
+        ) { Icon(painterResource(tile.icon), contentDescription = null, tint = AppTheme.colors.primary, modifier = Modifier.size(24.dp)) }
         Spacer(Modifier.height(8.dp))
         Text(
             tile.label,

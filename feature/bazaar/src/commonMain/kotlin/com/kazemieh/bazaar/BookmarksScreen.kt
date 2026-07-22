@@ -35,6 +35,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Resources
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /** نشان‌شده‌ها (bookmarks) · فروشگاه/کالا. */
@@ -86,7 +88,7 @@ fun BookmarksScreen(
                                     Box(
                                         modifier = Modifier.size(44.dp).clip(RoundedCornerShape(12.dp)).background(MaterialTheme.colorScheme.primaryContainer),
                                         contentAlignment = Alignment.Center,
-                                    ) { Text(bm.shopEmoji ?: "🔖", fontSize = FontSize.MEDIUM) }
+                                    ) { Icon(painterResource(Resources.Icon.StorePin), contentDescription = null, tint = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.size(22.dp)) }
                                     Spacer(Modifier.size(12.dp))
                                     Column(modifier = Modifier.weight(1f)) {
                                         Text(

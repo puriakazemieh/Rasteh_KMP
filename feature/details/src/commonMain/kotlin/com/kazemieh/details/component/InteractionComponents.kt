@@ -155,7 +155,7 @@ fun RatingDisplay(rating: Int) {
     Row {
         repeat(5) { index ->
             Text(
-                text = if (index < rating) "★" else "☆",
+                text = if (index < rating) "" else "",
                 color = if (index < rating) AppTheme.colors.star else MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodySmall
             )
@@ -186,7 +186,7 @@ fun AddReviewDialog(
                     repeat(5) { index ->
                         IconButton(onClick = { rating = index + 1 }) {
                             Text(
-                                text = if (index < rating) "★" else "☆",
+                                text = if (index < rating) "" else "",
                                 color = if (index < rating) AppTheme.colors.star else MaterialTheme.colorScheme.onSurfaceVariant,
                                 style = MaterialTheme.typography.headlineSmall
                             )
@@ -283,7 +283,7 @@ fun EditReviewDialog(
                     repeat(5) { index ->
                         IconButton(onClick = { rating = index + 1 }) {
                             Text(
-                                text = if (index < rating) "★" else "☆",
+                                text = if (index < rating) "" else "",
                                 color = if (index < rating) AppTheme.colors.star else MaterialTheme.colorScheme.onSurfaceVariant,
                                 style = MaterialTheme.typography.headlineSmall
                             )

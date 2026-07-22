@@ -98,7 +98,7 @@ fun ParkingScreen(
                                 .background(MaterialTheme.colorScheme.surfaceVariant).padding(16.dp),
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text("🅿️ جای ${ps.spot.toFaDigits()}", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f))
+                                Text(" جای ${ps.spot.toFaDigits()}", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f))
                                 Text(if (ps.paid) "پرداخت‌شده" else "باز", fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = if (ps.paid) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error)
                             }
                             Spacer(Modifier.height(4.dp))

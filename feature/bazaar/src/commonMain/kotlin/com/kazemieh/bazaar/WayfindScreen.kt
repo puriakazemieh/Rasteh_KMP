@@ -137,7 +137,7 @@ private fun WayfindShopRow(shop: Shop, onClick: () -> Unit) {
         Box(
             modifier = Modifier.size(40.dp).clip(RoundedCornerShape(10.dp)).background(MaterialTheme.colorScheme.surface),
             contentAlignment = Alignment.Center,
-        ) { Text(shop.emoji ?: "🏬", fontSize = FontSize.REGULAR) }
+        ) { Text(shop.emoji ?: "", fontSize = FontSize.REGULAR) }
         Column(modifier = Modifier.weight(1f)) {
             Text(shop.name, fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
             shop.category?.takeIf { it.isNotBlank() }?.let {

@@ -76,7 +76,7 @@ fun VipSubScreen(
                 modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(18.dp))
                     .background(MaterialTheme.colorScheme.primaryContainer).padding(20.dp),
             ) {
-                Text(if (active) "اشتراکِ شما فعال است ✨" else "بازارچه پلاس", fontSize = FontSize.LARGE, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                Text(if (active) "اشتراکِ شما فعال است " else "بازارچه پلاس", fontSize = FontSize.LARGE, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
                 Spacer(Modifier.height(8.dp))
                 Text(
                     if (active) "به همهٔ مزایای ویژه دسترسی دارید." else "با فعال‌سازیِ بازارچه پلاس از ارسالِ رایگان، تخفیف‌های ویژه و پشتیبانیِ سریع بهره‌مند شوید.",

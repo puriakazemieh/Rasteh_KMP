@@ -80,7 +80,7 @@ fun ActivityScreen(
                             Box(
                                 modifier = Modifier.size(38.dp).clip(RoundedCornerShape(10.dp)).background(MaterialTheme.colorScheme.surface),
                                 contentAlignment = Alignment.Center,
-                            ) { Text(if (act.type == "ORDER") "🛍️" else "🔖", fontSize = FontSize.REGULAR) }
+                            ) { Text(if (act.type == "ORDER") "" else "", fontSize = FontSize.REGULAR) }
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(act.title, fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                                 act.subtitle?.takeIf { it.isNotBlank() }?.let {

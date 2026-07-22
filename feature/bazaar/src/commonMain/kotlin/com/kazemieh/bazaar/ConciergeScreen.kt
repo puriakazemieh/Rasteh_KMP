@@ -84,7 +84,7 @@ fun ConciergeScreen(
                         .clickable { openIndex = if (openIndex == i) -1 else i }
                         .padding(14.dp),
                 ) {
-                    Text("💬 ${qa.q}", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                    Text(" ${qa.q}", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                     if (openIndex == i) {
                         Spacer(Modifier.height(6.dp))
                         Text(qa.a, fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant)

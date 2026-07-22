@@ -102,7 +102,7 @@ fun WarrantyScreen(
                             modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp))
                                 .background(MaterialTheme.colorScheme.surfaceVariant).padding(16.dp),
                         ) {
-                            Text("🛡️ ${wr.title}", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                            Text(" ${wr.title}", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                             wr.serial?.takeIf { it.isNotBlank() }?.let {
                                 Spacer(Modifier.height(4.dp))
                                 Text("سریال: ${it.toFaDigits()}", fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant)

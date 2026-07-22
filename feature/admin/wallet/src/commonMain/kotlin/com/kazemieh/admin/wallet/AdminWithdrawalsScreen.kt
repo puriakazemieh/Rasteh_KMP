@@ -118,7 +118,7 @@ fun AdminWithdrawalsScreen(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                                 ) {
-                                    Text("⚠", color = colors.gold, fontSize = FontSize.MEDIUM)
+                                    Text("", color = colors.gold, fontSize = FontSize.MEDIUM)
                                     Text(
                                         text = "$pendingCount درخواست برداشت در انتظار بررسی شماست",
                                         fontSize = FontSize.SMALL,

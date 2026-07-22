@@ -192,7 +192,7 @@ fun AdminInteractionItem(interaction: AdminInteraction) {
             Row(modifier = Modifier.padding(top = 6.dp)) {
                 repeat(5) { index ->
                     Text(
-                        text = if (index < it) "★" else "☆",
+                        text = if (index < it) "" else "",
                         color = if (index < it) colors.star else colors.onSurfaceVariant,
                         fontSize = FontSize.REGULAR
                     )

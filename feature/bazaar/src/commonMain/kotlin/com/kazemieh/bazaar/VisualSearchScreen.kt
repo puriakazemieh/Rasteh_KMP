@@ -68,7 +68,7 @@ fun VisualSearchScreen(
             Box(
                 modifier = Modifier.fillMaxWidth().height(180.dp).clip(RoundedCornerShape(18.dp)).background(MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center,
-            ) { Text("🔎📷", fontSize = FontSize.EXTRA_LARGE) }
+            ) { Text("", fontSize = FontSize.EXTRA_LARGE) }
             Text(
                 "با انتخابِ عکسِ یک کالا، مشابهِ آن را در بازارچه پیدا کنید. این قابلیت به‌زودی فعال می‌شود.",
                 fontSize = FontSize.SMALL,

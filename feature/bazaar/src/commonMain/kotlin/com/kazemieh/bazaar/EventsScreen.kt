@@ -72,7 +72,7 @@ fun EventsScreen(
                             modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp))
                                 .background(MaterialTheme.colorScheme.surfaceVariant).padding(16.dp),
                         ) {
-                            Text("🎉 ${ev.title}", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                            Text(" ${ev.title}", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                             Spacer(Modifier.height(4.dp))
                             Text(ev.eventDate.take(10).toFaDigits(), fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                             ev.description?.takeIf { it.isNotBlank() }?.let {

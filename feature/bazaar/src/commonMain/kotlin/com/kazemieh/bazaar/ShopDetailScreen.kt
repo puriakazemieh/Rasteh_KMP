@@ -240,7 +240,9 @@ private fun androidx.compose.foundation.lazy.LazyListScope.reviewItems(reviews: 
                 Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp).clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.surface).padding(14.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(review.authorName ?: "کاربر", modifier = Modifier.weight(1f), fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-                        Text("★ ${review.rating.toFaDigits()}", fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.secondary)
+                        Icon(Icons.Default.Star, contentDescription = null, tint = AppTheme.colors.star, modifier = Modifier.size(13.dp))
+                        Spacer(Modifier.size(3.dp))
+                        Text(review.rating.toFaDigits(), fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     review.comment?.let {
                         Spacer(Modifier.height(4.dp))

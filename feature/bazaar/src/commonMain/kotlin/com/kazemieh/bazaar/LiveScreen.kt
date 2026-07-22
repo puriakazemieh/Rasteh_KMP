@@ -81,7 +81,7 @@ fun LiveScreen(
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Text("🔴 زنده", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
+                                    Text(" زنده", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
                                     Text("${live.viewerCount.toFaDigits()} بیننده", fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
                             }

@@ -94,7 +94,7 @@ fun FavoritesScreen(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
                     ) {
-                        Text(text = "🤍", fontSize = FontSize.EXTRA_LARGE)
+                        Text(text = "", fontSize = FontSize.EXTRA_LARGE)
                         Spacer(Modifier.height(12.dp))
                         Text(
                             text = stringResource(Resources.String.FavoritesEmpty),

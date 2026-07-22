@@ -230,7 +230,7 @@ fun CategorySearchScreen(
                     }
                     item {
                         CarmillaFilterChip(
-                            text = "🏷️ فقط تخفیف‌دار",
+                            text = " فقط تخفیف‌دار",
                             selected = state.discountedOnly,
                             onClick = { viewModel.handleIntent(CategorySearchIntent.SetDiscountedOnly(!state.discountedOnly)) }
                         )
