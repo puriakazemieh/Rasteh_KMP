@@ -41,6 +41,8 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.common.util.toFaPrice
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Resources
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import org.jetbrains.compose.resources.painterResource
 import com.kazemieh.domain.interaction.Bookmark
 import com.kazemieh.domain.marketplace.Product
@@ -342,7 +344,10 @@ private fun SectionHeaderWithAll(title: String, onAll: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(title, modifier = Modifier.weight(1f), fontSize = FontSize.EXTRA_REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-        Text("همه ‹", modifier = Modifier.clickable(onClick = onAll), fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.primary)
+        Row(modifier = Modifier.clickable(onClick = onAll), verticalAlignment = Alignment.CenterVertically) {
+            Text("همه", fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.primary)
+            Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp))
+        }
     }
 }
 

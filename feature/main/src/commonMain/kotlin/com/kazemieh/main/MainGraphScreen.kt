@@ -78,6 +78,8 @@ fun MainGraphScreen(
     navigateToProduct: (Long) -> Unit,
     navigateToMarketOrders: () -> Unit,
     navigateToDeals: () -> Unit,
+    navigateToActivity: () -> Unit,
+    navigateToReferral: () -> Unit,
     navigateToPriceAlerts: () -> Unit,
     navigateToGiftCards: () -> Unit,
     navigateToCommunity: () -> Unit,
@@ -243,9 +245,11 @@ fun MainGraphScreen(
                             MoreScreen(
                                 isLoggedIn = state.isLoggedIn,
                                 isAdmin = state.isAdmin,
+                                isVendor = state.isVendor,
                                 userName = state.userName,
                                 userPhone = state.userPhone,
                                 onLoginClick = navigateToAuth,
+                                onLogout = { viewModel.handleIntent(MainIntent.SignOut) },
                                 onEditProfileClick = navigateToProfile,
                                 onCustomerClubClick = navigateToCustomerClub,
                                 onSupportClick = navigateToContactUs,
@@ -257,13 +261,12 @@ fun MainGraphScreen(
                                 onBookmarksClick = navigateToBookmarks,
                                 onMarketOrdersClick = navigateToMarketOrders,
                                 onDealsClick = navigateToDeals,
-                                onPriceAlertsClick = navigateToPriceAlerts,
-                                onGiftCardsClick = navigateToGiftCards,
-                                onCommunityClick = navigateToCommunity,
-                                onNotificationsClick = navigateToNotifications,
+                                onActivityClick = navigateToActivity,
+                                onWalletClick = navigateToWallet,
+                                onReferralClick = navigateToReferral,
                                 onFeaturesClick = navigateToFeatures,
                                 onVendorPanelClick = navigateToVendorPanel,
-                                onAdminManageClick = navigateToAdminManage
+                                onAdminManageClick = navigateToAdminManage,
                             )
                         }
                     }

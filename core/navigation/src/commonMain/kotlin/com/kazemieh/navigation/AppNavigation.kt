@@ -195,6 +195,12 @@ fun AppNavHost(
                 navigateToDeals = {
                     navController.navigate(Screen.Deals)
                 },
+                navigateToActivity = {
+                    navController.navigate(Screen.Activity)
+                },
+                navigateToReferral = {
+                    navController.navigate(Screen.Referral)
+                },
                 navigateToPriceAlerts = {
                     navController.navigate(Screen.PriceAlerts)
                 },

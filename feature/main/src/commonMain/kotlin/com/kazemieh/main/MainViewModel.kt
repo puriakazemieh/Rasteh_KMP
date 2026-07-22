@@ -41,7 +41,7 @@ class MainViewModel(
                 if (isLoggedIn) {
                     getProfileUseCase()
                 } else {
-                    _state.update { it.copy(isAdmin = false) }
+                    _state.update { it.copy(isAdmin = false, isVendor = false) }
                 }
             }
         }
@@ -61,6 +61,7 @@ class MainViewModel(
                     _state.update {
                         it.copy(
                             isAdmin = p.role == "ADMIN",
+                            isVendor = p.role == "VENDOR" || p.role == "ADMIN",
                             userName = "${p.firstName.orEmpty()} ${p.lastName.orEmpty()}".trim(),
                             userPhone = p.phone ?: p.mobile ?: ""
                         )
@@ -87,7 +88,7 @@ class MainViewModel(
         viewModelScope.launch {
             when (val result = signOutUseCase()) {
                 is AppResult.Success -> {
-                    _state.update { it.copy(isLoggedIn = false, isAdmin = false) }
+                    _state.update { it.copy(isLoggedIn = false, isAdmin = false, isVendor = false) }
                     _effect.send(MainEffect.NavigateToAuth)
                 }
 
@@ -110,6 +111,7 @@ data class MainState(
     val isLoading: Boolean = false,
     val isLoggedIn: Boolean = false,
     val isAdmin: Boolean = false,
+    val isVendor: Boolean = false,
     val userName: String = "",
     val userPhone: String = "",
     val cartItemCount: Int = 0,

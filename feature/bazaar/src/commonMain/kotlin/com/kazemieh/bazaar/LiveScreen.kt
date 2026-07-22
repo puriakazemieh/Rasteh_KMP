@@ -91,7 +91,7 @@ fun LiveScreen(
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Text(live.shopName ?: "فروشگاه", fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
                                     live.shopId?.let {
-                                        Text("مشاهدهٔ فروشگاه ›", fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary, modifier = Modifier.clickable { navigateToShop(it) })
+                                        Text("مشاهدهٔ فروشگاه", fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary, modifier = Modifier.clickable { navigateToShop(it) })
                                     }
                                 }
                             }

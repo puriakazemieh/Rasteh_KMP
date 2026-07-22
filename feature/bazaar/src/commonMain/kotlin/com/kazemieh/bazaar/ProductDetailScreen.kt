@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material3.AlertDialog
@@ -122,7 +123,10 @@ fun ProductDetailScreen(
                                         Spacer(Modifier.size(10.dp))
                                         Column(modifier = Modifier.weight(1f)) {
                                             Text(product.shopName ?: "فروشگاه", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-                                            Text("مشاهدهٔ فروشگاه ‹", fontSize = FontSize.EXTRA_SMALL, color = MaterialTheme.colorScheme.primary)
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                                Text("مشاهدهٔ فروشگاه", fontSize = FontSize.EXTRA_SMALL, color = MaterialTheme.colorScheme.primary)
+                                                Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(14.dp))
+                                            }
                                         }
                                     }
                                 }
@@ -134,7 +138,10 @@ fun ProductDetailScreen(
                                 item {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Text("دیدن در فروشگاه‌های دیگر", modifier = Modifier.weight(1f), fontSize = FontSize.EXTRA_REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-                                        Text("مقایسه ‹", modifier = Modifier.clickable { navigateToCompare(productId) }, fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.primary)
+                                        Row(modifier = Modifier.clickable { navigateToCompare(productId) }, verticalAlignment = Alignment.CenterVertically) {
+                                            Text("مقایسه", fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.primary)
+                                            Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(14.dp))
+                                        }
                                     }
                                 }
                                 itemsIndexed(state.otherSellers) { index, seller ->
