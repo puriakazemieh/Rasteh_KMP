@@ -55,6 +55,8 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.common.util.toFaDigits
 import com.kazemieh.common.util.toFaPrice
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Resources
+import org.jetbrains.compose.resources.painterResource
 import com.kazemieh.domain.marketplace.Product
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.compose.viewmodel.koinViewModel
@@ -114,7 +116,9 @@ fun ProductDetailScreen(
                             item {
                                 Box(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.surface).clickable { product.shopId?.let(navigateToShop) }.padding(14.dp)) {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Text(product.emoji ?: "🏬", fontSize = FontSize.MEDIUM)
+                                        Box(modifier = Modifier.size(40.dp).clip(RoundedCornerShape(10.dp)).background(MaterialTheme.colorScheme.primaryContainer), contentAlignment = Alignment.Center) {
+                                            Icon(painterResource(Resources.Icon.StorePin), contentDescription = null, tint = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.size(22.dp))
+                                        }
                                         Spacer(Modifier.size(10.dp))
                                         Column(modifier = Modifier.weight(1f)) {
                                             Text(product.shopName ?: "فروشگاه", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
@@ -181,7 +185,9 @@ private fun Hero(product: Product) {
     Box(
         modifier = Modifier.fillMaxWidth().height(180.dp).clip(RoundedCornerShape(16.dp)).background(MaterialTheme.colorScheme.surfaceVariant),
         contentAlignment = Alignment.Center,
-    ) { Text(product.emoji ?: "📦", fontSize = FontSize.EXTRA_LARGE) }
+    ) {
+        Icon(painterResource(Resources.Icon.Orders), contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(56.dp))
+    }
 }
 
 @Composable
@@ -210,7 +216,9 @@ private fun OtherSellerRow(seller: Product, cheapest: Boolean, onClick: () -> Un
             .clickable(onClick = onClick).padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(modifier = Modifier.size(40.dp).clip(RoundedCornerShape(10.dp)).background(MaterialTheme.colorScheme.primaryContainer), contentAlignment = Alignment.Center) { Text(seller.emoji ?: "🏬", fontSize = FontSize.REGULAR) }
+        Box(modifier = Modifier.size(40.dp).clip(RoundedCornerShape(10.dp)).background(MaterialTheme.colorScheme.primaryContainer), contentAlignment = Alignment.Center) {
+            Icon(painterResource(Resources.Icon.StorePin), contentDescription = null, tint = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.size(22.dp))
+        }
         Spacer(Modifier.size(10.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(seller.shopName ?: "فروشگاه", fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
