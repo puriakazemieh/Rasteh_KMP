@@ -33,4 +33,10 @@ jobs:
       - name: Compile shared + desktop (jvm)
         run: |
           chmod +x gradlew
-          ./gradlew --no-daemon --stacktrace :composeApp:compileKotlinJvm
+          set -o pipefail
+          ./gradlew --no-daemon :composeApp:compileKotlinJvm 2>&1 | tee /tmp/build.log || {
+            echo "=================== KOTLIN COMPILE ERRORS ==================="
+            grep -E '^e: ' /tmp/build.log | head -40
+            echo "==========================================================="
+            exit 1
+          }
