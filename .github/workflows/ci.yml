@@ -34,7 +34,7 @@ jobs:
         run: |
           chmod +x gradlew
           set -o pipefail
-          ./gradlew --no-daemon :composeApp:compileKotlinJvm 2>&1 | tee /tmp/build.log || {
+          ./gradlew --no-daemon :composeApp:compileKotlinJvm :composeApp:compileKotlinJs 2>&1 | tee /tmp/build.log || {
             echo "=================== KOTLIN COMPILE ERRORS ==================="
             grep -E '^e: ' /tmp/build.log | head -40
             echo "==========================================================="
