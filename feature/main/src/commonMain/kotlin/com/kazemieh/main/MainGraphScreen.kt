@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -36,6 +37,7 @@ import com.kazemieh.catalog.CategorySearchScreen
 import com.kazemieh.common.Screen
 import androidx.compose.foundation.layout.Row
 import com.kazemieh.designsystem.AppFont
+import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.messagebar.ContentWithMessageBar
 import com.kazemieh.designsystem.messagebar.rememberMessageBarState
@@ -228,19 +230,12 @@ fun MainGraphScreen(
 
                     // نوارِ پایین فقط روی موبایل؛ روی نمایشگرهای بزرگ نوارِ کناری جایگزین است.
                     if (!isLarge) {
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(all = 12.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            BottomBar(
-                                cartItemCount = state.cartItemCount,
-                                selected = selectedDestination,
-                                onSelect = onSelectDestination
-                            )
-                        }
+                        HorizontalDivider(color = AppTheme.colors.line)
+                        BottomBar(
+                            cartItemCount = state.cartItemCount,
+                            selected = selectedDestination,
+                            onSelect = onSelectDestination
+                        )
                     }
                 }
             }
