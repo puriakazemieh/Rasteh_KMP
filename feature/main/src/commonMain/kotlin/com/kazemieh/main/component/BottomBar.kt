@@ -12,15 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -29,8 +26,8 @@ import com.kazemieh.designsystem.AppTheme
 import org.jetbrains.compose.resources.painterResource
 
 /**
- * نوار پایینِ تمام‌عرضِ مسطح — مطابقِ دیزاینِ بازارچه:
- * چهار آیتمِ هم‌عرض، هر آیتم آیکن روی برچسبِ فارسی (همیشه نمایان)،
+ * نوار پایینِ تمام‌عرضِ مسطح — مطابقِ بستهٔ طراحیِ «Unified App»:
+ * پنج آیتمِ هم‌عرض، هر آیتم آیکن روی برچسبِ فارسی (همیشه نمایان)،
  * آیتمِ فعال با رنگِ primary. برچسب‌ها هاردکدِ فارسی‌اند تا روی وب مستقل از locale درست باشند.
  */
 @Composable
@@ -63,29 +60,12 @@ fun BottomBar(
                 verticalArrangement = Arrangement.Center,
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    if (destination == BottomBarDestination.Cart && cartItemCount > 0) {
-                        BadgedBox(
-                            badge = {
-                                Badge(containerColor = colors.sale, contentColor = Color.White) {
-                                    Text(text = cartItemCount.toString(), fontSize = 9.sp)
-                                }
-                            }
-                        ) {
-                            Icon(
-                                painter = painterResource(destination.icon),
-                                contentDescription = destination.faLabel,
-                                tint = animatedTint,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-                    } else {
-                        Icon(
-                            painter = painterResource(destination.icon),
-                            contentDescription = destination.faLabel,
-                            tint = animatedTint,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
+                    Icon(
+                        painter = painterResource(destination.icon),
+                        contentDescription = destination.faLabel,
+                        tint = animatedTint,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
                 Spacer(Modifier.height(4.dp))
                 Text(

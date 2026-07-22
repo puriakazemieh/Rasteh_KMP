@@ -177,6 +177,9 @@ fun AppNavHost(
                 navigateToChats = {
                     navController.navigate(Screen.ChatList)
                 },
+                navigateToChatThread = { conversationId, title ->
+                    navController.navigate(Screen.ChatThread(conversationId = conversationId, title = title))
+                },
                 navigateToBookmarks = {
                     navController.navigate(Screen.Bookmarks)
                 },

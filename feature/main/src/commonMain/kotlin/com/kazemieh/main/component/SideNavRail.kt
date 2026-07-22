@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,9 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.Radius
-import com.kazemieh.designsystem.Resources
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
 
 /**
  * نوارِ کناریِ ناوبری برای نمایشگرهای بزرگ (تبلت/دسکتاپ/وب) — جایگزینِ نوارِ پایینِ موبایل.
@@ -73,19 +69,11 @@ fun SideNavRail(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    if (destination == BottomBarDestination.Cart && cartItemCount > 0) {
-                        BadgedBox(
-                            badge = { Badge(containerColor = colors.sale, contentColor = Color.White) { Text(cartItemCount.toString(), fontSize = 9.sp) } }
-                        ) {
-                            Icon(painterResource(destination.icon), stringResource(Resources.String.BottomBarDesc), tint = animatedTint, modifier = Modifier.size(24.dp))
-                        }
-                    } else {
-                        Icon(painterResource(destination.icon), stringResource(Resources.String.BottomBarDesc), tint = animatedTint, modifier = Modifier.size(24.dp))
-                    }
+                    Icon(painterResource(destination.icon), destination.faLabel, tint = animatedTint, modifier = Modifier.size(24.dp))
                 }
                 if (expandedLabels) {
                     Text(
-                        text = stringResource(destination.title),
+                        text = destination.faLabel,
                         color = if (isSelected) colors.primary else colors.onSurface,
                         fontSize = 13.sp,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,

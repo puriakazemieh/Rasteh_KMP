@@ -3,39 +3,40 @@ package com.kazemieh.main.component
 import com.kazemieh.common.Screen
 import com.kazemieh.designsystem.Resources
 import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.StringResource
 
 /**
- * تب‌های نوارِ پایین — مطابقِ دیزاینِ بازارچه (راست‌به‌چپ): خانه، سبد، سفارش‌ها، پروفایل.
+ * تب‌های نوارِ پایین — دقیقاً مطابقِ بستهٔ طراحیِ «Unified App» (راست‌به‌چپ):
+ * خانه، جست‌وجو، پیام‌ها، ذخیره‌ها، پروفایل — پنج تب با آیکونِ خطیِ منطبق بر دیزاین.
  * ترتیبِ enum = ترتیبِ نمایش (در RTL اولین آیتم سمتِ راست).
+ * برچسب‌ها هاردکدِ فارسی‌اند تا روی وب مستقل از locale درست نمایش داده شوند.
  */
 enum class BottomBarDestination(
     val icon: DrawableResource,
-    val title: StringResource,
     val faLabel: String,
     val screen: Screen
 ) {
-    ProductsOverview(
-        icon = Resources.Icon.Home,
-        title = Resources.String.Home,
+    Home(
+        icon = Resources.Icon.NavHome,
         faLabel = "خانه",
         screen = Screen.ProductsOverview
     ),
-    Cart(
-        icon = Resources.Icon.ShoppingCart,
-        title = Resources.String.Cart,
-        faLabel = "سبد",
-        screen = Screen.Cart
+    Search(
+        icon = Resources.Icon.NavSearch,
+        faLabel = "جست‌وجو",
+        screen = Screen.Search
     ),
-    Orders(
-        icon = Resources.Icon.Orders,
-        title = Resources.String.Profile,
-        faLabel = "سفارش‌ها",
-        screen = Screen.MarketOrders
+    Messages(
+        icon = Resources.Icon.NavChat,
+        faLabel = "پیام‌ها",
+        screen = Screen.ChatList
     ),
-    More(
-        icon = Resources.Icon.Person,
-        title = Resources.String.Profile,
+    Bookmarks(
+        icon = Resources.Icon.NavBookmark,
+        faLabel = "ذخیره‌ها",
+        screen = Screen.Bookmarks
+    ),
+    Profile(
+        icon = Resources.Icon.NavUser,
         faLabel = "پروفایل",
         screen = Screen.Categories
     )

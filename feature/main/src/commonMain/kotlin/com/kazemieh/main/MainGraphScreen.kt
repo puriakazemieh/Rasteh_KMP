@@ -47,7 +47,6 @@ import com.kazemieh.main.component.BottomBarDestination
 import com.kazemieh.main.component.SideNavRail
 import com.kazemieh.main.component.TitleTopBar
 import kotlinx.coroutines.flow.collectLatest
-import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -73,6 +72,7 @@ fun MainGraphScreen(
     navigateToBecomeVendor: () -> Unit,
     navigateToAdminShops: () -> Unit,
     navigateToChats: () -> Unit,
+    navigateToChatThread: (conversationId: Long, title: String) -> Unit,
     navigateToBookmarks: () -> Unit,
     navigateToShopDetail: (Long) -> Unit,
     navigateToProduct: (Long) -> Unit,
@@ -104,11 +104,12 @@ fun MainGraphScreen(
         derivedStateOf {
             val route = currentRoute.value?.destination?.route.toString()
             when {
-                route.contains(BottomBarDestination.Cart.screen.toString()) -> BottomBarDestination.Cart
-                route.contains(BottomBarDestination.Orders.screen.toString()) -> BottomBarDestination.Orders
-                route.contains(BottomBarDestination.More.screen.toString()) -> BottomBarDestination.More
-                route.contains(BottomBarDestination.ProductsOverview.screen.toString()) -> BottomBarDestination.ProductsOverview
-                else -> BottomBarDestination.ProductsOverview
+                route.contains(BottomBarDestination.Search.screen.toString()) -> BottomBarDestination.Search
+                route.contains(BottomBarDestination.Messages.screen.toString()) -> BottomBarDestination.Messages
+                route.contains(BottomBarDestination.Bookmarks.screen.toString()) -> BottomBarDestination.Bookmarks
+                route.contains(BottomBarDestination.Profile.screen.toString()) -> BottomBarDestination.Profile
+                route.contains(BottomBarDestination.Home.screen.toString()) -> BottomBarDestination.Home
+                else -> BottomBarDestination.Home
             }
         }
     }
@@ -160,10 +161,13 @@ fun MainGraphScreen(
             topBar = {
                 when (selectedDestination) {
                     // خانهٔ «search-first» است؛ نوارِ جستجوی خودش را دارد و هدرِ سنگین ندارد.
-                    BottomBarDestination.ProductsOverview -> {}
-                    // صفحهٔ سفارش‌ها هدر و عنوانِ خودش را دارد
-                    BottomBarDestination.Orders -> {}
-                    else -> TitleTopBar(title = stringResource(selectedDestination.title))
+                    BottomBarDestination.Home -> {}
+                    // این صفحه‌ها Scaffold و هدرِ اختصاصیِ خودشان را دارند.
+                    BottomBarDestination.Search -> {}
+                    BottomBarDestination.Messages -> {}
+                    BottomBarDestination.Bookmarks -> {}
+                    // پروفایل (More) هدرِ خودش را ندارد.
+                    BottomBarDestination.Profile -> TitleTopBar(title = selectedDestination.faLabel)
                 }
             }
         ) { padding ->
@@ -197,6 +201,28 @@ fun MainGraphScreen(
                         composable<Screen.Search> {
                             com.kazemieh.bazaar.SearchScreen(
                                 navigateToShop = navigateToShopDetail
+                            )
+                        }
+                        composable<Screen.ChatList> {
+                            com.kazemieh.bazaar.ChatListScreen(
+                                navigateBack = {
+                                    navController.navigate(Screen.ProductsOverview) {
+                                        launchSingleTop = true
+                                        popUpTo(Screen.ProductsOverview) { inclusive = false }
+                                    }
+                                },
+                                navigateToChat = navigateToChatThread,
+                            )
+                        }
+                        composable<Screen.Bookmarks> {
+                            com.kazemieh.bazaar.BookmarksScreen(
+                                navigateBack = {
+                                    navController.navigate(Screen.ProductsOverview) {
+                                        launchSingleTop = true
+                                        popUpTo(Screen.ProductsOverview) { inclusive = false }
+                                    }
+                                },
+                                navigateToShop = navigateToShopDetail,
                             )
                         }
                         composable<Screen.MarketOrders> {
