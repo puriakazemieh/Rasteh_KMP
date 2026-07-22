@@ -280,6 +280,7 @@ private fun VendorContent(shopName: String, onOrders: () -> Unit, onPanel: () ->
         ActionTileData(Resources.Icon.Dollar, "تخفیفِ دنبال‌کننده", onDeals),
         ActionTileData(Resources.Icon.Clock, "آمار و عملکرد", onPanel),
         ActionTileData(Resources.Icon.Edit, "ویرایشِ فروشگاه", onPanel),
+        ActionTileData(Resources.Icon.MapPin, "کدِ QR فروشگاه", onPanel),
     )
 }
 
