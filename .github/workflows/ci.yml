@@ -1,0 +1,36 @@
+name: CI (fast compile)
+
+# Lightweight compile check that runs automatically on every push to the
+# develop / claude branches. It compiles the shared Kotlin (commonMain +
+# jvmMain via the desktop target), which surfaces the vast majority of
+# compile errors in a few minutes — without the cost of the full multi-target
+# Build All workflow. Use Build All (workflow_dispatch) for real artifacts.
+on:
+  push:
+    branches:
+      - develop
+      - 'claude/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Compile shared + desktop (jvm)
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon --stacktrace :composeApp:compileKotlinJvm
