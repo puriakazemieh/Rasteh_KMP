@@ -37,6 +37,8 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.common.util.toFaDigits
 import com.kazemieh.designsystem.FontSize
 import org.koin.compose.viewmodel.koinViewModel
+import org.jetbrains.compose.resources.painterResource
+import com.kazemieh.designsystem.Resources
 
 /** فیدِ فعالیت (activity) · نشان‌کردن‌ها و سفارش‌های اخیرِ کاربر. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -80,7 +82,7 @@ fun ActivityScreen(
                             Box(
                                 modifier = Modifier.size(38.dp).clip(RoundedCornerShape(10.dp)).background(MaterialTheme.colorScheme.surface),
                                 contentAlignment = Alignment.Center,
-                            ) { Text(if (act.type == "ORDER") "" else "", fontSize = FontSize.REGULAR) }
+                            ) { Icon(painterResource(if (act.type == "ORDER") Resources.Icon.Orders else Resources.Icon.StorePin), contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(19.dp)) }
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(act.title, fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                                 act.subtitle?.takeIf { it.isNotBlank() }?.let {

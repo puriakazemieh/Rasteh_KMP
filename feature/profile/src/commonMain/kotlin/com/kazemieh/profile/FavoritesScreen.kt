@@ -39,6 +39,7 @@ import com.kazemieh.designsystem.util.anyToString
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import androidx.compose.foundation.layout.size
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -94,7 +95,7 @@ fun FavoritesScreen(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
                     ) {
-                        Text(text = "", fontSize = FontSize.EXTRA_LARGE)
+                        Icon(painterResource(Resources.Icon.StorePin), contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(40.dp))
                         Spacer(Modifier.height(12.dp))
                         Text(
                             text = stringResource(Resources.String.FavoritesEmpty),

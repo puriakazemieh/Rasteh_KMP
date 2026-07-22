@@ -38,6 +38,10 @@ import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.component.CustomTextField
 import com.kazemieh.designsystem.component.PrimaryButton
 import org.koin.compose.viewmodel.koinViewModel
+import org.jetbrains.compose.resources.painterResource
+import com.kazemieh.designsystem.Resources
+import androidx.compose.foundation.layout.size
+import com.kazemieh.designsystem.AppTheme
 
 /**
  * فرمِ «درخواستِ فروشندگی» · نام، راسته، محل، دسته، طبقه، نوع (خرید آنلاین/فقط حضوری)،
@@ -207,7 +211,7 @@ private fun SubmittedContent(modifier: Modifier, onDone: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Text(text = "", fontSize = FontSize.EXTRA_LARGE)
+            Icon(painterResource(Resources.Icon.Checkmark), contentDescription = null, tint = AppTheme.colors.ok, modifier = Modifier.size(44.dp))
             Spacer(Modifier.height(16.dp))
             Text(
                 text = "درخواستِ شما ثبت شد",

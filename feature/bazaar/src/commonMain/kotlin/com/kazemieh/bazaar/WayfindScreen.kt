@@ -40,6 +40,8 @@ import com.kazemieh.common.util.toFaDigits
 import com.kazemieh.designsystem.FontSize
 import com.kazemieh.domain.marketplace.Shop
 import org.koin.compose.viewmodel.koinViewModel
+import org.jetbrains.compose.resources.painterResource
+import com.kazemieh.designsystem.Resources
 
 /**
  * مسیریابِ داخلِ محل (wayfind) · MVP: فهرستِ طبقاتِ محل و فروشگاه‌های هر طبقه.
@@ -137,7 +139,7 @@ private fun WayfindShopRow(shop: Shop, onClick: () -> Unit) {
         Box(
             modifier = Modifier.size(40.dp).clip(RoundedCornerShape(10.dp)).background(MaterialTheme.colorScheme.surface),
             contentAlignment = Alignment.Center,
-        ) { Text(shop.emoji ?: "", fontSize = FontSize.REGULAR) }
+        ) { Icon(painterResource(Resources.Icon.StorePin), contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(19.dp)) }
         Column(modifier = Modifier.weight(1f)) {
             Text(shop.name, fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
             shop.category?.takeIf { it.isNotBlank() }?.let {

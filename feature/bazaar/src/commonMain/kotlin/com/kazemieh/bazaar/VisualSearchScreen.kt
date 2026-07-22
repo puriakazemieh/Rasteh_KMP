@@ -34,6 +34,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.remember
 import com.kazemieh.designsystem.FontSize
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
+import com.kazemieh.designsystem.Resources
+import androidx.compose.foundation.layout.size
 
 /**
  * جست‌وجوی تصویری (visualsearch) · MVP: توضیح + انتخابِ عکس (به‌زودی) و میان‌بر به
@@ -68,7 +71,7 @@ fun VisualSearchScreen(
             Box(
                 modifier = Modifier.fillMaxWidth().height(180.dp).clip(RoundedCornerShape(18.dp)).background(MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center,
-            ) { Text("", fontSize = FontSize.EXTRA_LARGE) }
+            ) { Icon(painterResource(Resources.Icon.Search), contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(40.dp)) }
             Text(
                 "با انتخابِ عکسِ یک کالا، مشابهِ آن را در بازارچه پیدا کنید. این قابلیت به‌زودی فعال می‌شود.",
                 fontSize = FontSize.SMALL,
