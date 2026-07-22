@@ -31,7 +31,7 @@ class CatalogApiImpl(
         sort: String?,
         discountedOnly: Boolean
     ): PageResponse<ProductSummaryResponse> = safeApiCallRaw {
-        client.get("api/products") {
+        client.get("api/catalog/products") {
             parameter("q", query)
             parameter("categoryId", categoryId)
             options?.forEach { (key, value) ->
@@ -48,7 +48,7 @@ class CatalogApiImpl(
     }
 
     override suspend fun getProductDetail(slug: String): ProductDetailResponse = safeApiCallRaw {
-        client.get("api/products/$slug")
+        client.get("api/catalog/products/$slug")
     }
 
     override suspend fun getActiveCampaign(): CampaignResponse? {

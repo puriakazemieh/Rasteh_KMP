@@ -13,24 +13,24 @@ class OrderApiImpl(
 ) : OrderApi {
 
     override suspend fun listMyOrders(): List<OrderResponse> = safeApiCallRaw {
-        client.get("api/orders")
+        client.get("api/shop-orders")
     }
 
     override suspend fun getOrder(id: Long): OrderDetailResponse = safeApiCallRaw {
-        client.get("api/orders/$id")
+        client.get("api/shop-orders/$id")
     }
 
     override suspend fun createOrder(request: CreateOrderRequest): OrderDetailResponse = safeApiCallRaw {
-        client.post("api/orders") {
+        client.post("api/shop-orders") {
             setBody(request)
         }
     }
 
     override suspend fun cancelOrder(id: Long): Unit = safeApiCallRaw {
-        client.post("api/orders/$id/cancel")
+        client.post("api/shop-orders/$id/cancel")
     }
 
     override suspend fun trackOrder(id: Long): OrderTrackingResponse = safeApiCallRaw {
-        client.get("api/orders/$id/track")
+        client.get("api/shop-orders/$id/track")
     }
 }

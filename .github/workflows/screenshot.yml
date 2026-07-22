@@ -79,27 +79,39 @@ jobs:
           APP_CORS_ORIGINS: '*'
           SEED_ENABLED: 'true'
         run: |
+          # Diagnostics are written to shots/diag.txt and committed alongside the
+          # PNGs, so they can be read directly without scraping the job log tail.
+          mkdir -p shots
+          exec_diag() { echo "$@" | tee -a shots/diag.txt; }
+          : > shots/diag.txt
           # Start server + web IN THIS STEP so they are guaranteed alive during
           # the screenshot (a backgrounded server from an earlier step was not
           # reliably reachable -> the browser got ERR_CONNECTION_REFUSED).
           nohup java -jar app.jar > server.log 2>&1 &
-          echo "waiting for server…"
+          exec_diag "waiting for server…"
           up=0
           for i in $(seq 1 100); do
-            if curl -sSf http://localhost:8080/api/rastehs >/dev/null 2>&1; then up=1; echo "server up after ${i}"; break; fi
+            if curl -sSf http://localhost:8080/api/rastehs >/dev/null 2>&1; then up=1; exec_diag "server up after ${i}"; break; fi
             sleep 3
           done
-          if [ "$up" != "1" ]; then echo "SERVER DID NOT COME UP — last 60 lines:"; tail -60 server.log; fi
-          echo "rastehs sample:"; curl -s http://localhost:8080/api/rastehs | head -c 500; echo
+          if [ "$up" != "1" ]; then
+            exec_diag "SERVER DID NOT COME UP — server.log tail:"
+            tail -80 server.log | tee -a shots/diag.txt
+          fi
+          exec_diag "rastehs sample:"
+          curl -s http://localhost:8080/api/rastehs | head -c 800 | tee -a shots/diag.txt; echo | tee -a shots/diag.txt
+          exec_diag "shops sample:"
+          curl -s "http://localhost:8080/api/shops?page=0&size=3" | head -c 500 | tee -a shots/diag.txt; echo | tee -a shots/diag.txt
           nohup python3 -m http.server 8090 --directory web > web-server.log 2>&1 &
           sleep 3
-          curl -sS -o /dev/null -w "web local: %{http_code}\n" http://localhost:8090/ || true
+          curl -sS -o /dev/null -w "web local: %{http_code}\n" http://localhost:8090/ | tee -a shots/diag.txt || true
 
           npm init -y >/dev/null 2>&1
           npm i -D playwright >/dev/null 2>&1
           npx playwright install --with-deps chromium >/dev/null 2>&1
           cat > shot.mjs <<'JS'
           import { chromium } from 'playwright';
+          import fs from 'fs';
           const b = await chromium.launch();
           const p = await b.newPage({ viewport: { width: 412, height: 915 }, deviceScaleFactor: 2 });
           const errs = [];
@@ -109,10 +121,11 @@ jobs:
           await p.waitForTimeout(18000);
           await p.screenshot({ path: 'shots/home.png', fullPage: false });
           await p.screenshot({ path: 'shots/home_full.png', fullPage: true });
-          console.log('CONSOLE ERRORS:\n' + (errs.slice(0,40).join('\n') || '(none)'));
+          const out = 'CONSOLE ERRORS:\n' + (errs.slice(0,40).join('\n') || '(none)');
+          console.log(out);
+          fs.appendFileSync('shots/diag.txt', '\n' + out + '\n');
           await b.close();
           JS
-          mkdir -p shots
           node shot.mjs || true
           ls -la shots || true
 
@@ -122,7 +135,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout --orphan screens-tmp
           git rm -rf --cached . >/dev/null 2>&1 || true
-          git add -f shots/*.png
+          git add -f shots/*.png shots/*.txt
           git commit -q -m "screens (run ${GITHUB_RUN_ID})" || echo "no screenshots to commit"
           git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:refs/heads/claude/screens
         env:
