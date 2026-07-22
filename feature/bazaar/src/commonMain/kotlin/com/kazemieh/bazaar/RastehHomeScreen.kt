@@ -272,7 +272,14 @@ private fun BookmarkChip(bm: Bookmark, onClick: () -> Unit) {
         Box(
             modifier = Modifier.size(58.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primaryContainer),
             contentAlignment = Alignment.Center,
-        ) { Text(bm.shopEmoji ?: "🏬", fontSize = FontSize.MEDIUM) }
+        ) {
+            Icon(
+                painter = painterResource(Resources.Icon.StorePin),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.size(26.dp),
+            )
+        }
         Spacer(Modifier.height(4.dp))
         Text(
             text = bm.shopName ?: "فروشگاه",

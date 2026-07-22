@@ -141,12 +141,22 @@ jobs:
           await clickShot(cx(1), tabY, 'tab_profile');
           await clickShot(cx(9), tabY, 'tab_home');
 
-          // شیتِ انتخابِ محل: کلیک روی اولین کاشیِ راسته (ردیفِ اول، راست‌ترین ≈ x 0.88W).
+          // بازگشت به خانه، سپس شیتِ انتخابِ محل: کلیک روی اولین کاشیِ راسته (ردیفِ اول، راست‌ترین ≈ x 0.88W).
+          await clickShot(cx(9), tabY, 'tab_home2', 2500);
           try {
             await p.mouse.click(Math.round(W * 0.88), 300);
             await p.waitForTimeout(2500);
             await p.screenshot({ path: 'shots/rasteh_sheet.png', fullPage: false });
-          } catch (e) { errs.push('RASTEH SHEET: ' + e.message); }
+            // انتخابِ اولین محل در شیت → صفحهٔ rastehSearch (فهرستِ فروشگاه‌ها).
+            await p.mouse.click(Math.round(W * 0.5), Math.round(H * 0.72));
+            await p.waitForTimeout(3500);
+            await p.screenshot({ path: 'shots/rasteh_search.png', fullPage: false });
+            // کلیک روی اولین کارتِ فروشگاه → صفحهٔ shopDetail.
+            await p.mouse.click(Math.round(W * 0.5), 200);
+            await p.waitForTimeout(3500);
+            await p.screenshot({ path: 'shots/shop_detail.png', fullPage: false });
+            await p.screenshot({ path: 'shots/shop_detail_full.png', fullPage: true });
+          } catch (e) { errs.push('SHEET/SEARCH/SHOP: ' + e.message); }
 
           const out = 'CONSOLE ERRORS:\n' + (errs.slice(0,40).join('\n') || '(none)');
           console.log(out);

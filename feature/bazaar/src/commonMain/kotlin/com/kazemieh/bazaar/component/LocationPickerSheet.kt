@@ -12,8 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -27,7 +30,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Resources
 import com.kazemieh.domain.marketplace.MarketplaceLocation
+import org.jetbrains.compose.resources.painterResource
 
 /**
  * باتم‌شیتِ انتخابِ محل برای راستهٔ انتخاب‌شده. با انتخابِ یک محل، ناوبری به فهرستِ فروشگاه‌ها.
@@ -65,14 +70,14 @@ fun LocationPickerSheet(
                 .padding(bottom = 28.dp),
         ) {
             Text(
-                text = "انتخابِ محل — $rastehLabel",
+                text = "راستهٔ $rastehLabel",
                 fontSize = FontSize.EXTRA_REGULAR,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "پاساژ یا بازارِ موردنظر را انتخاب کنید",
+                text = "محلِ راسته را انتخاب کنید",
                 fontSize = FontSize.SMALL,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -130,21 +135,21 @@ private fun LocationRow(
     location: MarketplaceLocation,
     onClick: () -> Unit,
 ) {
-    val kindEmoji = when (location.kind) {
-        "BAZAAR" -> "🏛️"
-        "STREET" -> "🛣️"
-        else -> "🏬"
-    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
+            .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .clickable(onClick = onClick)
             .padding(horizontal = 14.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(text = kindEmoji, fontSize = FontSize.MEDIUM)
+        Icon(
+            painter = painterResource(Resources.Icon.MapPin),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(20.dp),
+        )
         Spacer(modifier = Modifier.size(12.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(
@@ -164,5 +169,11 @@ private fun LocationRow(
                 )
             }
         }
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(20.dp),
+        )
     }
 }
