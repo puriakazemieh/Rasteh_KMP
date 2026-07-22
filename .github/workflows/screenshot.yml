@@ -145,7 +145,12 @@ jobs:
             await p.waitForTimeout(3500);
             await p.screenshot({ path: 'shots/shop_detail.png', fullPage: false });
             await p.screenshot({ path: 'shots/shop_detail_full.png', fullPage: true });
-          } catch (e) { errs.push('SHOP DETAIL: ' + e.message); }
+            // اولین کارتِ محصول در تبِ «محصولات» ≈ y 464 → صفحهٔ محصول (listing).
+            await p.mouse.click(Math.round(W * 0.5), 464);
+            await p.waitForTimeout(3500);
+            await p.screenshot({ path: 'shots/product_detail.png', fullPage: false });
+            await p.screenshot({ path: 'shots/product_detail_full.png', fullPage: true });
+          } catch (e) { errs.push('SHOP/PRODUCT DETAIL: ' + e.message); }
 
           // ۲) تب‌های نوارِ پایین (از خانهٔ تازه). راست→چپ: خانه(9) جست‌وجو(7) پیام‌ها(5) ذخیره‌ها(3) پروفایل(1)
           await home();
