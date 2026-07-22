@@ -20,10 +20,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -41,6 +40,8 @@ import com.kazemieh.bazaar.component.ShopCard
 import com.kazemieh.common.AppResult
 import com.kazemieh.common.util.toFaPrice
 import com.kazemieh.designsystem.FontSize
+import com.kazemieh.designsystem.Resources
+import org.jetbrains.compose.resources.painterResource
 import com.kazemieh.domain.interaction.Bookmark
 import com.kazemieh.domain.marketplace.Product
 import com.kazemieh.domain.marketplace.Shop
@@ -57,6 +58,7 @@ fun RastehHomeScreen(
     navigateToShop: (Long) -> Unit,
     navigateToProduct: (Long) -> Unit,
     navigateToBookmarks: () -> Unit,
+    navigateToSearch: () -> Unit,
     viewModel: RastehHomeViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
@@ -74,13 +76,8 @@ fun RastehHomeScreen(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
         contentPadding = PaddingValues(bottom = 24.dp),
     ) {
-        // سرچ‌بار
-        item {
-            SearchField(
-                query = state.query,
-                onQueryChange = { viewModel.handleIntent(RastehHomeIntent.OnQueryChange(it)) },
-            )
-        }
+        // سرچ‌بار (کلیک → صفحهٔ جست‌وجو)
+        item { SearchField(onClick = navigateToSearch) }
 
         // گریدِ راسته‌ها (۵ ستونه)
         item { SectionTitle("راسته‌های بازارچه") }
@@ -207,21 +204,30 @@ fun RastehHomeScreen(
 }
 
 @Composable
-private fun SearchField(query: String, onQueryChange: (String) -> Unit) {
-    TextField(
-        value = query,
-        onValueChange = onQueryChange,
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp).clip(RoundedCornerShape(11.dp)),
-        placeholder = { Text("جست‌وجوی فروشگاه یا محصول…", fontSize = FontSize.REGULAR) },
-        singleLine = true,
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent,
-        ),
-    )
+private fun SearchField(onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 10.dp)
+            .clip(RoundedCornerShape(11.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 13.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Icon(
+            painter = painterResource(Resources.Icon.Search),
+            contentDescription = "جست‌وجو",
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(18.dp),
+        )
+        Text(
+            text = "جست‌وجوی فروشگاه یا محصول",
+            fontSize = FontSize.REGULAR,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
 }
 
 @Composable

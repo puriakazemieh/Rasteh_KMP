@@ -19,6 +19,7 @@ object Resources {
         val BackArrow = DesignRes.drawable.back_arrow
         val RightArrow = DesignRes.drawable.right_arrow
         val Home = DesignRes.drawable.home
+        val Orders = DesignRes.drawable.orders
         val ShoppingCart = DesignRes.drawable.shopping_cart
         val Categories = DesignRes.drawable.grid
         val Dollar = DesignRes.drawable.dollar

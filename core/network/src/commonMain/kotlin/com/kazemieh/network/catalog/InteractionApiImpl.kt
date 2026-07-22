@@ -10,23 +10,23 @@ class InteractionApiImpl(
 ) : InteractionApi {
 
     override suspend fun getReviews(productId: Long): List<ReviewResponse> = safeApiCallRaw {
-        client.get("api/reviews/product/$productId")
+        client.get("api/product-reviews/product/$productId")
     }
 
     override suspend fun postReview(request: CreateReviewRequestDto): ReviewResponse = safeApiCallRaw {
-        client.post("api/reviews") {
+        client.post("api/product-reviews") {
             setBody(request)
         }
     }
 
     override suspend fun updateReview(reviewId: Long, request: UpdateReviewRequest): ReviewResponse = safeApiCallRaw {
-        client.put("api/reviews/$reviewId") {
+        client.put("api/product-reviews/$reviewId") {
             setBody(request)
         }
     }
 
     override suspend fun deleteReview(reviewId: Long): Unit = safeApiCallRaw {
-        client.delete("api/reviews/$reviewId")
+        client.delete("api/product-reviews/$reviewId")
     }
 
     override suspend fun getQuestions(productId: Long): List<QuestionResponse> = safeApiCallRaw {

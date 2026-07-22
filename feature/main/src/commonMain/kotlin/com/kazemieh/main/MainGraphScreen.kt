@@ -104,10 +104,10 @@ fun MainGraphScreen(
         derivedStateOf {
             val route = currentRoute.value?.destination?.route.toString()
             when {
-                route.contains(BottomBarDestination.ProductsOverview.screen.toString()) -> BottomBarDestination.ProductsOverview
-                route.contains(BottomBarDestination.Search.screen.toString()) -> BottomBarDestination.Search
                 route.contains(BottomBarDestination.Cart.screen.toString()) -> BottomBarDestination.Cart
+                route.contains(BottomBarDestination.Orders.screen.toString()) -> BottomBarDestination.Orders
                 route.contains(BottomBarDestination.More.screen.toString()) -> BottomBarDestination.More
+                route.contains(BottomBarDestination.ProductsOverview.screen.toString()) -> BottomBarDestination.ProductsOverview
                 else -> BottomBarDestination.ProductsOverview
             }
         }
@@ -159,10 +159,10 @@ fun MainGraphScreen(
             containerColor = MaterialTheme.colorScheme.surface,
             topBar = {
                 when (selectedDestination) {
-                    // خانهٔ v2 «search-first» است؛ نوارِ جستجوی خودش را دارد و هدرِ سنگین ندارد.
+                    // خانهٔ «search-first» است؛ نوارِ جستجوی خودش را دارد و هدرِ سنگین ندارد.
                     BottomBarDestination.ProductsOverview -> {}
-                    // صفحه‌ی جستجو هدر و فیلدِ جستجوی خودش را دارد
-                    BottomBarDestination.Search -> {}
+                    // صفحهٔ سفارش‌ها هدر و عنوانِ خودش را دارد
+                    BottomBarDestination.Orders -> {}
                     else -> TitleTopBar(title = stringResource(selectedDestination.title))
                 }
             }
@@ -188,12 +188,26 @@ fun MainGraphScreen(
                                 navigateToRastehSearch = navigateToRastehSearch,
                                 navigateToShop = navigateToShopDetail,
                                 navigateToProduct = navigateToProduct,
-                                navigateToBookmarks = navigateToBookmarks
+                                navigateToBookmarks = navigateToBookmarks,
+                                navigateToSearch = {
+                                    navController.navigate(Screen.Search) { launchSingleTop = true }
+                                }
                             )
                         }
                         composable<Screen.Search> {
                             com.kazemieh.bazaar.SearchScreen(
                                 navigateToShop = navigateToShopDetail
+                            )
+                        }
+                        composable<Screen.MarketOrders> {
+                            com.kazemieh.bazaar.MyOrdersScreen(
+                                navigateBack = {
+                                    navController.navigate(Screen.ProductsOverview) {
+                                        launchSingleTop = true
+                                        popUpTo(Screen.ProductsOverview) { inclusive = false }
+                                    }
+                                },
+                                navigateToShop = navigateToShopDetail,
                             )
                         }
                         composable<Screen.Cart> {
