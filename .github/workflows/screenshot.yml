@@ -118,8 +118,11 @@ jobs:
           const errs = [];
           p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
           p.on('pageerror', e => errs.push('PAGEERROR ' + e.message));
-          await p.goto('http://localhost:8090/', { waitUntil: 'load', timeout: 60000 });
-          await p.waitForTimeout(18000);
+          const home = async () => {
+            await p.goto('http://localhost:8090/', { waitUntil: 'load', timeout: 60000 });
+            await p.waitForTimeout(18000);
+          };
+          await home();
           await p.screenshot({ path: 'shots/home.png', fullPage: false });
           await p.screenshot({ path: 'shots/home_full.png', fullPage: true });
 
@@ -134,35 +137,34 @@ jobs:
               await p.screenshot({ path: `shots/${name}.png`, fullPage: false });
             } catch (e) { errs.push(`CLICK ${name}: ${e.message}`); }
           };
-          // تب‌ها (راست→چپ): خانه(9) جست‌وجو(7) پیام‌ها(5) ذخیره‌ها(3) پروفایل(1)
+
+          // ۱) shopDetail مستقیم از خانه (بلافاصله، چون هنوز روی خانه هستیم و کارت‌ها دیده می‌شوند).
+          // اولین کارتِ «جدیدترین فروشگاه‌ها» (همیشه داده دارد) ≈ y 470 در ویوپورت.
+          try {
+            await p.mouse.click(Math.round(W * 0.5), 470);
+            await p.waitForTimeout(3500);
+            await p.screenshot({ path: 'shots/shop_detail.png', fullPage: false });
+            await p.screenshot({ path: 'shots/shop_detail_full.png', fullPage: true });
+          } catch (e) { errs.push('SHOP DETAIL: ' + e.message); }
+
+          // ۲) تب‌های نوارِ پایین (از خانهٔ تازه). راست→چپ: خانه(9) جست‌وجو(7) پیام‌ها(5) ذخیره‌ها(3) پروفایل(1)
+          await home();
           await clickShot(cx(7), tabY, 'tab_search');
           await clickShot(cx(5), tabY, 'tab_messages');
           await clickShot(cx(3), tabY, 'tab_bookmarks');
           await clickShot(cx(1), tabY, 'tab_profile');
           await clickShot(cx(9), tabY, 'tab_home');
 
-          // بازگشت به خانه، سپس شیتِ انتخابِ محل: کلیک روی اولین کاشیِ راسته (ردیفِ اول، راست‌ترین ≈ x 0.88W).
-          await clickShot(cx(9), tabY, 'tab_home2', 2500);
+          // ۳) شیتِ انتخابِ محل + rastehSearch (از خانهٔ تازه).
+          await home();
           try {
             await p.mouse.click(Math.round(W * 0.88), 300);
             await p.waitForTimeout(2500);
             await p.screenshot({ path: 'shots/rasteh_sheet.png', fullPage: false });
-            // انتخابِ اولین محل در شیت → صفحهٔ rastehSearch (فهرستِ فروشگاه‌ها).
             await p.mouse.click(Math.round(W * 0.5), Math.round(H * 0.72));
             await p.waitForTimeout(3500);
             await p.screenshot({ path: 'shots/rasteh_search.png', fullPage: false });
           } catch (e) { errs.push('SHEET/SEARCH: ' + e.message); }
-
-          // shopDetail را مستقیم از خانه باز می‌کنیم: اولین کارتِ «جدیدترین فروشگاه‌ها»
-          // (که همیشه داده دارد) حدودِ y≈470 در ویوپورت است.
-          try {
-            await p.mouse.click(cx(9), tabY); // بازگشت به خانه
-            await p.waitForTimeout(2500);
-            await p.mouse.click(Math.round(W * 0.5), 470);
-            await p.waitForTimeout(3500);
-            await p.screenshot({ path: 'shots/shop_detail.png', fullPage: false });
-            await p.screenshot({ path: 'shots/shop_detail_full.png', fullPage: true });
-          } catch (e) { errs.push('SHOP DETAIL: ' + e.message); }
 
           const out = 'CONSOLE ERRORS:\n' + (errs.slice(0,40).join('\n') || '(none)');
           console.log(out);
