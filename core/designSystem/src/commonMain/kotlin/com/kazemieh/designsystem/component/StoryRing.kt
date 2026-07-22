@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
 
 // =====================================================================================
-//  Carmilla Design System — Story Ring
+//  Carmilla Design System · Story Ring
 //  حلقه‌ی گرادیانی استوری (طلایی → accent-2) با هسته‌ی دایره‌ای
 //  حالت seen: حلقه‌ی خنثی به‌جای گرادیان
 // =====================================================================================

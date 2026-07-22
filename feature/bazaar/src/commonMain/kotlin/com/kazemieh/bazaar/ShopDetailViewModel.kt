@@ -114,7 +114,7 @@ class ShopDetailViewModel(
         }
     }
 
-    /** خریدِ سریعِ یک کالا (تعداد ۱) — سفارشِ تک‌ونـدوری. */
+    /** خریدِ سریعِ یک کالا (تعداد ۱) · سفارشِ تک‌ونـدوری. */
     fun quickOrder(product: Product) {
         if (_state.value.orderBusyProductId != null) return
         _state.update { it.copy(orderBusyProductId = product.id) }

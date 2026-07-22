@@ -42,7 +42,7 @@ import com.kazemieh.common.util.toFaDigits
 import com.kazemieh.designsystem.FontSize
 import org.koin.compose.viewmodel.koinViewModel
 
-/** دعوتِ دوستان (referral) — کدِ دعوت + ثبتِ کدِ معرف. */
+/** دعوتِ دوستان (referral) · کدِ دعوت + ثبتِ کدِ معرف. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReferralScreen(
@@ -83,7 +83,7 @@ fun ReferralScreen(
             ) {
                 Text("کدِ دعوتِ شما", fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onPrimaryContainer)
                 Spacer(Modifier.height(8.dp))
-                Text(ref?.code ?: "—", fontSize = FontSize.LARGE, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                Text(ref?.code ?: "·", fontSize = FontSize.LARGE, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
                 Spacer(Modifier.height(8.dp))
                 Text(
                     "این کد را با دوستانتان به اشتراک بگذارید.",

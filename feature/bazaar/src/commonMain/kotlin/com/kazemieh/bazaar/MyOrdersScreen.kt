@@ -136,7 +136,7 @@ private fun Center(content: @Composable () -> Unit) {
     Box(modifier = Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) { content() }
 }
 
-/** تایم‌لاینِ رهگیریِ سفارش (tracking) — استنتاجِ کلاینت‌ساید از وضعیتِ فعلی. */
+/** تایم‌لاینِ رهگیریِ سفارش (tracking) · استنتاجِ کلاینت‌ساید از وضعیتِ فعلی. */
 @Composable
 private fun OrderStatusTimeline(status: String) {
     if (status == "CANCELLED") {

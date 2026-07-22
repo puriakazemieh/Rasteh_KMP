@@ -2,7 +2,7 @@ package com.kazemieh.domain.marketplace
 
 import kotlinx.serialization.Serializable
 
-/** راسته (صنف) — محورِ اصلیِ کشف در خانه. */
+/** راسته (صنف) · محورِ اصلیِ کشف در خانه. */
 @Serializable
 data class Rasteh(
     val id: Long,

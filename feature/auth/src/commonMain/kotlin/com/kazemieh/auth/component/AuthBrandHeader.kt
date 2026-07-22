@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 
-/** هدر برندِ راسته برای صفحات احراز هویت — لوگوی «ر» + عنوان + زیرعنوان (مطابق اسپک). */
+/** هدر برندِ راسته برای صفحات احراز هویت · لوگوی «ر» + عنوان + زیرعنوان (مطابق اسپک). */
 @Composable
 fun AuthBrandHeader(
     title: String,

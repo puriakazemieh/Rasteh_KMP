@@ -26,7 +26,7 @@ import com.kazemieh.designsystem.AppTheme
 import org.jetbrains.compose.resources.painterResource
 
 /**
- * نوار پایینِ تمام‌عرضِ مسطح — مطابقِ بستهٔ طراحیِ «Unified App»:
+ * نوار پایینِ تمام‌عرضِ مسطح · مطابقِ بستهٔ طراحیِ «Unified App»:
  * پنج آیتمِ هم‌عرض، هر آیتم آیکن روی برچسبِ فارسی (همیشه نمایان)،
  * آیتمِ فعال با رنگِ primary. برچسب‌ها هاردکدِ فارسی‌اند تا روی وب مستقل از locale درست باشند.
  */

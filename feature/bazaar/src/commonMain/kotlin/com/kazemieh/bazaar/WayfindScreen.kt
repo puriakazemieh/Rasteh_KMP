@@ -42,7 +42,7 @@ import com.kazemieh.domain.marketplace.Shop
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
- * مسیریابِ داخلِ محل (wayfind) — MVP: فهرستِ طبقاتِ محل و فروشگاه‌های هر طبقه.
+ * مسیریابِ داخلِ محل (wayfind) · MVP: فهرستِ طبقاتِ محل و فروشگاه‌های هر طبقه.
  * فازِ بعدی: نقشهٔ گرافیکی با مختصاتِ mapX/mapY.
  */
 @OptIn(ExperimentalMaterial3Api::class)

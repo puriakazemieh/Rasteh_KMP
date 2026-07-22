@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.FontSize
 
 /**
- * دستیارِ خرید (concierge) — MVP: پرسش‌های پرتکرار با پاسخِ آماده + میان‌بر به جست‌وجو.
+ * دستیارِ خرید (concierge) · MVP: پرسش‌های پرتکرار با پاسخِ آماده + میان‌بر به جست‌وجو.
  * فازِ بعدی: اتصال به LLM/جست‌وجوی هوشمند.
  */
 private data class ConciergeQa(val q: String, val a: String)

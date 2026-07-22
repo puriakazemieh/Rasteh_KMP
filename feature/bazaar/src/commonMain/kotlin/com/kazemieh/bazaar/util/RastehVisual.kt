@@ -9,7 +9,7 @@ import org.jetbrains.compose.resources.DrawableResource
  *
  * قبلاً از اموجی استفاده می‌شد، اما روی وب (بومِ Skiko) اموجی رندر نمی‌شود و tofu می‌دهد؛
  * برای همین از آیکون‌های برداری (SVG) استفاده می‌کنیم که با رنگِ اختصاصیِ راسته tint می‌شوند
- * — منطبق بر بستهٔ طراحی («SVG با رنگِ اختصاصیِ راسته»).
+ * · منطبق بر بستهٔ طراحی («SVG با رنگِ اختصاصیِ راسته»).
  *
  * سرور رنگ را به‌صورتِ رشتهٔ `oklch(...)` می‌فرستد؛ چون تبدیلِ زندهٔ oklch→sRGB روی کلاینت
  * سنگین و خطاخیز است، از یک پالتِ ثابتِ منطبق بر بستهٔ طراحی استفاده می‌کنیم.
@@ -27,7 +27,7 @@ private val VISUALS: Map<String, RastehVisual> = mapOf(
     "cosmetics" to RastehVisual(Resources.Icon.RastehCosmetics, Color(0xFFB94F87)),   // oklch(0.58 0.15 350)
     "book" to RastehVisual(Resources.Icon.RastehBook, Color(0xFF3B834E)),        // oklch(0.55 0.11 150)
     "toy" to RastehVisual(Resources.Icon.RastehToy, Color(0xFFBB6802)),          // oklch(0.6 0.14 60)
-    "all" to RastehVisual(Resources.Icon.RastehAll, Color(0xFF61626F)),          // oklch(0.5 0.02 280) — خنثی
+    "all" to RastehVisual(Resources.Icon.RastehAll, Color(0xFF61626F)),          // oklch(0.5 0.02 280) · خنثی
 )
 
 private val FALLBACK = RastehVisual(Resources.Icon.RastehAll, Color(0xFF61626F))

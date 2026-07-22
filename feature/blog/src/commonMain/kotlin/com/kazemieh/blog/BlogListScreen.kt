@@ -131,7 +131,7 @@ fun BlogListScreen(
     }
 }
 
-/** کارتِ هیروی مطلبِ ویژه — مطابق اسپک: کارتِ گرادیانیِ بزرگ با بَجِ «مطلب ویژه». */
+/** کارتِ هیروی مطلبِ ویژه · مطابق اسپک: کارتِ گرادیانیِ بزرگ با بَجِ «مطلب ویژه». */
 @Composable
 fun FeaturedBlogHero(blog: com.kazemieh.domain.blog.Blog, onClick: () -> Unit) {
     val colors = AppTheme.colors

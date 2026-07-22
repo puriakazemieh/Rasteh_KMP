@@ -75,7 +75,7 @@ fun LiveScreen(
                             modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp))
                                 .background(MaterialTheme.colorScheme.surfaceVariant),
                         ) {
-                            // «پخش‌کننده»یِ جای‌گیر (placeholder) — ویدئوی واقعی در فازِ بعد.
+                            // «پخش‌کننده»یِ جای‌گیر (placeholder) · ویدئوی واقعی در فازِ بعد.
                             Box(
                                 modifier = Modifier.fillMaxWidth().height(150.dp).background(MaterialTheme.colorScheme.surface),
                                 contentAlignment = Alignment.Center,

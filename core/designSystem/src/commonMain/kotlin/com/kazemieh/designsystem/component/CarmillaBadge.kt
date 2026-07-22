@@ -16,7 +16,7 @@ import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 
 // =====================================================================================
-//  Carmilla Design System — Badge
+//  Carmilla Design System · Badge
 //  بَج‌های کوچک طبق پروتوتایپ: حراج/موجود/جدید/امتیاز/آخرین موجودی
 //  شعاع ۸، فونت ۱۲ Bold، padding 4×10
 // =====================================================================================

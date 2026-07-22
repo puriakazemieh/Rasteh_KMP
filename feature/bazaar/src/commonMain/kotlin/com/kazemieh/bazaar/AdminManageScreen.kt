@@ -127,7 +127,7 @@ private fun ReportsTab(state: AdminManageState, viewModel: AdminManageViewModel)
             else LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 items(r.data, key = { it.id }) { report ->
                     Column(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.surface).padding(14.dp)) {
-                        Text("${if (report.targetType == "SHOP") "فروشگاه" else "محصول"} #${report.targetId} — وضعیت: ${report.status}", fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                        Text("${if (report.targetType == "SHOP") "فروشگاه" else "محصول"} #${report.targetId} · وضعیت: ${report.status}", fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                         report.reason?.let { Spacer(Modifier.height(4.dp)); Text(it, fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant) }
                         if (report.status == "OPEN") {
                             Spacer(Modifier.height(8.dp))

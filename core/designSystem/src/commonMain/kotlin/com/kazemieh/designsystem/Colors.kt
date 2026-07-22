@@ -8,7 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 
 // =====================================================================================
-//  Rasteh Design System — Color Tokens
+//  Rasteh Design System · Color Tokens
 //  منبع حقیقت: design_handoff_unified_app/README.md (پالت oklch بنفشِ برند).
 //  مقادیر oklch به sRGB تبدیل شده‌اند؛ نامِ توکن‌ها برای سازگاری با کد فعلی حفظ شده است.
 //  گرادیانِ اصلی: linear-gradient(135deg, oklch(0.56 0.22 300) → oklch(0.4 0.19 288)).
@@ -28,7 +28,7 @@ val OutlineVariantLight = Color(0xFFCBC7D6) // نسخه‌ی پررنگ‌تر �
 val InkLight = Color(0xFF1D1E29)           // متنِ اصلی/تیتر · oklch(0.24 0.02 280)
 val InkSoftLight = Color(0xFF6F717D)       // متنِ ثانویه · oklch(0.55 0.02 280)
 
-// --- توکن‌های پایه‌ی تم تاریک (Dark) — مشتق از پالتِ بنفش ---
+// --- توکن‌های پایه‌ی تم تاریک (Dark) · مشتق از پالتِ بنفش ---
 val AccentDark = Color(0xFFA87EEB)         // برند · oklch(0.68 0.16 300)
 val Accent2Dark = Color(0xFF886ACF)        // ثانویه · oklch(0.60 0.15 295)
 val AccentSoftDark = Color(0xFF302844)     // کانتینر ملایمِ برند (دارک)
@@ -42,7 +42,7 @@ val OutlineVariantDark = Color(0xFF44404E)
 val InkDark = Color(0xFFEFEDF3)            // متنِ اصلی (دارک)
 val InkSoftDark = Color(0xFFA3A3B1)        // متنِ ثانویه (دارک)
 
-// --- رنگ‌های معنایی (Semantic) — منطبق بر بخشِ رنگِ طراحی ---
+// --- رنگ‌های معنایی (Semantic) · منطبق بر بخشِ رنگِ طراحی ---
 val SaleLight = Color(0xFFDF202E)          // حراج/زنده/خطا · oklch(0.58 0.22 25)
 val SaleDark = Color(0xFFE85862)
 val StarLight = Color(0xFFD18E35)          // امتیاز/ستاره · طلایی
@@ -62,7 +62,7 @@ val CategoryPurple = Color(0xFF8B46DF)
 val CategoryRed = Color(0xFFDF202E)
 
 // =====================================================================================
-//  Material3 ColorScheme — مصرف‌کننده‌های فعلی از طریق MaterialTheme.colorScheme
+//  Material3 ColorScheme · مصرف‌کننده‌های فعلی از طریق MaterialTheme.colorScheme
 // =====================================================================================
 
 val LightAppColorScheme = lightColorScheme(
@@ -132,7 +132,7 @@ val DarkAppColorScheme = darkColorScheme(
 )
 
 // =====================================================================================
-//  AppColors — توکن‌های گسترده‌ی برند (شامل معنایی‌هایی که در Material نمی‌گنجند)
+//  AppColors · توکن‌های گسترده‌ی برند (شامل معنایی‌هایی که در Material نمی‌گنجند)
 //  برای کامپوننت‌های کارمیلا (Badge/Chip/ProductCard/...) در فازهای بعد استفاده می‌شود.
 // =====================================================================================
 

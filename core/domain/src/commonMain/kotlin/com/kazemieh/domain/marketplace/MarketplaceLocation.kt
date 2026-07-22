@@ -2,7 +2,7 @@ package com.kazemieh.domain.marketplace
 
 import kotlinx.serialization.Serializable
 
-/** محل — پاساژ/بازار/راستهٔ فیزیکی. (نامِ MarketplaceLocation برای پرهیز از تداخل با نوعِ سکوی iOS.) */
+/** محل · پاساژ/بازار/راستهٔ فیزیکی. (نامِ MarketplaceLocation برای پرهیز از تداخل با نوعِ سکوی iOS.) */
 @Serializable
 data class MarketplaceLocation(
     val id: Long,

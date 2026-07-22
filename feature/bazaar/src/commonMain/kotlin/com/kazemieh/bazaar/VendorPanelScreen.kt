@@ -172,7 +172,7 @@ private fun ProductsTab(state: VendorPanelState, onDelete: (Long) -> Unit) {
         is AppResult.Loading -> Box(Modifier.fillMaxSize(), Alignment.Center) { CircularProgressIndicator() }
         is AppResult.Error -> Box(Modifier.fillMaxSize(), Alignment.Center) { Text("خطا", color = MaterialTheme.colorScheme.error) }
         is AppResult.Success -> {
-            if (p.data.isEmpty()) Box(Modifier.fillMaxSize(), Alignment.Center) { Text("محصولی ندارید — با دکمهٔ + اضافه کنید", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = FontSize.SMALL) }
+            if (p.data.isEmpty()) Box(Modifier.fillMaxSize(), Alignment.Center) { Text("محصولی ندارید · با دکمهٔ + اضافه کنید", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = FontSize.SMALL) }
             else LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 items(p.data, key = { it.id }) { product ->
                     Row(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.surface).padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -225,7 +225,7 @@ private fun OffersTab(state: VendorPanelState, onAccept: (Long) -> Unit, onRejec
             else LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 items(o.data, key = { it.id }) { offer ->
                     Column(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.surface).padding(14.dp)) {
-                        Text("${offer.customerName ?: "کاربر"} — ${offer.amount.toLong().toFaPrice()} تومان", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                        Text("${offer.customerName ?: "کاربر"} · ${offer.amount.toLong().toFaPrice()} تومان", fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                         offer.message?.let { Spacer(Modifier.height(4.dp)); Text(it, fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant) }
                         Spacer(Modifier.height(8.dp))
                         if (offer.status == "PENDING") {

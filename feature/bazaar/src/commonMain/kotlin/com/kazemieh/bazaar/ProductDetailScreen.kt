@@ -201,7 +201,7 @@ private fun PriceBlock(product: Product) {
                 product.oldPrice?.let { Text(it.toLong().toFaPrice(), fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant, textDecoration = TextDecoration.LineThrough) }
             }
         } else {
-            Text("نمایشی — برای قیمت تماس بگیرید", fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("نمایشی · برای قیمت تماس بگیرید", fontSize = FontSize.SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         Spacer(Modifier.height(4.dp))
         Text(if (product.condition == "USED") "کارکرده" else if (product.condition == "REFURBISHED") "بازسازی‌شده" else "نو", fontSize = FontSize.EXTRA_SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant)

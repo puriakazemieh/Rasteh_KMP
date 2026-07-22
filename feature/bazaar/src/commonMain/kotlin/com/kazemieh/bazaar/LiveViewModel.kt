@@ -14,7 +14,7 @@ data class LiveState(
     val items: AppResult<List<LiveSession>> = AppResult.Loading,
 )
 
-/** لایوشاپینگ (live) — فهرستِ پخش‌های زندهٔ فعال. */
+/** لایوشاپینگ (live) · فهرستِ پخش‌های زندهٔ فعال. */
 class LiveViewModel(
     private val repository: AdvancedRepository,
 ) : ViewModel() {

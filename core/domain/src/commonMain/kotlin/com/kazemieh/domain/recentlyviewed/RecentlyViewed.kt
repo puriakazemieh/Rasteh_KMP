@@ -4,7 +4,7 @@ import com.kazemieh.domain.catalog.ProductSummary
 import kotlinx.coroutines.flow.Flow
 
 /**
- * تاریخچه‌ی محصولاتِ اخیراً بازدیدشده — به‌ازای هر کاربر روی سرور نگهداری می‌شود
+ * تاریخچه‌ی محصولاتِ اخیراً بازدیدشده · به‌ازای هر کاربر روی سرور نگهداری می‌شود
  * و بین دستگاه‌ها همگام می‌ماند.
  */
 interface RecentlyViewedRepository {

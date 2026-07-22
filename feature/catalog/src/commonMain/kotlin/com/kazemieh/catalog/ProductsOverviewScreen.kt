@@ -164,7 +164,7 @@ fun ProductsOverviewScreen(
                             )
                         }
 
-                        // دسته‌ها — گرید کاشی‌ها، بلافاصله بعد از هیرو (مطابق اسپک)
+                        // دسته‌ها · گرید کاشی‌ها، بلافاصله بعد از هیرو (مطابق اسپک)
                         if (hasCategories) {
                             item {
                                 Spacer(modifier = Modifier.height(24.dp))
@@ -197,7 +197,7 @@ fun ProductsOverviewScreen(
                             }
                         }
 
-                        // پیشنهاد شگفت‌انگیز (کمپین) — بعد از دسته‌ها
+                        // پیشنهاد شگفت‌انگیز (کمپین) · بعد از دسته‌ها
                         state.campaign?.let { campaign ->
                             if (campaign.products.isNotEmpty()) {
                                 item {
@@ -220,7 +220,7 @@ fun ProductsOverviewScreen(
                             }
                         }
 
-                        // جدیدترین محصولات — گرید دو ستونه
+                        // جدیدترین محصولات · گرید دو ستونه
                         item {
                             Spacer(modifier = Modifier.height(36.dp))
                             HomeSectionHeader(
@@ -277,7 +277,7 @@ fun ProductsOverviewScreen(
                             }
                         }
 
-                        // مجله/بلاگ — تیزرِ آخرین مقالات (مطابق اسپک)
+                        // مجله/بلاگ · تیزرِ آخرین مقالات (مطابق اسپک)
                         if (state.blogPosts.isNotEmpty()) {
                             item {
                                 Spacer(modifier = Modifier.height(30.dp))
@@ -301,7 +301,7 @@ fun ProductsOverviewScreen(
                             }
                         }
 
-                        // بازدیدهای اخیر شما — تاریخچه‌ی محلیِ محصولاتِ بازدیدشده (مطابق اسپک)
+                        // بازدیدهای اخیر شما · تاریخچه‌ی محلیِ محصولاتِ بازدیدشده (مطابق اسپک)
                         if (state.recentlyViewed.isNotEmpty()) {
                             item {
                                 Spacer(modifier = Modifier.height(30.dp))
@@ -419,7 +419,7 @@ fun SquareCategoryCard(
     }
 }
 
-/** کارتِ تیزرِ مقاله در صفحه‌ی اصلی — تصویر + عنوان + دسته/زمانِ مطالعه. */
+/** کارتِ تیزرِ مقاله در صفحه‌ی اصلی · تصویر + عنوان + دسته/زمانِ مطالعه. */
 @Composable
 private fun BlogTeaserCard(
     post: Blog,

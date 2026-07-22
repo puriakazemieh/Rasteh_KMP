@@ -43,7 +43,7 @@ import org.jetbrains.compose.resources.stringResource
 import kotlin.math.roundToInt
 
 /**
- * کارت محصولِ کارمیلا — مطابق اسپک دیزاین (کارت سفید).
+ * کارت محصولِ کارمیلا · مطابق اسپک دیزاین (کارت سفید).
  * تصویر بالا (بَج تخفیف + قلب + پوشش ناموجود)، بدنه: دسته، نام، قیمت + دکمه‌ی افزودن.
  */
 @Composable

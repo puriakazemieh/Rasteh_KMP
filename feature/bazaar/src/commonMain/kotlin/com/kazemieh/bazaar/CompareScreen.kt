@@ -40,7 +40,7 @@ import com.kazemieh.common.util.toFaPrice
 import com.kazemieh.designsystem.FontSize
 import org.koin.compose.viewmodel.koinViewModel
 
-/** مقایسهٔ فروشندگانِ یک محصول (compare) — ارزان‌ترین اول. */
+/** مقایسهٔ فروشندگانِ یک محصول (compare) · ارزان‌ترین اول. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CompareScreen(

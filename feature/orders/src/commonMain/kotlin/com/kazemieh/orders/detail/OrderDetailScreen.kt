@@ -158,7 +158,7 @@ fun OrderDetailScreen(
                                         .border(1.dp, colors.line, RoundedCornerShape(16.dp))
                                         .padding(16.dp)
                                 ) {
-                                    Text("${address.receiverName} — ${address.receiverPhone}", fontFamily = AppFont(), fontWeight = FontWeight.Bold, color = colors.onSurface)
+                                    Text("${address.receiverName} · ${address.receiverPhone}", fontFamily = AppFont(), fontWeight = FontWeight.Bold, color = colors.onSurface)
                                     Spacer(modifier = Modifier.height(4.dp))
                                     Text("${address.province}، ${address.city}", fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)
                                     Text(address.addressLine1, fontFamily = AppFont(), fontSize = FontSize.SMALL, color = colors.onSurfaceVariant)

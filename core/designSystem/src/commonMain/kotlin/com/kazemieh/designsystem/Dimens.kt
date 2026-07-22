@@ -3,7 +3,7 @@ package com.kazemieh.designsystem
 import androidx.compose.ui.unit.dp
 
 // =====================================================================================
-//  Carmilla Design System — Spacing & Elevation
+//  Carmilla Design System · Spacing & Elevation
 //  فاصله بر اساس 4pt grid · ارتفاع/سایه sm·md·lg از پروتوتایپ
 // =====================================================================================
 

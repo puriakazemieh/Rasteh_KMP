@@ -14,7 +14,7 @@ import com.kazemieh.designsystem.AccentSoftDark
 import com.kazemieh.designsystem.GoldDark
 
 /**
- * معماریِ وایت‌لیبل/برند — منتقل و سبک‌شده از پایهٔ به‌روزِ اپِ فروشگاه
+ * معماریِ وایت‌لیبل/برند · منتقل و سبک‌شده از پایهٔ به‌روزِ اپِ فروشگاه
  * (برنچِ admin-profile-pages-redesign). برای راسته پرچم‌های عمودی‌های فروشگاه
  * (آموزشگاه/مشاوره/…) حذف و پرچم‌های مرتبط با مارکت‌پلیس جایگزین شده‌اند.
  */
@@ -58,7 +58,7 @@ data class BrandConfig(
     val features: BrandFeatures = BrandFeatures(),
 )
 
-/** برندِ پیش‌فرض: راسته (پالتِ بنفشِ مارکت‌پلیس — همان توکن‌های oklch دیزاین‌سیستم). */
+/** برندِ پیش‌فرض: راسته (پالتِ بنفشِ مارکت‌پلیس · همان توکن‌های oklch دیزاین‌سیستم). */
 val RastehBrandColors = BrandColors(
     light = BrandPalette(accent = AccentLight, accent2 = Accent2Light, accentSoft = AccentSoftLight, gold = GoldLight, onAccent = Color.White),
     dark = BrandPalette(accent = AccentDark, accent2 = Accent2Dark, accentSoft = AccentSoftDark, gold = GoldDark, onAccent = Color(0xFF0F1320)),
@@ -72,7 +72,7 @@ val RastehBrand = BrandConfig(
     features = BrandFeatures(),
 )
 
-/** رجیستریِ برندها — انتخابِ برندِ فعال در زمانِ اجرا بر اساسِ شناسه (فلِیور/آرگومان). */
+/** رجیستریِ برندها · انتخابِ برندِ فعال در زمانِ اجرا بر اساسِ شناسه (فلِیور/آرگومان). */
 object BrandRegistry {
     val default: BrandConfig = RastehBrand
     private val all: List<BrandConfig> = listOf(RastehBrand)

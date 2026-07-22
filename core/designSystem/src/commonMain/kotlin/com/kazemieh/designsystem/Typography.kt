@@ -7,7 +7,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 // =====================================================================================
-//  Carmilla Design System — Typography
+//  Carmilla Design System · Typography
 //  خانواده: Vazirmatn (typeface_fa) · مقیاس بر اساس DesignSystem-Carmilla.dc.html
 //  ۸۰۰/۳۴ عنوان بزرگ · ۷۰۰/۲۴ سرصفحه · ۶۰۰/۱۷ عنوان کارت · ۴۰۰/۱۵ بدنه (lh 1.9)
 //  ۵۰۰/۱۴ دکمه · ۵۰۰/۱۱ کپشن (letterSpacing 1.5)
@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.sp
 fun AppTypography(): Typography {
     val family = AppFont()
     return Typography(
-        // کالکشن پاییز و زمستان — بزرگ‌ترین تیتر
+        // کالکشن پاییز و زمستان · بزرگ‌ترین تیتر
         displayLarge = TextStyle(
             fontFamily = family,
             fontWeight = FontWeight.ExtraBold, // 800
@@ -52,7 +52,7 @@ fun AppTypography(): Typography {
             fontSize = 14.sp,
             lineHeight = 20.sp
         ),
-        // متن بدنه — line-height بلند برای خوانایی فارسی
+        // متن بدنه · line-height بلند برای خوانایی فارسی
         bodyLarge = TextStyle(
             fontFamily = family,
             fontWeight = FontWeight.Normal, // 400

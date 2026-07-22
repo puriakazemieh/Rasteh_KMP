@@ -32,7 +32,7 @@ import com.kazemieh.designsystem.Radius
 import org.jetbrains.compose.resources.painterResource
 
 /**
- * نوارِ کناریِ ناوبری برای نمایشگرهای بزرگ (تبلت/دسکتاپ/وب) — جایگزینِ نوارِ پایینِ موبایل.
+ * نوارِ کناریِ ناوبری برای نمایشگرهای بزرگ (تبلت/دسکتاپ/وب) · جایگزینِ نوارِ پایینِ موبایل.
  * روی `expanded` برچسب کنارِ آیکن دیده می‌شود؛ روی `medium` فقط آیکن (rail باریک).
  */
 @Composable

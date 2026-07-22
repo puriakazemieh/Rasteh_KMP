@@ -17,7 +17,7 @@ data class ReferralState(
     val message: String? = null,
 )
 
-/** دعوتِ دوستان (referral) — کدِ دعوتِ کاربر + ثبتِ کدِ معرف. */
+/** دعوتِ دوستان (referral) · کدِ دعوتِ کاربر + ثبتِ کدِ معرف. */
 class ReferralViewModel(
     private val repository: AdvancedRepository,
 ) : ViewModel() {

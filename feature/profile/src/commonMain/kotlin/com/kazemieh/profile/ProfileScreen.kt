@@ -413,7 +413,7 @@ private fun InfoField(label: String, value: String?) {
         )
         Spacer(Modifier.height(4.dp))
         Text(
-            text = value?.takeIf { it.isNotBlank() } ?: "—",
+            text = value?.takeIf { it.isNotBlank() } ?: "·",
             fontFamily = AppFont(),
             fontSize = FontSize.REGULAR,
             fontWeight = FontWeight.SemiBold,
@@ -663,7 +663,7 @@ private fun ProfileTabChip(label: String, selected: Boolean, onClick: () -> Unit
     )
 }
 
-/** دکمهٔ خروج از حساب — داخل بخش مشخصاتِ پروفایل (مطابق درخواست). */
+/** دکمهٔ خروج از حساب · داخل بخش مشخصاتِ پروفایل (مطابق درخواست). */
 @Composable
 private fun SignOutRow(onClick: () -> Unit) {
     val colors = AppTheme.colors
@@ -696,7 +696,7 @@ private fun SignOutRow(onClick: () -> Unit) {
     }
 }
 
-/** ردیفِ منوی پروفایل — مطابق اسپک: کاشیِ آیکن + عنوان + زیرعنوان + فلش. */
+/** ردیفِ منوی پروفایل · مطابق اسپک: کاشیِ آیکن + عنوان + زیرعنوان + فلش. */
 @Composable
 private fun MenuRow(
     label: String,
@@ -908,7 +908,7 @@ fun AddressItem(
 
         Spacer(modifier = Modifier.height(10.dp))
         Text(
-            text = "${address.receiverName} — ${address.receiverPhone}",
+            text = "${address.receiverName} · ${address.receiverPhone}",
             fontFamily = AppFont(),
             fontSize = FontSize.SMALL,
             fontWeight = FontWeight.SemiBold,

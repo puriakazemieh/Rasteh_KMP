@@ -19,16 +19,16 @@ import androidx.compose.ui.unit.dp
 //  سیستمِ ریسپانسیو مطابقِ نقاطِ شکستِ Material 3 (Compact / Medium / Expanded)
 //  بر پایه‌ی BoxWithConstraints تا روی همه‌ی پلتفرم‌ها (Android/iOS/Web/Desktop) کار کند
 //  و به وابستگیِ اضافه (material3-window-size-class) نیاز نداشته باشد.
-//  (منتقل‌شده از پایهٔ به‌روزِ اپِ فروشگاه — برنچِ admin-profile-pages-redesign.)
+//  (منتقل‌شده از پایهٔ به‌روزِ اپِ فروشگاه · برنچِ admin-profile-pages-redesign.)
 // =====================================================================================
 
 /** رده‌بندیِ عرضِ پنجره مطابقِ Material 3. */
 enum class WindowWidthClass {
-    /** موبایل — عرض < 600dp */
+    /** موبایل · عرض < 600dp */
     Compact,
-    /** تبلتِ عمودی / پنجره‌ی کوچکِ دسکتاپ — 600dp ≤ عرض < 840dp */
+    /** تبلتِ عمودی / پنجره‌ی کوچکِ دسکتاپ · 600dp ≤ عرض < 840dp */
     Medium,
-    /** تبلتِ افقی / لپ‌تاپ / دسکتاپ / وب — عرض ≥ 840dp */
+    /** تبلتِ افقی / لپ‌تاپ / دسکتاپ / وب · عرض ≥ 840dp */
     Expanded,
 }
 
@@ -45,7 +45,7 @@ data class WindowSizeClass(
     val widthDp: Dp,
     val heightDp: Dp,
 ) {
-    /** موبایل — نوارِ پایین و چیدمانِ تک‌ستونه. */
+    /** موبایل · نوارِ پایین و چیدمانِ تک‌ستونه. */
     val isCompact: Boolean get() = widthClass == WindowWidthClass.Compact
 
     /** تبلتِ عمودی. */
@@ -54,7 +54,7 @@ data class WindowSizeClass(
     /** لپ‌تاپ/دسکتاپ/وب. */
     val isExpanded: Boolean get() = widthClass == WindowWidthClass.Expanded
 
-    /** هر چیزی بزرگ‌تر از موبایل — نوارِ کناری به‌جای نوارِ پایین. */
+    /** هر چیزی بزرگ‌تر از موبایل · نوارِ کناری به‌جای نوارِ پایین. */
     val isLarge: Boolean get() = widthClass != WindowWidthClass.Compact
 }
 
@@ -99,7 +99,7 @@ fun ProvideWindowSizeClass(content: @Composable () -> Unit) {
 fun windowSizeClass(): WindowSizeClass = LocalWindowSizeClass.current
 
 /**
- * تعدادِ ستونِ گرید بر اساسِ عرضِ پنجره — پیش‌فرض ۲ ستون روی موبایل،
+ * تعدادِ ستونِ گرید بر اساسِ عرضِ پنجره · پیش‌فرض ۲ ستون روی موبایل،
  * ۳ روی تبلت و ۴ روی دسکتاپ/وب.
  */
 @Composable
@@ -114,7 +114,7 @@ fun adaptiveGridColumns(
 }
 
 /**
- * انتخابِ یک مقدار بر اساسِ رده‌ی عرض — برای پارامترهایی مثل padding افقی یا اندازه‌ی فونت.
+ * انتخابِ یک مقدار بر اساسِ رده‌ی عرض · برای پارامترهایی مثل padding افقی یا اندازه‌ی فونت.
  */
 @Composable
 fun <T> adaptiveValue(compact: T, medium: T, expanded: T): T =

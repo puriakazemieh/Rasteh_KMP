@@ -22,7 +22,7 @@ object Resources {
         val Orders = DesignRes.drawable.orders
         val ShoppingCart = DesignRes.drawable.shopping_cart
 
-        // آیکونِ تب‌های نوارِ پایین — سبکِ خطی (stroke) منطبق بر بستهٔ طراحیِ «Unified App»
+        // آیکونِ تب‌های نوارِ پایین · سبکِ خطی (stroke) منطبق بر بستهٔ طراحیِ «Unified App»
         val NavHome = DesignRes.drawable.nav_home
         val NavSearch = DesignRes.drawable.nav_search
         val NavChat = DesignRes.drawable.nav_chat

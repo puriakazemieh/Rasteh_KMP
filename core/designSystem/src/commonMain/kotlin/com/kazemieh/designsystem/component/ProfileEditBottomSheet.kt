@@ -35,7 +35,7 @@ import com.kazemieh.designsystem.AppTheme
 import com.kazemieh.designsystem.FontSize
 
 /**
- * باتم‌شیتِ «ویرایش اطلاعات حساب» — مطابق اسپک کارمیلا.
+ * باتم‌شیتِ «ویرایش اطلاعات حساب» · مطابق اسپک کارمیلا.
  * برای ویرایشِ نام، نام خانوادگی و شماره‌ی موبایل استفاده می‌شود (ایمیل فقط‌خواندنی است).
  */
 @OptIn(ExperimentalMaterial3Api::class)

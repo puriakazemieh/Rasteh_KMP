@@ -37,7 +37,7 @@ import com.kazemieh.common.AppResult
 import com.kazemieh.designsystem.FontSize
 import org.koin.compose.viewmodel.koinViewModel
 
-/** نشان‌شده‌ها (bookmarks) — فروشگاه/کالا. */
+/** نشان‌شده‌ها (bookmarks) · فروشگاه/کالا. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookmarksScreen(

@@ -36,7 +36,7 @@ import com.kazemieh.designsystem.FontSize
 import kotlinx.coroutines.launch
 
 /**
- * جست‌وجوی تصویری (visualsearch) — MVP: توضیح + انتخابِ عکس (به‌زودی) و میان‌بر به
+ * جست‌وجوی تصویری (visualsearch) · MVP: توضیح + انتخابِ عکس (به‌زودی) و میان‌بر به
  * جست‌وجوی متنی. تطبیقِ تصویری با ML در فازِ بعد.
  */
 @OptIn(ExperimentalMaterial3Api::class)

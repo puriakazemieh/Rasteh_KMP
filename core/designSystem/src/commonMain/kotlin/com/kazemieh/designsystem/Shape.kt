@@ -5,7 +5,7 @@ import androidx.compose.material3.Shapes
 import androidx.compose.ui.unit.dp
 
 // =====================================================================================
-//  Carmilla Design System — Shape / Radius
+//  Carmilla Design System · Shape / Radius
 //  مقیاس شعاع از پروتوتایپ: 8 · 11 · 13(دکمه) · 16 · 22 · full
 // =====================================================================================
 
@@ -18,7 +18,7 @@ object Radius {
     val full = 999.dp    // دایره‌ای (استوری، اواتار)
 }
 
-// Material3 Shapes — برای کامپوننت‌هایی که شکل را از تم می‌گیرند
+// Material3 Shapes · برای کامپوننت‌هایی که شکل را از تم می‌گیرند
 val AppShapes = Shapes(
     extraSmall = RoundedCornerShape(Radius.xs),
     small = RoundedCornerShape(Radius.sm),

@@ -19,7 +19,7 @@ import com.kazemieh.designsystem.FontSize
 import com.kazemieh.designsystem.Radius
 
 // =====================================================================================
-//  Carmilla Design System — Filter Chip
+//  Carmilla Design System · Filter Chip
 //  انتخاب‌شده: پس‌زمینه primary · انتخاب‌نشده: surfaceVariant با بوردر line
 //  شعاع ۱۱، padding 8×16
 // =====================================================================================

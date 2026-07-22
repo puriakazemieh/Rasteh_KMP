@@ -14,7 +14,7 @@ data class AppointmentsState(
     val items: AppResult<List<Appointment>> = AppResult.Loading,
 )
 
-/** «نوبت‌های من» — رزروهای بازدیدِ حضوریِ کاربر. */
+/** «نوبت‌های من» · رزروهای بازدیدِ حضوریِ کاربر. */
 class AppointmentsViewModel(
     private val repository: ServicesRepository,
 ) : ViewModel() {

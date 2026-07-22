@@ -102,7 +102,7 @@ sealed interface MediaItem {
 }
 
 /**
- * صفحه‌ی جزئیات محصول — بازطراحی‌شده مطابق اسپک کارمیلا.
+ * صفحه‌ی جزئیات محصول · بازطراحی‌شده مطابق اسپک کارمیلا.
  * اسکرول پیوسته (بدون تب): بردکرامب ← گالری ← برند/عنوان/امتیاز+موجودی ←
  * انتخاب ویژگی‌ها ← کارتِ قیمت و اکشن‌ها ← نشان‌های خدمات ← معرفی محصول ←
  * دیدگاه خریداران ← پرسش و پاسخ.
@@ -708,7 +708,7 @@ fun DetailsScreen(
     }
 }
 
-/** کارتِ قیمت و اکشن‌های خرید — مطابق اسپک کارمیلا (قیمت + شمارنده + افزودن/خرید فوری + علاقه‌مندی). */
+/** کارتِ قیمت و اکشن‌های خرید · مطابق اسپک کارمیلا (قیمت + شمارنده + افزودن/خرید فوری + علاقه‌مندی). */
 @Composable
 private fun PriceActionCard(
     basePrice: Double,
@@ -840,7 +840,7 @@ private fun PriceActionCard(
     }
 }
 
-/** خلاصه‌ی امتیازِ نظرات — میانگینِ درشت + نمودار میله‌ایِ ۵→۱ ستاره (مطابق اسپک). */
+/** خلاصه‌ی امتیازِ نظرات · میانگینِ درشت + نمودار میله‌ایِ ۵→۱ ستاره (مطابق اسپک). */
 @Composable
 private fun ReviewSummary(ratings: List<Int>) {
     val colors = AppTheme.colors
@@ -895,7 +895,7 @@ private fun ReviewSummary(ratings: List<Int>) {
     }
 }
 
-/** کارتِ ثبتِ دیدگاهِ اینلاین — انتخاب ستاره + متن + دکمه (مطابق اسپک). */
+/** کارتِ ثبتِ دیدگاهِ اینلاین · انتخاب ستاره + متن + دکمه (مطابق اسپک). */
 @Composable
 private fun WriteReviewCard(
     rating: Int,
@@ -960,7 +960,7 @@ private fun WriteReviewCard(
     }
 }
 
-/** کارتِ مشخصاتِ محصول — ردیف‌های کلید/مقدار با خط جداکننده (مطابق اسپک). */
+/** کارتِ مشخصاتِ محصول · ردیف‌های کلید/مقدار با خط جداکننده (مطابق اسپک). */
 @Composable
 private fun ProductSpecsCard(specs: List<Pair<String, String>>) {
     val colors = AppTheme.colors
@@ -995,7 +995,7 @@ private fun ProductSpecsCard(specs: List<Pair<String, String>>) {
     }
 }
 
-/** کارتِ ثبتِ پرسشِ اینلاین — متن + دکمه (هم‌سبک با بخش دیدگاه‌ها، به‌جای دیالوگ). */
+/** کارتِ ثبتِ پرسشِ اینلاین · متن + دکمه (هم‌سبک با بخش دیدگاه‌ها، به‌جای دیالوگ). */
 @Composable
 private fun WriteQuestionCard(
     text: String,
@@ -1047,7 +1047,7 @@ private fun WriteQuestionCard(
     }
 }
 
-/** سه نشانِ خدماتِ محصول — استاتیک، مطابق اسپک کارمیلا. */
+/** سه نشانِ خدماتِ محصول · استاتیک، مطابق اسپک کارمیلا. */
 @Composable
 private fun ServiceBadges(modifier: Modifier = Modifier) {
     val items = listOf(
@@ -1065,7 +1065,7 @@ private fun ServiceBadges(modifier: Modifier = Modifier) {
     }
 }
 
-/** بندانگشتیِ گالری — تصویر یا ویدیو (با برچسب «ویدیو»)، با قابِ فعال هنگام انتخاب. */
+/** بندانگشتیِ گالری · تصویر یا ویدیو (با برچسب «ویدیو»)، با قابِ فعال هنگام انتخاب. */
 @Composable
 private fun MediaThumbnail(
     item: MediaItem,
@@ -1118,7 +1118,7 @@ private fun MediaThumbnail(
     }
 }
 
-/** دایره‌ی انتخاب رنگ — مطابق اسپک؛ هنگام انتخاب حلقه‌ی دور آن پررنگ می‌شود. */
+/** دایره‌ی انتخاب رنگ · مطابق اسپک؛ هنگام انتخاب حلقه‌ی دور آن پررنگ می‌شود. */
 @Composable
 private fun ColorSwatch(
     color: Color,
@@ -1174,7 +1174,7 @@ private fun colorForName(name: String): Color? {
     }
 }
 
-/** کارتِ محصولِ مشابه — کارتِ عمودیِ کوچک برای ردیفِ افقی (تصویر + عنوان + قیمت). */
+/** کارتِ محصولِ مشابه · کارتِ عمودیِ کوچک برای ردیفِ افقی (تصویر + عنوان + قیمت). */
 @Composable
 private fun SimilarProductCard(
     product: ProductSummary,
@@ -1222,7 +1222,7 @@ private fun SimilarProductCard(
     }
 }
 
-/** دیالوگِ راهنمای سایز — جدولِ استانداردِ اندازه‌ها (مطابق اسپک). */
+/** دیالوگِ راهنمای سایز · جدولِ استانداردِ اندازه‌ها (مطابق اسپک). */
 @Composable
 private fun SizeGuideDialog(onDismiss: () -> Unit) {
     val colors = AppTheme.colors

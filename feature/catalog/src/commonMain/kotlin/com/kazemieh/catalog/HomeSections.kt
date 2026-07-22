@@ -56,7 +56,7 @@ import com.seiko.imageloader.rememberImagePainter
 import kotlinx.coroutines.delay
 
 /**
- * بنر هیروی صفحه‌ی اصلی — مطابق اسپک کارمیلا.
+ * بنر هیروی صفحه‌ی اصلی · مطابق اسپک کارمیلا.
  * توجه: متن تبلیغاتی فعلاً ثابت است؛ در فاز بنرهای سرور (S3) داینامیک می‌شود.
  */
 @Composable
@@ -198,7 +198,7 @@ fun HomeSectionHeader(
 }
 
 /**
- * بخش «پیشنهاد شگفت‌انگیز» — کارتِ گرادیانی با تایمر شمارش معکوس و ردیفِ افقیِ محصولاتِ کمپین.
+ * بخش «پیشنهاد شگفت‌انگیز» · کارتِ گرادیانی با تایمر شمارش معکوس و ردیفِ افقیِ محصولاتِ کمپین.
  * داده از سرور (S2)؛ اگر کمپینِ فعالی نباشد یا محصول نداشته باشد رندر نمی‌شود.
  */
 @Composable
@@ -369,7 +369,7 @@ private fun TimeBlock(value: String) {
 
 private data class TrustItem(val icon: ImageVector, val title: String, val sub: String)
 
-/** نوار نشان‌های اعتماد — استاتیک، بدون نیاز به سرور. */
+/** نوار نشان‌های اعتماد · استاتیک، بدون نیاز به سرور. */
 @Composable
 fun TrustBadges(modifier: Modifier = Modifier) {
     val colors = AppTheme.colors

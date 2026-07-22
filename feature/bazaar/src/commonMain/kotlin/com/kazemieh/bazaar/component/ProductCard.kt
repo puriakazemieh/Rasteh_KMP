@@ -92,7 +92,7 @@ fun ProductCard(
                 }
             } else {
                 Text(
-                    text = "نمایشی — تماس بگیرید",
+                    text = "نمایشی · تماس بگیرید",
                     fontSize = FontSize.SMALL,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

@@ -40,7 +40,7 @@ import com.kazemieh.designsystem.component.PrimaryButton
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
- * فرمِ «درخواستِ فروشندگی» — نام، راسته، محل، دسته، طبقه، نوع (خرید آنلاین/فقط حضوری)،
+ * فرمِ «درخواستِ فروشندگی» · نام، راسته، محل، دسته، طبقه، نوع (خرید آنلاین/فقط حضوری)،
  * تلفن، دربارهٔ فروشگاه، چت و پیشنهادِ قیمت. ثبت → PENDING تا تأییدِ ادمین.
  */
 @OptIn(ExperimentalMaterial3Api::class)

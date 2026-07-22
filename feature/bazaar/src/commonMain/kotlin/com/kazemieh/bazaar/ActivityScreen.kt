@@ -38,7 +38,7 @@ import com.kazemieh.common.util.toFaDigits
 import com.kazemieh.designsystem.FontSize
 import org.koin.compose.viewmodel.koinViewModel
 
-/** فیدِ فعالیت (activity) — نشان‌کردن‌ها و سفارش‌های اخیرِ کاربر. */
+/** فیدِ فعالیت (activity) · نشان‌کردن‌ها و سفارش‌های اخیرِ کاربر. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActivityScreen(

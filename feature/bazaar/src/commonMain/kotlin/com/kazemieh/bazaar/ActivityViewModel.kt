@@ -14,7 +14,7 @@ data class ActivityState(
     val items: AppResult<List<ActivityItem>> = AppResult.Loading,
 )
 
-/** فیدِ فعالیت (activity) — نشان‌کردن‌ها و سفارش‌های اخیرِ کاربر. */
+/** فیدِ فعالیت (activity) · نشان‌کردن‌ها و سفارش‌های اخیرِ کاربر. */
 class ActivityViewModel(
     private val repository: AdvancedRepository,
 ) : ViewModel() {

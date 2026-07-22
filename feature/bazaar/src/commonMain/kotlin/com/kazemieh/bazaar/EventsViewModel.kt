@@ -14,7 +14,7 @@ data class EventsState(
     val items: AppResult<List<MallEvent>> = AppResult.Loading,
 )
 
-/** رویدادها/جشنواره‌ها (events) — فهرستِ رویدادهای پیشِ‌روی محل‌ها. */
+/** رویدادها/جشنواره‌ها (events) · فهرستِ رویدادهای پیشِ‌روی محل‌ها. */
 class EventsViewModel(
     private val repository: AdvancedRepository,
 ) : ViewModel() {
