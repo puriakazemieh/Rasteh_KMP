@@ -51,7 +51,7 @@ class AddProductViewModel(
                         )
                     }
                 }
-                is AppResult.Error -> _state.update { it.copy(loadingShop = false, error = res.message) }
+                is AppResult.Error -> _state.update { it.copy(loadingShop = false, error = res.message.toString()) }
                 else -> {}
             }
         }
@@ -90,7 +90,7 @@ class AddProductViewModel(
             )
             when (res) {
                 is AppResult.Success -> _state.update { it.copy(submitting = false, added = true) }
-                is AppResult.Error -> _state.update { it.copy(submitting = false, error = res.message) }
+                is AppResult.Error -> _state.update { it.copy(submitting = false, error = res.message.toString()) }
                 else -> _state.update { it.copy(submitting = false) }
             }
         }

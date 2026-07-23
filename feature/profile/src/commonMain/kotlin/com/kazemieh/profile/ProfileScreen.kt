@@ -460,7 +460,7 @@ private fun OrderRow(order: Order, onClick: () -> Unit) {
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                text = "${orderStatusLabel(order.status)} • ${order.createdAt.take(10)}",
+                text = "${orderStatusLabel(order.status)} · ${order.createdAt.take(10)}",
                 fontFamily = AppFont(),
                 fontSize = FontSize.SMALL,
                 color = colors.onSurfaceVariant
