@@ -37,7 +37,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kazemieh.designsystem.AppFont
@@ -283,8 +285,18 @@ private fun VendorContent(
         Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
             Text(shopName, fontFamily = AppFont(), fontSize = FontSize.EXTRA_REGULAR, fontWeight = FontWeight.Bold, color = colors.onSurface)
-            val sub = listOfNotNull(dash.vendorShop?.rastehLabel, dash.vendorShop?.floor).joinToString(" · ").ifBlank { "پنلِ مدیریتِ فروشگاه" }
-            Text(sub, fontFamily = AppFont(), fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+            Spacer(Modifier.height(3.dp))
+            val rating = dash.vendorShop?.rating ?: 0.0
+            val place = listOfNotNull(dash.vendorShop?.floor, dash.vendorShop?.locationName).joinToString("، ")
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (rating > 0) {
+                    Icon(Icons.Filled.Star, null, tint = Color(0xFFF2A100), modifier = Modifier.size(13.dp))
+                    Spacer(Modifier.width(3.dp))
+                    Text(rating.toString().toFaDigits(), fontFamily = AppFont(), fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold, color = colors.onSurfaceVariant)
+                    if (place.isNotBlank()) Text(" · ", fontFamily = AppFont(), fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+                }
+                Text(place.ifBlank { "پنلِ مدیریتِ فروشگاه" }, fontFamily = AppFont(), fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant, maxLines = 1)
+            }
         }
         if (verified) Box(Modifier.clip(RoundedCornerShape(8.dp)).background(colors.ok).padding(horizontal = 10.dp, vertical = 5.dp)) {
             Text("تأییدشده", fontFamily = AppFont(), fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.White)
@@ -305,6 +317,8 @@ private fun VendorContent(
         ActionTileData(Resources.Icon.Clock, "آمار و عملکرد", onPanel),
         ActionTileData(Resources.Icon.Edit, "ویرایشِ فروشگاه", onPanel),
         ActionTileData(Resources.Icon.MapPin, "کدِ QR فروشگاه", onPanel),
+        columns = 3,
+        centered = true,
     )
     if (dash.myProducts.isNotEmpty()) {
         Spacer(Modifier.height(16.dp))
@@ -337,17 +351,17 @@ private fun AdminContent(
     onApproveNav: () -> Unit, onManage: () -> Unit, onPanel: () -> Unit,
 ) {
     val colors = AppTheme.colors
+    // کارتِ خوش‌آمدِ روشن + نشانِ تیرهٔ «مدیرِ کل پاساژ» (مطابقِ دیزاین).
     Row(
-        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(colors.primary).clickable(onClick = onPanel).padding(16.dp),
+        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(colors.accentSoft).clickable(onClick = onPanel).padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(Modifier.size(46.dp).clip(RoundedCornerShape(12.dp)).background(Color.White.copy(alpha = 0.15f)), contentAlignment = Alignment.Center) {
-            Icon(painterResource(Resources.Icon.Unlock), null, tint = Color.White, modifier = Modifier.size(24.dp))
-        }
-        Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
-            Text("مدیریتِ بازارچه", fontFamily = AppFont(), fontSize = FontSize.EXTRA_REGULAR, fontWeight = FontWeight.Bold, color = Color.White)
-            Text("خوش آمدید، مدیرِ پاساژ", fontFamily = AppFont(), fontSize = FontSize.EXTRA_SMALL, color = Color.White.copy(alpha = 0.85f))
+            Text("مدیریتِ پاساژ گلستان", fontFamily = AppFont(), fontSize = FontSize.EXTRA_REGULAR, fontWeight = FontWeight.Bold, color = colors.onSurface)
+            Text("خوش آمدید، مدیرِ پاساژ", fontFamily = AppFont(), fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+        }
+        Box(Modifier.clip(RoundedCornerShape(8.dp)).background(colors.onSurface).padding(horizontal = 10.dp, vertical = 5.dp)) {
+            Text("مدیرِ کل پاساژ", fontFamily = AppFont(), fontSize = 10.sp, fontWeight = FontWeight.Bold, color = colors.surface)
         }
     }
     Spacer(Modifier.height(12.dp))
@@ -358,10 +372,20 @@ private fun AdminContent(
     )
     Spacer(Modifier.height(12.dp))
     ActionGrid(
-        ActionTileData(Resources.Icon.Checkmark, "تأییدِ فروشگاه‌ها", onApproveNav),
-        ActionTileData(Resources.Icon.Warning, "گزارشِ تخلف", onManage),
-        ActionTileData(Resources.Icon.Person, "سوپروایزرها", onManage),
+        ActionTileData(
+            Resources.Icon.Checkmark, "تأییدِ فروشگاه‌ها", onApproveNav,
+            subtitle = if (dash.pendingShops.isNotEmpty()) "${dash.pendingShops.size.toString().toFaDigits()} موردِ جدید" else null,
+            subtitleColor = colors.sale,
+        ),
+        ActionTileData(
+            Resources.Icon.Warning, "گزارشِ تخلف", onManage,
+            subtitle = if (dash.openReportCount > 0) "${dash.openReportCount.toString().toFaDigits()} باز" else null,
+            subtitleColor = colors.sale,
+        ),
         ActionTileData(Resources.Icon.Plus, "افزودنِ سریعِ فروشگاه", onManage),
+        ActionTileData(Resources.Icon.Person, "سوپروایزرها", onManage),
+        columns = 2,
+        centered = false,
     )
     if (dash.pendingShops.isNotEmpty()) {
         Spacer(Modifier.height(16.dp))
@@ -451,33 +475,45 @@ private fun MenuRow(icon: DrawableResource, title: String, onClick: () -> Unit) 
     }
 }
 
-private data class ActionTileData(val icon: DrawableResource, val label: String, val onClick: () -> Unit)
+private data class ActionTileData(
+    val icon: DrawableResource,
+    val label: String,
+    val onClick: () -> Unit,
+    val subtitle: String? = null,
+    val subtitleColor: androidx.compose.ui.graphics.Color? = null,
+)
 
 @Composable
-private fun ActionGrid(vararg tiles: ActionTileData) {
+private fun ActionGrid(vararg tiles: ActionTileData, columns: Int = 2, centered: Boolean = true) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        tiles.toList().chunked(2).forEach { row ->
+        tiles.toList().chunked(columns).forEach { row ->
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
-                row.forEach { t -> Box(Modifier.weight(1f)) { ActionTile(t) } }
-                if (row.size == 1) Spacer(Modifier.weight(1f))
+                row.forEach { t -> Box(Modifier.weight(1f)) { ActionTile(t, centered) } }
+                repeat(columns - row.size) { Spacer(Modifier.weight(1f)) }
             }
         }
     }
 }
 
 @Composable
-private fun ActionTile(t: ActionTileData) {
+private fun ActionTile(t: ActionTileData, centered: Boolean) {
     val colors = AppTheme.colors
     Column(
         modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.surface)
-            .border(1.dp, colors.line, RoundedCornerShape(14.dp)).clickable(onClick = t.onClick).padding(vertical = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+            .border(1.dp, colors.line, RoundedCornerShape(14.dp)).clickable(onClick = t.onClick).padding(14.dp),
+        horizontalAlignment = if (centered) Alignment.CenterHorizontally else Alignment.Start,
+        verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        Box(Modifier.size(40.dp).clip(RoundedCornerShape(11.dp)).background(colors.accentSoft), contentAlignment = Alignment.Center) {
-            Icon(painterResource(t.icon), null, tint = colors.primary, modifier = Modifier.size(20.dp))
+        Box(Modifier.size(38.dp).clip(RoundedCornerShape(11.dp)).background(colors.accentSoft), contentAlignment = Alignment.Center) {
+            Icon(painterResource(t.icon), null, tint = colors.primary, modifier = Modifier.size(19.dp))
         }
-        Text(t.label, fontFamily = AppFont(), fontSize = FontSize.SMALL, fontWeight = FontWeight.Medium, color = colors.onSurface)
+        Text(
+            t.label, fontFamily = AppFont(), fontSize = FontSize.SMALL, fontWeight = FontWeight.Medium, color = colors.onSurface,
+            textAlign = if (centered) TextAlign.Center else TextAlign.Start, maxLines = 2,
+        )
+        if (t.subtitle != null) {
+            Text(t.subtitle, fontFamily = AppFont(), fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold, color = t.subtitleColor ?: colors.onSurfaceVariant)
+        }
     }
 }
 
