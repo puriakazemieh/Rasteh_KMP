@@ -1,6 +1,7 @@
 package com.kazemieh.bazaar
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -46,6 +47,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
@@ -104,7 +106,7 @@ fun VendorPanelScreen(
                             TabBar(tab = state.tab, onTab = viewModel::onTab)
                             when (state.tab) {
                                 0 -> DashboardTab(state)
-                                1 -> ProductsTab(state, onDelete = viewModel::deleteProduct)
+                                1 -> ProductsTab(state, onDelete = viewModel::deleteProduct, onToggle = viewModel::toggleProductActive)
                                 2 -> OrdersTab(state, onStatus = viewModel::updateOrderStatus)
                                 else -> OffersTab(state, onAccept = viewModel::acceptOffer, onReject = viewModel::rejectOffer)
                             }
@@ -167,7 +169,7 @@ private fun StatCard(label: String, value: String, modifier: Modifier = Modifier
 }
 
 @Composable
-private fun ProductsTab(state: VendorPanelState, onDelete: (Long) -> Unit) {
+private fun ProductsTab(state: VendorPanelState, onDelete: (Long) -> Unit, onToggle: (Long, Boolean) -> Unit) {
     when (val p = state.products) {
         is AppResult.Loading -> Box(Modifier.fillMaxSize(), Alignment.Center) { CircularProgressIndicator() }
         is AppResult.Error -> Box(Modifier.fillMaxSize(), Alignment.Center) { Text("خطا", color = MaterialTheme.colorScheme.error) }
@@ -175,13 +177,30 @@ private fun ProductsTab(state: VendorPanelState, onDelete: (Long) -> Unit) {
             if (p.data.isEmpty()) Box(Modifier.fillMaxSize(), Alignment.Center) { Text("محصولی ندارید · با دکمهٔ + اضافه کنید", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = FontSize.SMALL) }
             else LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 items(p.data, key = { it.id }) { product ->
-                    Row(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.surface).padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(product.name, fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-                            Spacer(Modifier.height(2.dp))
-                            Text("${product.price.toLong().toFaPrice()} تومان · موجودی ${product.stock.toFaDigits()}", fontSize = FontSize.EXTRA_SMALL, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Column(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.surface).border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(14.dp)).padding(14.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(product.name, fontSize = FontSize.REGULAR, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, maxLines = 1)
+                                Spacer(Modifier.height(3.dp))
+                                Text(
+                                    if (product.active) "فعال" else "غیرفعال",
+                                    fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold,
+                                    color = if (product.active) Color(0xFF157A3A) else MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                            Text("${product.price.toLong().toFaPrice()} تومان", fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                         }
-                        IconButton(onClick = { onDelete(product.id) }) { Icon(Icons.Default.Delete, contentDescription = "حذف", tint = MaterialTheme.colorScheme.error) }
+                        Spacer(Modifier.height(10.dp))
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Box(
+                                modifier = Modifier.weight(1f).clip(RoundedCornerShape(10.dp)).border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(10.dp)).clickable { onToggle(product.id, !product.active) }.padding(vertical = 10.dp),
+                                contentAlignment = Alignment.Center,
+                            ) { Text(if (product.active) "توقفِ موقت" else "فعال‌سازی", fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface) }
+                            Box(
+                                modifier = Modifier.weight(1f).clip(RoundedCornerShape(10.dp)).border(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.6f), RoundedCornerShape(10.dp)).clickable { onDelete(product.id) }.padding(vertical = 10.dp),
+                                contentAlignment = Alignment.Center,
+                            ) { Text("حذف", fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error) }
+                        }
                     }
                 }
             }

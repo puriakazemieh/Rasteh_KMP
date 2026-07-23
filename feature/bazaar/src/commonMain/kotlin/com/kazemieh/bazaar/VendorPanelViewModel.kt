@@ -87,6 +87,19 @@ class VendorPanelViewModel(
         }
     }
 
+    /** فعال/غیرفعال‌سازیِ محصول (دکمهٔ «توقفِ موقت»). */
+    fun toggleProductActive(id: Long, active: Boolean) {
+        val shopId = _state.value.shopId ?: return
+        viewModelScope.launch {
+            repository.updateProduct(
+                id = id, name = null, description = null, price = null, oldPrice = null,
+                discountPercent = null, condition = null, stock = null, categoryName = null,
+                emoji = null, imageUrl = null, active = active,
+            )
+            _state.update { it.copy(products = repository.getMyShopProducts(shopId)) }
+        }
+    }
+
     fun acceptOffer(id: Long) = actOffer { interaction.acceptOffer(id) }
     fun rejectOffer(id: Long) = actOffer { interaction.rejectOffer(id) }
 
