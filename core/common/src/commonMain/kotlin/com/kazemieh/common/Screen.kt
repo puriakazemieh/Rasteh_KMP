@@ -41,6 +41,9 @@ sealed class Screen {
     data object VendorPanel : Screen()
 
     @Serializable
+    data object AddProduct : Screen()
+
+    @Serializable
     data object AdminManage : Screen()
 
     @Serializable

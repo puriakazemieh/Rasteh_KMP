@@ -26,7 +26,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.kazemieh.common.util.toFaDigits
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -77,6 +79,7 @@ fun MoreScreen(
     onReferralClick: () -> Unit = {},
     onFeaturesClick: () -> Unit = {},
     onVendorPanelClick: () -> Unit = {},
+    onAddProductClick: () -> Unit = {},
     onAdminManageClick: () -> Unit = {},
     // بلااستفاده‌ها (سازگاریِ عقب‌رو با فراخوان‌کننده):
     onPriceAlertsClick: () -> Unit = {},
@@ -86,6 +89,11 @@ fun MoreScreen(
 ) {
     val colors = AppTheme.colors
     var role by remember { mutableStateOf(ProfileRole.CUSTOMER) }
+    val dashVm: com.kazemieh.bazaar.ProfileDashboardViewModel = org.koin.compose.viewmodel.koinViewModel()
+    val dash by dashVm.state.collectAsState()
+    androidx.compose.runtime.LaunchedEffect(isLoggedIn, isVendor, isAdmin) {
+        if (isLoggedIn) dashVm.load(isVendor = isVendor, isAdmin = isAdmin)
+    }
 
     Column(
         modifier = Modifier
@@ -125,11 +133,15 @@ fun MoreScreen(
                 onBecomeVendorClick, showBecomeVendor = !isVendor && !isAdmin, onLogout = onLogout,
             )
             ProfileRole.VENDOR -> VendorContent(
-                shopName = userName.ifBlank { "فروشگاهِ من" },
+                dash = dash,
+                shopName = dash.vendorShop?.name ?: userName.ifBlank { "فروشگاهِ من" },
                 onOrders = onMarketOrdersClick, onPanel = onVendorPanelClick, onDeals = onDealsClick,
+                onAddProduct = onAddProductClick,
             )
             ProfileRole.ADMIN -> AdminContent(
-                onApprove = onAdminShopsClick, onManage = onAdminManageClick, onPanel = onAdminPanelClick,
+                dash = dash,
+                onApprove = { dashVm.approve(it) }, onReject = { dashVm.reject(it) },
+                onApproveNav = onAdminShopsClick, onManage = onAdminManageClick, onPanel = onAdminPanelClick,
             )
         }
     }
@@ -253,8 +265,13 @@ private fun CustomerContent(
 // ---------------------------------------------------------------------------
 
 @Composable
-private fun VendorContent(shopName: String, onOrders: () -> Unit, onPanel: () -> Unit, onDeals: () -> Unit) {
+private fun VendorContent(
+    dash: com.kazemieh.bazaar.ProfileDashboardState,
+    shopName: String,
+    onOrders: () -> Unit, onPanel: () -> Unit, onDeals: () -> Unit, onAddProduct: () -> Unit,
+) {
     val colors = AppTheme.colors
+    val verified = dash.vendorShop?.verified ?: false
     // کارتِ فروشگاه
     Row(
         modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(colors.accentSoft).padding(16.dp),
@@ -266,22 +283,47 @@ private fun VendorContent(shopName: String, onOrders: () -> Unit, onPanel: () ->
         Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
             Text(shopName, fontFamily = AppFont(), fontSize = FontSize.EXTRA_REGULAR, fontWeight = FontWeight.Bold, color = colors.onSurface)
-            Text("پنلِ مدیریتِ فروشگاه", fontFamily = AppFont(), fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+            val sub = listOfNotNull(dash.vendorShop?.rastehLabel, dash.vendorShop?.floor).joinToString(" · ").ifBlank { "پنلِ مدیریتِ فروشگاه" }
+            Text(sub, fontFamily = AppFont(), fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
         }
-        Box(Modifier.clip(RoundedCornerShape(8.dp)).background(colors.ok).padding(horizontal = 10.dp, vertical = 5.dp)) {
+        if (verified) Box(Modifier.clip(RoundedCornerShape(8.dp)).background(colors.ok).padding(horizontal = 10.dp, vertical = 5.dp)) {
             Text("تأییدشده", fontFamily = AppFont(), fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.White)
         }
     }
-    Spacer(Modifier.height(14.dp))
+    Spacer(Modifier.height(12.dp))
+    StatRow(
+        StatData(dash.vendorOrderCount, "سفارش‌ها"),
+        StatData(dash.myProducts.size, "محصولاتِ من"),
+        StatData(dash.myProducts.count { !it.active }, "غیرفعال"),
+    )
+    Spacer(Modifier.height(12.dp))
     ActionGrid(
         ActionTileData(Resources.Icon.Orders, "سفارش‌ها", onOrders),
         ActionTileData(Resources.Icon.Categories, "مدیریتِ محصولات", onPanel),
-        ActionTileData(Resources.Icon.Plus, "افزودنِ محصول", onPanel),
+        ActionTileData(Resources.Icon.Plus, "افزودنِ محصول", onAddProduct),
         ActionTileData(Resources.Icon.Dollar, "تخفیفِ دنبال‌کننده", onDeals),
         ActionTileData(Resources.Icon.Clock, "آمار و عملکرد", onPanel),
         ActionTileData(Resources.Icon.Edit, "ویرایشِ فروشگاه", onPanel),
         ActionTileData(Resources.Icon.MapPin, "کدِ QR فروشگاه", onPanel),
     )
+    if (dash.myProducts.isNotEmpty()) {
+        Spacer(Modifier.height(16.dp))
+        Text("آخرین محصولاتِ من", fontFamily = AppFont(), fontSize = FontSize.EXTRA_REGULAR, fontWeight = FontWeight.Bold, color = colors.onSurface)
+        Spacer(Modifier.height(8.dp))
+        MenuGroup {
+            dash.myProducts.take(4).forEachIndexed { i, p ->
+                if (i > 0) MenuDivider()
+                Row(modifier = Modifier.fillMaxWidth().clickable(onClick = onPanel).padding(horizontal = 14.dp, vertical = 13.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(Modifier.size(34.dp).clip(RoundedCornerShape(9.dp)).background(colors.accentSoft), contentAlignment = Alignment.Center) {
+                        Icon(painterResource(Resources.Icon.Orders), null, tint = colors.primary, modifier = Modifier.size(17.dp))
+                    }
+                    Spacer(Modifier.width(12.dp))
+                    Text(p.name, modifier = Modifier.weight(1f), fontFamily = AppFont(), fontSize = FontSize.SMALL, fontWeight = FontWeight.Medium, color = colors.onSurface, maxLines = 1)
+                    Text(if (p.active) "فعال" else "غیرفعال", fontFamily = AppFont(), fontSize = FontSize.EXTRA_SMALL, color = if (p.active) colors.ok else colors.onSurfaceVariant)
+                }
+            }
+        }
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -289,7 +331,11 @@ private fun VendorContent(shopName: String, onOrders: () -> Unit, onPanel: () ->
 // ---------------------------------------------------------------------------
 
 @Composable
-private fun AdminContent(onApprove: () -> Unit, onManage: () -> Unit, onPanel: () -> Unit) {
+private fun AdminContent(
+    dash: com.kazemieh.bazaar.ProfileDashboardState,
+    onApprove: (Long) -> Unit, onReject: (Long) -> Unit,
+    onApproveNav: () -> Unit, onManage: () -> Unit, onPanel: () -> Unit,
+) {
     val colors = AppTheme.colors
     Row(
         modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(colors.primary).clickable(onClick = onPanel).padding(16.dp),
@@ -304,13 +350,74 @@ private fun AdminContent(onApprove: () -> Unit, onManage: () -> Unit, onPanel: (
             Text("خوش آمدید، مدیرِ پاساژ", fontFamily = AppFont(), fontSize = FontSize.EXTRA_SMALL, color = Color.White.copy(alpha = 0.85f))
         }
     }
-    Spacer(Modifier.height(14.dp))
+    Spacer(Modifier.height(12.dp))
+    StatRow(
+        StatData(dash.activeShopCount, "فروشگاهِ فعال"),
+        StatData(dash.openReportCount, "گزارشِ باز"),
+        StatData(dash.pendingShops.size, "در انتظارِ تأیید"),
+    )
+    Spacer(Modifier.height(12.dp))
     ActionGrid(
-        ActionTileData(Resources.Icon.Checkmark, "تأییدِ فروشگاه‌ها", onApprove),
+        ActionTileData(Resources.Icon.Checkmark, "تأییدِ فروشگاه‌ها", onApproveNav),
         ActionTileData(Resources.Icon.Warning, "گزارشِ تخلف", onManage),
         ActionTileData(Resources.Icon.Person, "سوپروایزرها", onManage),
         ActionTileData(Resources.Icon.Plus, "افزودنِ سریعِ فروشگاه", onManage),
     )
+    if (dash.pendingShops.isNotEmpty()) {
+        Spacer(Modifier.height(16.dp))
+        Text("در انتظارِ تأیید", fontFamily = AppFont(), fontSize = FontSize.EXTRA_REGULAR, fontWeight = FontWeight.Bold, color = colors.onSurface)
+        Spacer(Modifier.height(8.dp))
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            dash.pendingShops.take(5).forEach { shop ->
+                Row(
+                    modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.surface)
+                        .border(1.dp, colors.line, RoundedCornerShape(14.dp)).padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Box(Modifier.size(38.dp).clip(RoundedCornerShape(10.dp)).background(colors.accentSoft), contentAlignment = Alignment.Center) {
+                        Icon(painterResource(Resources.Icon.StorePin), null, tint = colors.primary, modifier = Modifier.size(19.dp))
+                    }
+                    Spacer(Modifier.width(12.dp))
+                    Column(Modifier.weight(1f)) {
+                        Text(shop.name, fontFamily = AppFont(), fontSize = FontSize.SMALL, fontWeight = FontWeight.Bold, color = colors.onSurface, maxLines = 1)
+                        val sub = listOfNotNull(shop.rastehLabel, shop.floor).joinToString(" · ")
+                        if (sub.isNotBlank()) Text(sub, fontFamily = AppFont(), fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant, maxLines = 1)
+                    }
+                    if (dash.busyShopId == shop.id) {
+                        androidx.compose.material3.CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp, color = colors.primary)
+                    } else {
+                        Box(Modifier.clip(RoundedCornerShape(8.dp)).background(colors.ok).clickable { onApprove(shop.id) }.padding(horizontal = 12.dp, vertical = 7.dp)) {
+                            Text("بررسی", fontFamily = AppFont(), fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold, color = Color.White)
+                        }
+                        Spacer(Modifier.width(6.dp))
+                        Box(Modifier.clip(RoundedCornerShape(8.dp)).background(colors.sale.copy(alpha = 0.12f)).clickable { onReject(shop.id) }.padding(horizontal = 10.dp, vertical = 7.dp)) {
+                            Text("رد", fontFamily = AppFont(), fontSize = FontSize.EXTRA_SMALL, fontWeight = FontWeight.Bold, color = colors.sale)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+private data class StatData(val value: Int, val label: String)
+
+@Composable
+private fun StatRow(vararg stats: StatData) {
+    val colors = AppTheme.colors
+    Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
+        stats.forEach { s ->
+            Column(
+                modifier = Modifier.weight(1f).clip(RoundedCornerShape(14.dp)).background(colors.surface)
+                    .border(1.dp, colors.line, RoundedCornerShape(14.dp)).padding(vertical = 14.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(s.value.toString().toFaDigits(), fontFamily = AppFont(), fontSize = FontSize.MEDIUM, fontWeight = FontWeight.ExtraBold, color = colors.primary)
+                Spacer(Modifier.height(2.dp))
+                Text(s.label, fontFamily = AppFont(), fontSize = FontSize.EXTRA_SMALL, color = colors.onSurfaceVariant)
+            }
+        }
+    }
 }
 
 // ---------------------------------------------------------------------------

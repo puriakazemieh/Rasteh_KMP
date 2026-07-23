@@ -86,6 +86,7 @@ fun MainGraphScreen(
     navigateToNotifications: () -> Unit,
     navigateToFeatures: () -> Unit,
     navigateToVendorPanel: () -> Unit,
+    navigateToAddProduct: () -> Unit,
     navigateToAdminManage: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
@@ -266,6 +267,7 @@ fun MainGraphScreen(
                                 onReferralClick = navigateToReferral,
                                 onFeaturesClick = navigateToFeatures,
                                 onVendorPanelClick = navigateToVendorPanel,
+                                onAddProductClick = navigateToAddProduct,
                                 onAdminManageClick = navigateToAdminManage,
                             )
                         }

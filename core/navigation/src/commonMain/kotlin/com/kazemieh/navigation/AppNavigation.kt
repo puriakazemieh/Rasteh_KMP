@@ -219,6 +219,9 @@ fun AppNavHost(
                 navigateToVendorPanel = {
                     navController.navigate(Screen.VendorPanel)
                 },
+                navigateToAddProduct = {
+                    navController.navigate(Screen.AddProduct)
+                },
                 navigateToAdminManage = {
                     navController.navigate(Screen.AdminManage)
                 },
@@ -411,6 +414,10 @@ fun AppNavHost(
                 navigateBack = { navController.navigateBack() },
                 navigateToBecomeVendor = { navController.navigate(Screen.BecomeVendor) },
             )
+        }
+
+        composable<Screen.AddProduct> {
+            com.kazemieh.bazaar.AddProductScreen(navigateBack = { navController.navigateBack() })
         }
 
         composable<Screen.AdminManage> {

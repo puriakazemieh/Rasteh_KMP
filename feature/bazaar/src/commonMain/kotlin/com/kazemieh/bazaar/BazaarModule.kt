@@ -34,4 +34,6 @@ val bazaarModule = module {
     viewModel { CompareViewModel(repository = get()) }
     viewModel { VendorPanelViewModel(repository = get(), interaction = get(), advanced = get()) }
     viewModel { AdminManageViewModel(repository = get()) }
+    viewModel { AddProductViewModel(repository = get()) }
+    viewModel { ProfileDashboardViewModel(repository = get()) }
 }
