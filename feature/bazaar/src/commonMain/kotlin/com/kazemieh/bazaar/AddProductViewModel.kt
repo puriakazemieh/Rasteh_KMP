@@ -78,13 +78,13 @@ class AddProductViewModel(
             val res = repository.createProduct(
                 shopId = shopId,
                 name = s.title.trim(),
-                description = s.description.ifBlank { null },
+                description = s.description.takeIf { it.isNotBlank() },
                 price = priceValue,
                 oldPrice = null,
                 discountPercent = s.discount.toIntOrNull()?.takeIf { it > 0 },
                 condition = s.condition,
                 stock = s.stock.toIntOrNull() ?: 0,
-                categoryName = s.category.ifBlank { null },
+                categoryName = s.category.takeIf { it.isNotBlank() },
                 emoji = null,
                 imageUrl = null,
             )
