@@ -196,7 +196,7 @@ jobs:
           const roleY = 212; // مرکزِ سوییچرِ نقش (تقریبی)
 
           // ادمین: خریدار|فروشنده|ادمین → ادمین چپ‌ترین سگمنت است (RTL).
-          const admin = await apiLogin('09120000000', 'pass1234');
+          const admin = await apiLogin('09120000000', 'admin1234');
           if (admin && admin.accessToken) {
             errs.push('admin login OK');
             await setAuth(admin);
@@ -221,7 +221,7 @@ jobs:
           }
 
           // فروشنده: خریدار|فروشنده → فروشنده چپ (۲ سگمنت).
-          const vendor = (await apiLogin('09122222222', 'pass1234')) || (await apiLogin('09122222222', 'vendor1234'));
+          const vendor = (await apiLogin('09122222222', 'vendor1234')) || (await apiLogin('09122222222', 'pass1234'));
           if (vendor && vendor.accessToken) {
             errs.push('vendor login OK');
             await setAuth(vendor);
