@@ -142,7 +142,7 @@ fun ProfileEditBottomSheet(
                     Text("انصراف", fontFamily = AppFont(), color = colors.onSurface)
                 }
                 PrimaryButton(
-                    text = if (isSaving) "در حال ذخیره…" else "ذخیره تغییرات",
+                    text = if (isSaving) "در حال ذخیره..." else "ذخیره تغییرات",
                     modifier = Modifier.weight(1f),
                     enabled = !isSaving &&
                         firstName.length in 3..50 &&

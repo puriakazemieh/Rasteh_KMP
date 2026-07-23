@@ -346,7 +346,7 @@ fun OrderDetailDialog(
 
                             OrderCard(title = stringResource(Resources.String.ShippingAddress)) {
                                 Text(
-                                    text = "${order.addressSnapshot.receiverName} — ${order.addressSnapshot.receiverPhone}",
+                                    text = "${order.addressSnapshot.receiverName} · ${order.addressSnapshot.receiverPhone}",
                                     fontFamily = AppFont(),
                                     fontWeight = FontWeight.Bold,
                                     fontSize = FontSize.SMALL,
@@ -440,7 +440,7 @@ fun OrderDetailDialog(
     }
 }
 
-/** کارتِ بخشِ جزئیات سفارش — عنوان + محتوای کارتِ سفید با حاشیه. */
+/** کارتِ بخشِ جزئیات سفارش · عنوان + محتوای کارتِ سفید با حاشیه. */
 @Composable
 private fun OrderCard(title: String, content: @Composable () -> Unit) {
     val colors = AppTheme.colors
