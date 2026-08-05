@@ -27,6 +27,10 @@
 - reconciliation و DR rehearsal؛
 - capacity/load test.
 
+## Deferred provider selection from Task 00
+
+پایلوت تهران/لاله‌زار با دستهٔ الکتریکی بدون provider مالی آغاز می‌شود. پیش از هر production release، این task باید برای هر مورد زیر provider اصلی، fallback، SLA، owner عملیاتی، sandbox/rehearsal و runbook failure را ثبت و آزمایش کند: map، SMS، push، object storage/CDN و analytics. fallback MVP به‌ترتیب آدرس/مسیریابی بدون نقشه، ثبت درخواست بدون ادعای ارسال SMS، اعلان درون‌برنامه‌ای، رد امن upload و عدم ارسال PII است. payment/PSP/refund/settlement تا قرارداد مجاز و sign-off حقوقی/مالی disabled است و انتخاب آن شرط جداگانهٔ release تراکنشی خواهد بود.
+
 ## Android deliverables
 
 - final applicationId/version؛

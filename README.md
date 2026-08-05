@@ -1,5 +1,7 @@
 # Rasteh — کلاینت (Kotlin Multiplatform + Compose Multiplatform)
 
+> وضعیت production-readiness و محدودهٔ مصوب MVP در [`plans/README.md`](./plans/README.md)، [`docs/product/MVP_SCOPE.md`](./docs/product/MVP_SCOPE.md) و ADRهای repository server ثبت شده‌اند. بخش‌های تاریخی این README inventory پیاده‌سازی قبلی‌اند، نه اعلام آمادگی انتشار یا فعال‌بودن قابلیت‌های مالی. در صورت تعارض، اسناد production-readiness حاکم‌اند.
+
 اپِ یکپارچهٔ مارکت‌پلیسِ محلیِ پاساژ/راسته (خریدار / فروشنده / ادمین) برای اندروید، iOS، دسکتاپ (JVM) و وب.
 نقشهٔ راه در [`RASTEH_KMP_PLAN.md`](./RASTEH_KMP_PLAN.md) و مرجعِ طراحی در پوشهٔ
 [`design_handoff_unified_app/`](./design_handoff_unified_app) است.

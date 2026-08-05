@@ -45,7 +45,7 @@ checkbox این جدول و فیلد `Status` داخل فایل همان task ب
 
 | وضعیت | شناسه | برنامه | وابسته به | خروجی اصلی |
 |---|---:|---|---|---|
-| [ ] | 00 | [قفل تصمیم‌ها و خط مبنا](./tasks/00_DECISIONS_AND_BASELINE.md) | — | ADR، قرارداد API، دامنهٔ MVP، baseline |
+| [x] | 00 | [قفل تصمیم‌ها و خط مبنا](./tasks/00_DECISIONS_AND_BASELINE.md) | — | ADR، قرارداد API، دامنهٔ MVP، baseline |
 | [ ] | 01 | [رفع فوری نقص‌های امنیتی و مالی](./tasks/01_CRITICAL_SECURITY_AND_FINANCE.md) | 00 | مالکیت سفارش، مبلغ پرداخت، callback، هم‌زمانی |
 | [ ] | 02 | [محیط‌ها، secrets، session و logging](./tasks/02_ENVIRONMENTS_SECRETS_AND_SESSIONS.md) | 00 | dev/stage/prod، HTTPS، secure storage، redaction |
 | [ ] | 03 | [مهاجرت DB، تست و observability پایه](./tasks/03_DATABASE_TESTS_AND_OBSERVABILITY.md) | 00 | Flyway، Testcontainers، CI gates، tracing/metrics |
