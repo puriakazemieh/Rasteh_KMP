@@ -9,5 +9,5 @@ import com.kazemieh.common.*
 
 
 interface PaymentDataSource {
-    suspend fun requestPayment(orderId: Long): AppResult<PaymentResponse>
+    suspend fun requestPayment(orderId: Long, idempotencyKey: String): AppResult<PaymentResponse>
 }

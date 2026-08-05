@@ -12,6 +12,6 @@ import com.kazemieh.data.payment.source.PaymentDataSource
 class PaymentRepositoryImpl(
     private val dataSource: PaymentDataSource
 ) : PaymentRepository {
-    override suspend fun requestPayment(orderId: Long): AppResult<String> =
-        dataSource.requestPayment(orderId).map { it.paymentUrl }
+    override suspend fun requestPayment(orderId: Long, idempotencyKey: String): AppResult<String> =
+        dataSource.requestPayment(orderId, idempotencyKey).map { it.paymentUrl }
 }

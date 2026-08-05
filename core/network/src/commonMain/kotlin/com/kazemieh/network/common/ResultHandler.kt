@@ -9,6 +9,7 @@ import io.ktor.client.statement.*
 import io.ktor.http.isSuccess
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import kotlinx.coroutines.CancellationException
 import com.kazemieh.common.*
 import com.kazemieh.common.Res
 
@@ -27,6 +28,8 @@ suspend fun <T> safeApiCall(
             message = e.messageText,
             code = e.code
         )
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: Exception) {
         AppResult.Error(
             message = Res.string.unknownError,
@@ -94,6 +97,8 @@ suspend inline fun <reified T> safeApiCallRaw(
         }
     } catch (e: ApiException) {
         e.message.ld("ApiException")
+        throw e
+    } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {
         "Exception: ${e::class.simpleName} - ${e.message}".ld("❌ Unexpected Error in safeApiCallRaw")

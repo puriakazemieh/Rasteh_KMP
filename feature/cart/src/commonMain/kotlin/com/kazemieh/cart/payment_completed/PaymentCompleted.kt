@@ -9,26 +9,22 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.kazemieh.designsystem.Resources
 import com.kazemieh.designsystem.component.InfoCard
-import com.kazemieh.designsystem.component.LoadingCard
 import com.kazemieh.designsystem.component.PrimaryButton
-import com.kazemieh.designsystem.util.DisplayResult
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun PaymentCompleted(
+    success: Boolean,
+    error: String?,
     navigateBack: () -> Unit,
 ) {
     val viewModel = koinViewModel<PaymentViewModel>()
-    val state by viewModel.state.collectAsState()
-
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
@@ -44,9 +40,7 @@ fun PaymentCompleted(
             .systemBarsPadding()
             .padding(all = 24.dp)
     ) {
-        state.result.DisplayResult(
-            onLoading = { LoadingCard(modifier = Modifier.fillMaxSize()) },
-            onSuccess = {
+        if (success) {
                 Column {
                     Box(
                         modifier = Modifier.weight(1f),
@@ -64,8 +58,7 @@ fun PaymentCompleted(
                         onClick = { viewModel.handleIntent(PaymentIntent.OnBackClick) }
                     )
                 }
-            },
-            onError = { message ->
+        } else {
                 Column {
                     Box(
                         modifier = Modifier.weight(1f),
@@ -73,7 +66,7 @@ fun PaymentCompleted(
                     ) {
                         InfoCard(
                             title = stringResource(Resources.String.Oops),
-                            subtitle = message,
+                            subtitle = error ?: stringResource(Resources.String.Oops),
                             image = Resources.Image.Cat
                         )
                     }
@@ -83,7 +76,6 @@ fun PaymentCompleted(
                         onClick = { viewModel.handleIntent(PaymentIntent.OnBackClick) }
                     )
                 }
-            }
-        )
+        }
     }
 }

@@ -17,6 +17,7 @@ artifactهای dev/stage/prod reproducible، HTTPS-only و بدون credential h
 - `TokenManager.kt` token را در Settings عمومی ذخیره می‌کند.
 - logout فقط token را پاک می‌کند و profile/cache user-specific باقی می‌ماند.
 - workflow screenshot نوع credentialهای دمو را در فایل commit‌شده دارد؛ مقدارها نباید در گزارش/commit جدید بازتولید شوند.
+- برای اجرای توسعهٔ سرور، `JWT_SECRET_KEY` باید فقط از environment یا secret store خوانده شود. کلید موقتیِ اجرای تست هرگز نباید در source، `application.properties`، گزارش یا commit ثبت شود. پیش از stage/release، مالک انتشار باید یک کلید تصادفیِ مستقل و حداقل ۳۲ بایتی را در secret store محیط تنظیم کند.
 
 ## Target design
 

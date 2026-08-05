@@ -63,5 +63,11 @@ kotlin {
                 implementation(project(":core:common"))
             }
         }
+
+        commonTest {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
     }
 }

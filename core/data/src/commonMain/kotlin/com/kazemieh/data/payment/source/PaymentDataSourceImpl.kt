@@ -12,7 +12,7 @@ import com.kazemieh.common.*
 class PaymentDataSourceImpl(
     private val api: PaymentApi
 ) : PaymentDataSource {
-    override suspend fun requestPayment(orderId: Long): AppResult<PaymentResponse> = safeApiCall {
-        api.requestPayment(PaymentRequest(orderId))
+    override suspend fun requestPayment(orderId: Long, idempotencyKey: String): AppResult<PaymentResponse> = safeApiCall {
+        api.requestPayment(PaymentRequest(orderId, idempotencyKey))
     }
 }

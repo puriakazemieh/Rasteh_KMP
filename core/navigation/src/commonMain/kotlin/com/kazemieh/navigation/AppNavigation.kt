@@ -25,6 +25,7 @@ import com.kazemieh.blog.BlogListScreen
 import com.kazemieh.blog.BlogDetailScreen
 import com.kazemieh.common.AuthState
 import com.kazemieh.common.PaymentEventBus
+import com.kazemieh.common.paymentReturnResolution
 import com.kazemieh.common.Screen
 import com.kazemieh.common.TokenExpiredEventBus
 import com.kazemieh.bazaar.AdminManageScreen
@@ -93,10 +94,16 @@ fun AppNavHost(
 
     LaunchedEffect(true) {
         PaymentEventBus.events.collect { result ->
-            if (result.status == "success" || result.status == "failed") {
-                val success = result.status == "success"
+            paymentReturnResolution(result.status)?.let { resolution ->
                 PaymentEventBus.reset()
-                navController.navigate(Screen.PaymentCompleted(success)) {
+                // نتیجهٔ deep-link صرفاً بازگشت از درگاه است؛ تا وقتی endpoint وضعیت
+                // تأییدشدهٔ سرور خوانده نشده، نباید موفقیت مالی به کاربر اعلام شود.
+                navController.navigate(
+                    Screen.PaymentCompleted(
+                        success = resolution.success,
+                        error = resolution.message
+                    )
+                ) {
                     popUpTo<Screen.Checkout> { inclusive = true }
                 }
             }
@@ -690,6 +697,8 @@ fun AppNavHost(
             // Screen.PaymentCompleted(success: Boolean, error: String?)
 
             PaymentCompleted(
+                success = args.success,
+                error = args.error,
                 navigateBack = {
                     navController.navigate(Screen.HomeGraph()) {
                         popUpTo<Screen.HomeGraph> { inclusive = true }

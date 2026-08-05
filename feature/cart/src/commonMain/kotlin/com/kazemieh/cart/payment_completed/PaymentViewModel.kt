@@ -21,10 +21,6 @@ class PaymentViewModel(
     private val _effect = Channel<PaymentEffect>()
     val effect = _effect.receiveAsFlow()
 
-    init {
-        handleIntent(PaymentIntent.ClearCart)
-    }
-
     fun handleIntent(intent: PaymentIntent) {
         when (intent) {
             is PaymentIntent.ClearCart -> clearCart()

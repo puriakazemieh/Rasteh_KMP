@@ -4,5 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PaymentRequest(
-    val orderId: Long
+    val orderId: Long,
+    val idempotencyKey: String,
 )

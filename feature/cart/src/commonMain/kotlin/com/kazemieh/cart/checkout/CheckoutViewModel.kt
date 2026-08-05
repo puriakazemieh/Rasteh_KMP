@@ -67,6 +67,20 @@ sealed interface CheckoutEffect {
     data object AddressAdded : CheckoutEffect
 }
 
+internal class CheckoutSubmissionGate {
+    private var inFlight = false
+
+    fun tryAcquire(): Boolean {
+        if (inFlight) return false
+        inFlight = true
+        return true
+    }
+
+    fun release() {
+        inFlight = false
+    }
+}
+
 class CheckoutViewModel(
     private val createOrderUseCase: CreateOrderUseCase,
     private val getProfileUseCase: GetProfileUseCase,
@@ -84,6 +98,8 @@ class CheckoutViewModel(
     val effect = _effect.receiveAsFlow()
 
     private var cart: Cart? = null
+    private val checkoutSubmissionGate = CheckoutSubmissionGate()
+    private val paymentRequestKeys = mutableMapOf<Long, String>()
 
     init {
         loadProfile()
@@ -234,70 +250,73 @@ class CheckoutViewModel(
     }
 
     private fun payWithZarinpal() {
+        if (!checkoutSubmissionGate.tryAcquire()) return
         viewModelScope.launch {
-            val items = cart?.items?.map { it.variantId to it.qty } ?: emptyList()
-            if (items.isEmpty()) {
-                _effect.send(CheckoutEffect.ShowError(Resources.String.CartIsEmptyError))
-                return@launch
-            }
+            try {
+                val items = cart?.items?.map { it.variantId to it.qty } ?: emptyList()
+                if (items.isEmpty()) {
+                    _effect.send(CheckoutEffect.ShowError(Resources.String.CartIsEmptyError))
+                    return@launch
+                }
 
-            val addressId = _state.value.selectedAddressId
-            if (addressId == null) {
-                _effect.send(CheckoutEffect.ShowError(Resources.String.SelectAddressError))
-                return@launch
-            }
+                val addressId = _state.value.selectedAddressId
+                if (addressId == null) {
+                    _effect.send(CheckoutEffect.ShowError(Resources.String.SelectAddressError))
+                    return@launch
+                }
 
-            _state.update { it.copy(isLoading = true) }
+                _state.update { it.copy(isLoading = true) }
 
-            val orderResult = createOrderUseCase(items, addressId, _state.value.useWallet)
-            when (orderResult) {
-                is AppResult.Success -> {
-                    val orderId = orderResult.data.id
-                    val paymentResult = requestPaymentUseCase(orderId)
-                    when (paymentResult) {
-                        is AppResult.Success -> {
-                            _state.update { it.copy(isLoading = false) }
-                            _effect.send(CheckoutEffect.OpenZarinpal(paymentResult.data))
+                when (val orderResult = createOrderUseCase(items, addressId, _state.value.useWallet)) {
+                    is AppResult.Success -> {
+                        val orderId = orderResult.data.id
+                        val paymentKey = paymentRequestKeys.getOrPut(orderId) {
+                            "checkout-$orderId-${kotlin.random.Random.Default.nextLong().toULong().toString(16)}"
                         }
-                        is AppResult.Error -> {
-                            _state.update { it.copy(isLoading = false) }
-                            _effect.send(CheckoutEffect.ShowError(paymentResult.message))
+                        when (val paymentResult = requestPaymentUseCase(orderId, paymentKey)) {
+                            is AppResult.Success -> _effect.send(CheckoutEffect.OpenZarinpal(paymentResult.data))
+                            is AppResult.Error -> _effect.send(CheckoutEffect.ShowError(paymentResult.message))
+                            else -> Unit
                         }
-                        else -> {}
                     }
+                    is AppResult.Error -> _effect.send(CheckoutEffect.ShowError(orderResult.message))
+                    else -> Unit
                 }
-                is AppResult.Error -> {
-                    _state.update { it.copy(isLoading = false) }
-                    _effect.send(CheckoutEffect.ShowError(orderResult.message))
-                }
-                else -> {}
+            } finally {
+                _state.update { it.copy(isLoading = false) }
+                checkoutSubmissionGate.release()
             }
         }
     }
 
     private fun payOnDelivery() {
+        if (!checkoutSubmissionGate.tryAcquire()) return
         viewModelScope.launch {
-            val items = cart?.items?.map { it.variantId to it.qty } ?: emptyList()
-            if (items.isEmpty()) {
-                _effect.send(CheckoutEffect.ShowError(Resources.String.CartIsEmptyError))
-                return@launch
-            }
-
-            val addressId = _state.value.selectedAddressId
-
-            if (addressId == null) {
-                _effect.send(CheckoutEffect.ShowError(Resources.String.SelectAddressError))
-                return@launch
-            }
-
-            val result = createOrderUseCase(items, addressId, _state.value.useWallet)
-            when (result) {
-                is AppResult.Success -> {
-                    CartEventBus.refresh()
-                    _effect.send(CheckoutEffect.NavigateToPaymentCompleted(true, null))
+            try {
+                val items = cart?.items?.map { it.variantId to it.qty } ?: emptyList()
+                if (items.isEmpty()) {
+                    _effect.send(CheckoutEffect.ShowError(Resources.String.CartIsEmptyError))
+                    return@launch
                 }
-                is AppResult.Error -> _effect.send(CheckoutEffect.ShowError(result.message))
-                else -> {}
+
+                val addressId = _state.value.selectedAddressId
+                if (addressId == null) {
+                    _effect.send(CheckoutEffect.ShowError(Resources.String.SelectAddressError))
+                    return@launch
+                }
+
+                _state.update { it.copy(isLoading = true) }
+                when (val result = createOrderUseCase(items, addressId, _state.value.useWallet)) {
+                    is AppResult.Success -> {
+                        CartEventBus.refresh()
+                        _effect.send(CheckoutEffect.NavigateToPaymentCompleted(true, null))
+                    }
+                    is AppResult.Error -> _effect.send(CheckoutEffect.ShowError(result.message))
+                    else -> Unit
+                }
+            } finally {
+                _state.update { it.copy(isLoading = false) }
+                checkoutSubmissionGate.release()
             }
         }
     }
