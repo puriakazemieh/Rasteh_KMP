@@ -31,6 +31,10 @@
 
 پایلوت تهران/لاله‌زار با دستهٔ الکتریکی بدون provider مالی آغاز می‌شود. پیش از هر production release، این task باید برای هر مورد زیر provider اصلی، fallback، SLA، owner عملیاتی، sandbox/rehearsal و runbook failure را ثبت و آزمایش کند: map، SMS، push، object storage/CDN و analytics. fallback MVP به‌ترتیب آدرس/مسیریابی بدون نقشه، ثبت درخواست بدون ادعای ارسال SMS، اعلان درون‌برنامه‌ای، رد امن upload و عدم ارسال PII است. payment/PSP/refund/settlement تا قرارداد مجاز و sign-off حقوقی/مالی disabled است و انتخاب آن شرط جداگانهٔ release تراکنشی خواهد بود.
 
+### Carried forward from Task 01 — ZarinPal release rehearsal
+
+Before enabling `PAYMENT_ENABLED` in any staging or production release, run one completed ZarinPal sandbox payment against the persistent staging HTTPS callback. Preserve redacted evidence of: request-to-callback delivery; the provider verify response; one atomic order/payment/ledger transition; a replay of the same callback producing no second effect; and the feature-flag rollback back to `PAYMENT_ENABLED=false`. This is a payment-release gate, not satisfied by a forged callback reachability check, and it requires non-production credentials kept outside the repository.
+
 ## Android deliverables
 
 - final applicationId/version؛
@@ -105,6 +109,7 @@
 - load/security/accessibility reports؛
 - SLO/alert test؛
 - legal/payment approvals؛
+- the carried-forward ZarinPal sandbox callback/verify/replay rehearsal and feature-flag rollback evidence؛
 - rollback demo؛
 - known limitations/support matrix.
 
@@ -114,6 +119,7 @@
 - [ ] channelهای approved artifact signed و reproducible دارند.
 - [ ] Web production—not development—منتشر می‌شود.
 - [ ] stage/provider/restore/rollback rehearsals پاس‌اند.
+- [ ] if payments are enabled, the carried-forward ZarinPal sandbox callback/verify/replay rehearsal and `PAYMENT_ENABLED=false` rollback have passed.
 - [ ] privacy/account deletion و policies live هستند.
 - [ ] alert/on-call/support آماده‌اند.
 - [ ] independent audit نتیجه GO یا شروط دقیق Conditional GO داده است.

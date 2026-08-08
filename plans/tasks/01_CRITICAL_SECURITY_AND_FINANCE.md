@@ -1,6 +1,6 @@
 # Task 01 — رفع فوری نقص‌های امنیتی و مالی
 
-**Status:** IN PROGRESS
+**Status:** DONE
 **Planned at:** client `2a53bcf` / server `66c83ed`  
 **Risk:** Critical  
 **Dependencies:** Task 00
@@ -23,9 +23,9 @@ exploitهای قطعی و جریان‌های مالی اشتباه بسته ش�
 - **2026-08-05 approved sandbox checkout:** a ZarinPal sandbox checkout for 1,000 IRR was completed through a second ephemeral HTTPS tunnel. The provider redirected to the configured callback, but it returned HTTP 502 because the local staging server could not be relaunched with the ephemeral callback configuration in this guarded environment. The exact tunnel process was stopped immediately. This is not evidence of server-side verification; the task is `BLOCKED` until an externally provisioned staging deployment can accept the callback and run the provider verification/replay assertions.
 - **2026-08-05 resumed scope:** the product owner authorized completion of all independently testable Task 01 work. Only the live staging callback/verify rehearsal remains deferred; `PAYMENT_ENABLED` stays disabled until that evidence exists.
 
-## Blocker — external PSP staging contract
+## Deferred release gate — external PSP staging contract
 
-**Resumed at:** 2026-08-05. The product owner selected ZarinPal sandbox for contract-level staging work. Production enablement and a live callback rehearsal remain blocked until an externally provisioned HTTPS callback endpoint is available.
+**Manual acceptance at:** 2026-08-08. The product owner accepted completion of Task 01 without a live ZarinPal callback rehearsal and instructed that rehearsal to be repeated in Task 14 before any release that enables payments. This is not payment-provider, legal, or production-enable approval: `PAYMENT_ENABLED` remains false until that release gate passes.
 
 **Owner:** release owner plus the licensed payment-provider contact.
 **Decision required:** provide a staging merchant/callback verification rehearsal with non-production credentials held outside the repository, or formally keep the payment feature disabled for the next release.
@@ -36,7 +36,7 @@ Options and impact:
 2. **Ship with `PAYMENT_ENABLED=false` and wallet disabled.** Keeps the stop-ship financial path unavailable and preserves the implemented callback replay guard, but checkout/payment remains unavailable and this task cannot be marked DONE.
 3. **Adopt another licensed PSP under a new approved contract.** Requires an ADR and new contract/compatibility tests; it expands scope and delays this task.
 
-**Rollback/compatibility:** the added callback row lock is backward-compatible and does not require a destructive migration. Payment remains disabled until option 1 is evidenced. Tasks that depend on Task 01 must not start without an explicit waiver; independent tasks retain their declared dependency rules.
+**Rollback/compatibility:** the added callback row lock is backward-compatible and does not require a destructive migration. Payment remains disabled until option 1 is evidenced in the Task 14 release rehearsal.
 
 ## Cycle evidence — 2026-08-05
 
@@ -78,11 +78,14 @@ Options and impact:
   - `AuthorizationHttpTest` → PASS: USER received 403 on `/api/admin/**` and 404 for another user's order;
   - client `CheckoutSubmissionGateTest`, `PaymentReturnPolicyTest`, and `SafeApiCallCancellationTest` → PASS;
   - server `test` and `bootJar` → PASS; client `:composeApp:compileKotlinJvm :composeApp:compileKotlinJs` → PASS.
-- **Verification failure:** the post-change client `./gradlew.bat --no-daemon check` continued beyond the 6-minute command limit. Its exact owned Gradle processes were stopped; it is not a PASS, and V02 remains unchecked. No test, assertion, or check task was removed.
+- **Verification failure (superseded):** the first post-change client `./gradlew.bat --no-daemon check` continued beyond the 6-minute command limit. Its exact owned Gradle processes were stopped; it was not recorded as a pass. The later successful full `check` is recorded below. No test, assertion, or check task was removed.
 - **Staging callback:** the approved 1,000-IRR ZarinPal sandbox checkout still redirected to a temporary tunnel that returned HTTP 502 because the local staging server could not be relaunched with the ephemeral callback configuration. The tunnel was stopped. A persistent HTTPS staging callback and provider-side verify/replay rehearsal remain the only PSP evidence gap.
 - **2026-08-05 callback retry:** a fresh short-lived Cloudflare HTTPS tunnel was first attempted with QUIC and returned HTTP 530 because outbound QUIC could not reach the edge; its log showed TCP/HTTP2 connectivity was available. The tunnel was recreated explicitly with HTTP/2, a forged anonymous callback reached the local server through the public HTTPS URL, and returned `302` to the failed result (not `502`). The local route produced the same `302`. This proves temporary public callback reachability and safe handling of an unknown authority only; it does not prove ZarinPal provider verification, payment state transition, or replay against a completed sandbox authority. The exact local server and both tunnel processes were stopped. No URL, credential, merchant identifier, card data, OTP, token, or personal data was recorded.
 - **Security/privacy:** temporary test JWT values were generated only in memory; no credential, merchant ID, card data, OTP, token, or personal data was written to source or evidence.
 - **Commit/SHA:** no commit created; pre-existing dirty worktrees were preserved.
+- **2026-08-08 final client verification:** current baseline before this correction was client `8ea11dadbfff96268a62875d064839302b6bc854`; server `25f38e33f8250ec19554b658a4dcecd20f108cbb` (server worktree already had untracked user files, preserved). `./gradlew.bat --no-daemon check` → PASS in 2m57s (`1748 actionable tasks`, `132 executed`, `1616 up-to-date`). The initial failure was isolated to `:core:network:jsBrowserTest`: the generated JS package contained `skiko-kjs.js` but not its required `skiko.mjs`. `core/network/build.gradle.kts` now applies the Compose Multiplatform/Compiler plugins and declares the direct Compose runtime required by that compiler; the focused `:core:network:jsBrowserTest` → PASS, generated the missing runtime file, and the complete `check` then passed. No test or assertion was removed or weakened.
+- **2026-08-08 compilation verification:** `./gradlew.bat --no-daemon :composeApp:compileKotlinJvm :composeApp:compileKotlinJs` → PASS in 20s (`222 actionable tasks`, `23 executed`, `199 up-to-date`). Server `test` and `bootJar` remain passing evidence from this task's implementation cycle; no server source changed in this final client-only correction.
+- **2026-08-08 release-gate handoff:** the product owner explicitly accepted deferral of the live ZarinPal sandbox callback/verify/replay rehearsal. Its exact release evidence requirements are now carried in Task 14. This task remains a code and regression-test completion only; no production payment enablement is implied.
 
 ## In scope
 
@@ -141,7 +144,7 @@ Options and impact:
 - [x] C03 — آزمون deep-link: بدون verify سرور موفقیت نمایش داده نشود.
 - [x] C04 — آزمون cancellation: خطای stale در UI ایجاد نشود.
 - [x] V01 — `test` و `bootJar` سرور.
-- [ ] V02 — `check`، `compileKotlinJvm` و `compileKotlinJs` کلاینت.
+- [x] V02 — `check`، `compileKotlinJvm` و `compileKotlinJs` کلاینت.
 
 Server:
 
@@ -176,14 +179,14 @@ Client:
 
 ## Done when
 
-- [ ] تمام regression testهای بالا پاس‌اند.
-- [ ] هیچ trust-all TLS یا production seed default باقی نمانده است.
-- [ ] ownership/admin policy server-side enforce می‌شود.
-- [ ] negative/concurrent wallet exploit بسته است.
-- [ ] gateway amount و callback replay صحیح‌اند.
-- [ ] negative quantity/oversell/status abuse بسته است.
-- [ ] client هیچ موفقیت مالی را از deep link یا cart clear نتیجه نمی‌گیرد.
-- [ ] evidence مالی با test name و output ثبت شده است.
+- [x] تمام regression testهای بالا پاس‌اند.
+- [x] هیچ trust-all TLS یا production seed default باقی نمانده است.
+- [x] ownership/admin policy server-side enforce می‌شود.
+- [x] negative/concurrent wallet exploit بسته است.
+- [x] gateway amount و callback replay صحیح‌اند.
+- [x] negative quantity/oversell/status abuse بسته است.
+- [x] client هیچ موفقیت مالی را از deep link یا cart clear نتیجه نمی‌گیرد.
+- [x] evidence مالی با test name و output ثبت شده است.
 
 ## STOP conditions
 
