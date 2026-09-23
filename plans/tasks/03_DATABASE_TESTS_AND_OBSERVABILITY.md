@@ -113,6 +113,7 @@ Migration rehearsal:
 ## Completion evidence — 2026-09-23
 
 - **Server implementation commit:** `8c69c9d450c0127ba36847932033c2063a76e958` (`chore: add local migration and observability gates`).
+- **Client implementation commit:** `5941deb6428c5c11e6be7efc0dfadf946fcaa727` (`test: add migration readiness client harness`).
 - **Schema:** immutable `V0__local_schema_baseline.sql` expresses the local, source-defined pre-migration schema. `V1` through `V4` are exercised from both empty PostgreSQL and a simulated V0 local snapshot. The compose init mount and the exception-swallowing migration configuration were removed; local Hibernate is `validate`.
 - **Migration safety:** the test suite uses a real mandatory PostgreSQL Testcontainers instance. It asserts empty → V0…V4, V0 baseline snapshot → V1…V4, and Spring boot with `validate`. No production data, snapshots, credentials, or destructive migration was used.
 - **Observability/security:** public actuator access is restricted to health/readiness; metrics remain behind normal authentication. Correlation identifiers accept only canonical UUIDs, are returned in the response, are removed from MDC after each request, and never become metric labels. Bounded `auth`, `order`, `payment`, and `inventory` request metrics plus local observations are tested.
