@@ -1,15 +1,17 @@
 name: CI (fast compile)
 
-# Lightweight compile check that runs automatically on every push to the
-# develop / claude branches. It compiles the shared Kotlin (commonMain +
-# jvmMain via the desktop target), which surfaces the vast majority of
-# compile errors in a few minutes — without the cost of the full multi-target
-# Build All workflow. Use Build All (workflow_dispatch) for real artifacts.
+# Runs the shared KMP test and compile gate on pull requests and protected
+# branches. Release artifacts remain the responsibility of Task 14.
 on:
+  pull_request:
+    branches:
+      - main
+      - develop
   push:
     branches:
+      - main
       - develop
-      - 'claude/**'
+      - 'codex/**'
   workflow_dispatch:
 
 permissions:
@@ -30,11 +32,11 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: gradle/actions/setup-gradle@v4
-      - name: Compile shared + desktop (jvm)
+      - name: Run shared tests and compile targets
         run: |
           chmod +x gradlew
           set -o pipefail
-          ./gradlew --no-daemon :composeApp:compileKotlinJvm :composeApp:compileKotlinJs 2>&1 | tee /tmp/build.log || {
+          ./gradlew --no-daemon check :composeApp:compileKotlinJvm :composeApp:compileKotlinJs 2>&1 | tee /tmp/build.log || {
             echo "=================== KOTLIN COMPILE ERRORS ==================="
             grep -E '^e: ' /tmp/build.log | head -40
             echo "==========================================================="

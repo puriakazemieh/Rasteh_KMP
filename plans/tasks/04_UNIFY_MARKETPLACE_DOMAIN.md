@@ -69,6 +69,7 @@ Client:
 
 - هیچ endpoint قدیمی بدون حداقل یک release notice حذف نشود؛
 - money جدید دقیق باشد؛ تبدیل Double فقط در legacy adapter با validation/rounding صریح؛
+- تمام fieldهای مالی legacy در client که هنوز `Double` هستند باید در مدل canonical به minor-unit integer یا value object دقیق منتقل شوند؛ هیچ flow مالی جدید نباید آن‌ها را مصرف کند.
 - order مالی legacy read-only و auditپذیر بماند؛
 - IDs در response جدید type/prefix یا contract روشن داشته باشند؛
 - unknown enum در client crash نکند.

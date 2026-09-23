@@ -27,6 +27,10 @@
 - reconciliation و DR rehearsal؛
 - capacity/load test.
 
+## Carried forward from Task 03 — real database and observability proof
+
+Task 03 only establishes a source-defined local/ephemeral migration reference. Before release, reconcile it with a sanitized schema-only snapshot of the target stage/production database, verify Flyway as the sole schema owner with application `ddl-auto=validate`, and rehearse migration from the snapshot. Execute and retain redacted evidence for backup/PITR/restore, row-count/checksum validation and measured RPO/RTO. Connect local instrumentation to the approved telemetry backend, publish dashboard/alert rules for auth/order/payment/inventory and test their delivery. None of these gates is satisfied by local tests.
+
 ## Deferred provider selection from Task 00
 
 پایلوت تهران/لاله‌زار با دستهٔ الکتریکی بدون provider مالی آغاز می‌شود. پیش از هر production release، این task باید برای هر مورد زیر provider اصلی، fallback، SLA، owner عملیاتی، sandbox/rehearsal و runbook failure را ثبت و آزمایش کند: map، SMS، push، object storage/CDN و analytics. fallback MVP به‌ترتیب آدرس/مسیریابی بدون نقشه، ثبت درخواست بدون ادعای ارسال SMS، اعلان درون‌برنامه‌ای، رد امن upload و عدم ارسال PII است. payment/PSP/refund/settlement تا قرارداد مجاز و sign-off حقوقی/مالی disabled است و انتخاب آن شرط جداگانهٔ release تراکنشی خواهد بود.
