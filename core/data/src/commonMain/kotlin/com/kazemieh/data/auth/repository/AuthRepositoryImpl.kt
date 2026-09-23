@@ -79,6 +79,16 @@ class AuthRepositoryImpl(
         return authDataSource.resetPassword(token, newPassword)
     }
 
+    override suspend fun restoreSession(): AppResult<Unit> {
+        if (!usesWebCookieSession()) return AppResult.Success(Unit)
+        return authDataSource.restoreWebSession()
+            .doOnSuccess { auth ->
+                profileLocalDataSource.saveProfile(auth.profile)
+                _authState.value = AuthState.Authenticated
+            }
+            .map { }
+    }
+
     override suspend fun sendLoginOtp(mobile: String): AppResult<Unit> {
         return authDataSource.sendLoginOtp(mobile)
     }

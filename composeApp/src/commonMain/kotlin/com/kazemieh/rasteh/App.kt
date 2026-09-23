@@ -1,6 +1,7 @@
 package com.kazemieh.rasteh
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.kazemieh.admin.options.adminOptionsModule
@@ -23,6 +24,7 @@ import com.kazemieh.designsystem.brand.ProvideBrand
 import com.kazemieh.details.di.detailsModule
 import com.kazemieh.domain.settings.ObserveLanguageUseCase
 import com.kazemieh.domain.settings.ObserveThemeModeUseCase
+import com.kazemieh.domain.auth.AuthRepository
 import com.kazemieh.main.mainModule
 import com.kazemieh.navigation.AppNavHost
 import com.kazemieh.network.di.networkModule
@@ -39,6 +41,13 @@ import org.koin.dsl.KoinAppDeclaration
 fun App() {
     val observeLanguageUseCase = koinInject<ObserveLanguageUseCase>()
     val observeThemeModeUseCase = koinInject<ObserveThemeModeUseCase>()
+    val authRepository = koinInject<AuthRepository>()
+
+    LaunchedEffect(authRepository) {
+        // On Web this asks the BFF to rehydrate a valid HttpOnly-cookie session.
+        // Native targets intentionally keep the current memory-only local behavior.
+        authRepository.restoreSession()
+    }
 
     val language by observeLanguageUseCase().collectAsState(AppLanguage.PERSIAN)
     val themeMode by observeThemeModeUseCase().collectAsState(AppThemeMode.LIGHT)

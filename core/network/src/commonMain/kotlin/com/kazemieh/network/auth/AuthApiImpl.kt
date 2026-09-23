@@ -61,6 +61,11 @@ class AuthApiImpl(
         client.post("api/auth/login-with-otp") { setBody(request) }
     }
 
+    override suspend fun webSession(): AuthResponse {
+        check(usesWebCookieSession()) { "Web session endpoint is browser-only" }
+        return webSessionAuth { client.get("web/auth/session") }
+    }
+
     override suspend fun resetPasswordWithOtp(request: ResetPasswordWithOtpRequest) = safeApiCallRaw<Unit> {
         client.post("api/auth/reset-password-with-otp") { setBody(request) }
     }

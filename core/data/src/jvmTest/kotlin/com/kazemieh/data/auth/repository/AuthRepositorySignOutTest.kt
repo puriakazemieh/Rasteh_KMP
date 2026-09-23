@@ -60,6 +60,7 @@ class AuthRepositorySignOutTest {
         override suspend fun register(email: String?, mobile: String?, password: String): AppResult<Auth> = error("unused")
         override suspend fun forgotPassword(email: String?, mobile: String?): AppResult<Unit> = error("unused")
         override suspend fun resetPassword(token: String, newPassword: String): AppResult<Unit> = error("unused")
+        override suspend fun restoreWebSession(): AppResult<Auth> = error("unused")
         override suspend fun sendLoginOtp(mobile: String): AppResult<Unit> = error("unused")
         override suspend fun loginWithOtp(mobile: String, otpCode: String): AppResult<Auth> = error("unused")
         override suspend fun resetPasswordWithOtp(mobile: String, otpCode: String, newPassword: String): AppResult<Unit> = error("unused")

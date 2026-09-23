@@ -13,6 +13,7 @@ interface AuthDataSource {
     suspend fun register(email: String? = null, mobile: String? = null, password: String): AppResult<Auth>
     suspend fun forgotPassword(email: String? = null, mobile: String? = null): AppResult<Unit>
     suspend fun resetPassword(token: String, newPassword: String): AppResult<Unit>
+    suspend fun restoreWebSession(): AppResult<Auth>
 
     suspend fun sendLoginOtp(mobile: String): AppResult<Unit>
     suspend fun loginWithOtp(mobile: String, otpCode: String): AppResult<Auth>

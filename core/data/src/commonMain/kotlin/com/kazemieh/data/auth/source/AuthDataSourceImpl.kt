@@ -30,6 +30,10 @@ class AuthDataSourceImpl(
         authApi.resetPassword(ResetPasswordRequest(token, newPassword))
     }
 
+    override suspend fun restoreWebSession(): AppResult<Auth> = safeApiCall {
+        authApi.webSession().toDomain()
+    }
+
     override suspend fun sendLoginOtp(mobile: String): AppResult<Unit> = safeApiCall {
         authApi.sendLoginOtp(SendLoginOtpRequest(mobile))
     }

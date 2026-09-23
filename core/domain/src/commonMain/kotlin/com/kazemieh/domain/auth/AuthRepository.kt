@@ -11,6 +11,8 @@ interface AuthRepository {
     suspend fun register(email: String? = null, mobile: String? = null, password: String): AppResult<Unit>
     suspend fun forgotPassword(email: String? = null, mobile: String? = null): AppResult<Unit>
     suspend fun resetPassword(token: String, newPassword: String): AppResult<Unit>
+    /** Restores a browser BFF session after a page reload; native targets are a no-op. */
+    suspend fun restoreSession(): AppResult<Unit>
     suspend fun signOut(): AppResult<Unit>
     fun isLoggedIn(): Flow<Boolean>
 

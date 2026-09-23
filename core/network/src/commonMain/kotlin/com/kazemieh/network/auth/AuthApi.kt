@@ -22,6 +22,7 @@ interface AuthApi {
     suspend fun forgotPassword(request: ForgotPasswordRequest)
 
     suspend fun resetPassword(request: ResetPasswordRequest)
+    suspend fun webSession(): AuthResponse
 
     suspend fun sendLoginOtp(request: SendLoginOtpRequest)
 
