@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.CancellationException
 
 
 
@@ -104,17 +105,26 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun signOut(): AppResult<Unit> {
+        val refreshToken = tokenManager.getRefreshToken()
         return try {
+            val remoteResult = when {
+                refreshToken != null -> authDataSource.logout(refreshToken)
+                usesWebCookieSession() -> authDataSource.logout("")
+                else -> AppResult.Success(Unit)
+            }
             tokenManager.clearTokens()
+            profileLocalDataSource.clearProfile()
             _authState.value = AuthState.Unauthenticated
-            AppResult.Success(Unit)
+            remoteResult
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             AppResult.Error(e.message ?: "Unknown error")
         }
     }
 
     override fun isLoggedIn(): Flow<Boolean> = flow {
-        emit(tokenManager.getAccessToken() != null)
+        emit(_authState.value == AuthState.Authenticated)
     }
 
 }

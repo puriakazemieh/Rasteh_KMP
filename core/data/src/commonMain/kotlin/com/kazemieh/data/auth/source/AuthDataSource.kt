@@ -17,4 +17,5 @@ interface AuthDataSource {
     suspend fun sendLoginOtp(mobile: String): AppResult<Unit>
     suspend fun loginWithOtp(mobile: String, otpCode: String): AppResult<Auth>
     suspend fun resetPasswordWithOtp(mobile: String, otpCode: String, newPassword: String): AppResult<Unit>
+    suspend fun logout(refreshToken: String): AppResult<Unit>
 }

@@ -13,7 +13,6 @@ import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.header
 import io.ktor.client.request.post
@@ -23,6 +22,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import kotlinx.coroutines.CancellationException
 
 object HttpClientFactory {
 
@@ -39,12 +39,7 @@ object HttpClientFactory {
             }
 
             install(Logging) {
-                logger = object : Logger {
-                    override fun log(message: String) {
-                        message.ld("ktor ")
-                    }
-                }
-                level = LogLevel.ALL
+                level = LogLevel.NONE
             }
 
             install(HttpTimeout) {
@@ -96,8 +91,9 @@ object HttpClientFactory {
                                 accessToken = response.accessToken,
                                 refreshToken = response.refreshToken
                             )
+                        } catch (e: CancellationException) {
+                            throw e
                         } catch (e: Exception) {
-                            e.ld("token Exception")
                             tokenProvider.notifyTokenExpired()
                             tokenProvider.clearTokens()
                             null
@@ -108,9 +104,9 @@ object HttpClientFactory {
             install(DefaultRequest) {
                 url(PlatformConfig.baseUrl)
                 contentType(ContentType.Application.Json)
-//                tokenProvider.getAccessToken()?.let { token ->
-//                    header(HttpHeaders.Authorization, "Bearer $token")
-//                }
+                if (usesWebCookieSession()) {
+                    webCsrfToken()?.let { csrf -> header("X-XSRF-TOKEN", csrf) }
+                }
             }
 
         }

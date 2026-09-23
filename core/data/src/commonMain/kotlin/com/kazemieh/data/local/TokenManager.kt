@@ -4,7 +4,6 @@ import com.kazemieh.network.common.*
 import com.kazemieh.common.*
 
 import com.russhwolf.settings.Settings
-import com.russhwolf.settings.set
 
 class TokenManager(private val settings: Settings) : TokenProvider {
 
@@ -14,21 +13,33 @@ class TokenManager(private val settings: Settings) : TokenProvider {
     }
 
     private var onTokenExpiredListener: (() -> Unit)? = null
+    private var accessToken: String? = null
+    private var refreshToken: String? = null
+
+    init {
+        // Legacy versions persisted bearer credentials in general settings.
+        // There is no safe portable migration target yet, so revoke the local copy
+        // rather than restoring a plaintext credential after an app restart.
+        settings.remove(KEY_ACCESS_TOKEN)
+        settings.remove(KEY_REFRESH_TOKEN)
+    }
 
     override fun saveTokens(accessToken: String, refreshToken: String) {
-        settings[KEY_ACCESS_TOKEN] = accessToken
-        settings[KEY_REFRESH_TOKEN] = refreshToken
+        this.accessToken = accessToken.takeIf { it.isNotBlank() }
+        this.refreshToken = refreshToken.takeIf { it.isNotBlank() }
     }
 
     override fun getAccessToken(): String? {
-        return settings.getStringOrNull(KEY_ACCESS_TOKEN)
+        return accessToken
     }
 
     override fun getRefreshToken(): String? {
-        return settings.getStringOrNull(KEY_REFRESH_TOKEN)
+        return refreshToken
     }
 
     override fun clearTokens() {
+        accessToken = null
+        refreshToken = null
         settings.remove(KEY_ACCESS_TOKEN)
         settings.remove(KEY_REFRESH_TOKEN)
     }

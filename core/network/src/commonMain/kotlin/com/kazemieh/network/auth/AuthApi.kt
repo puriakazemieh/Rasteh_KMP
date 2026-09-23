@@ -3,6 +3,7 @@ package com.kazemieh.network.auth
 import com.kazemieh.network.common.PageResponse
 
 import com.kazemieh.network.auth.dto.request.LoginRequest
+import com.kazemieh.network.auth.dto.request.LogoutRequest
 import com.kazemieh.network.auth.dto.request.RegisterRequest
 import com.kazemieh.network.auth.dto.request.ResetPasswordRequest
 import com.kazemieh.network.auth.dto.request.SendLoginOtpRequest
@@ -28,5 +29,6 @@ interface AuthApi {
 
     suspend fun resetPasswordWithOtp(request: ResetPasswordWithOtpRequest)
 
+    suspend fun logout(request: LogoutRequest)
 
 }

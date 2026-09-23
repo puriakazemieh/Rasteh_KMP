@@ -42,4 +42,8 @@ class AuthDataSourceImpl(
         authApi.resetPasswordWithOtp(ResetPasswordWithOtpRequest(mobile, otpCode, newPassword))
     }
 
+    override suspend fun logout(refreshToken: String): AppResult<Unit> = safeApiCall {
+        authApi.logout(LogoutRequest(refreshToken))
+    }
+
 }
