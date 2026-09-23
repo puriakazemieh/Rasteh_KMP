@@ -35,6 +35,10 @@
 
 Before enabling `PAYMENT_ENABLED` in any staging or production release, run one completed ZarinPal sandbox payment against the persistent staging HTTPS callback. Preserve redacted evidence of: request-to-callback delivery; the provider verify response; one atomic order/payment/ledger transition; a replay of the same callback producing no second effect; and the feature-flag rollback back to `PAYMENT_ENABLED=false`. This is a payment-release gate, not satisfied by a forged callback reachability check, and it requires non-production credentials kept outside the repository.
 
+### Deferred real-domain validation
+
+Localhost implementation and automated tests are acceptable in earlier tasks, but the following must be validated here against the actual staging/production domains and must never use domain names, certificates, or secret values committed to source: DNS and certificate issuance/renewal; HTTPS-only redirects and HSTS; Web BFF cookie domain, HttpOnly/Secure/SameSite attributes, CORS and CSRF policy; public callback/webhook allow-lists; Android verified App Links and iOS Universal Links; deployed Web canonical URLs, sitemap, robots and structured data; and the real-domain rollback path. A local-only result is not release evidence for any of these gates.
+
 ## Android deliverables
 
 - final applicationId/version؛
