@@ -1,6 +1,6 @@
 # Task 05 — هویت، عضویت فروشگاه و نقش بازاریاب
 
-**Status:** NOT STARTED  
+**Status:** BLOCKED  
 **Planned at:** client `2a53bcf` / server `66c83ed`  
 **Risk:** High  
 **Dependencies:** Tasks 01 and 04
@@ -16,6 +16,24 @@ single-role فعلی به platform roles + shop memberships تبدیل و نقش
 - client `Roles.kt` فقط CUSTOMER/VENDOR/ADMIN و `MainViewModel.kt:63-64` string comparison دارد.
 - MARKETER/field agent و چندنقشی بودن وجود ندارد.
 - approval shop با تغییر global role کاربر مدل شده است.
+
+## Execution baseline — 2026-09-27
+
+- client `6cf6740e52e722ac8fd7c1d08ac5e230b31e127d`
+- server `a7120e7c2bb615b0996ced0d5ba2870669b76652`
+- existing local-only server artifacts (`.artifacts/`, `.gradle-user-home/`) are preserved and excluded from this task.
+
+## Blocking decision — 2026-09-27
+
+Task 05 must implement ownership transfer with strong re-auth, audit and separation of duties, but no approved policy defines who may initiate/approve a Shop ownership transfer or how financial/settlement access behaves during and after transfer. This cannot be inferred safely from the legacy single `shops.owner_user_id` column.
+
+### Decision required from product/operations owner
+
+1. **Maker-checker transfer (recommended):** current OWNER initiates after re-auth; a platform ADMIN/SUPERADMIN who is neither old nor new owner approves; transfer has a configurable cooling period; all old shop memberships are revoked except explicitly recreated ones. Settlement/wallet permissions remain unavailable to shop memberships.
+2. **Platform-admin transfer only:** only ADMIN/SUPERADMIN initiates and approves after evidence review; slower but simplest audit path. Owner cannot self-service a transfer.
+3. **Disable transfers for the current release:** ownership is immutable; support creates a new Shop only through a future reviewed migration process. This avoids transfer risk but blocks legitimate ownership changes.
+
+Until one option is approved, no ownership-transfer endpoint, migration default, or financial-access inference will be implemented. The task is BLOCKED by its declared STOP condition.
 
 ## Target model
 
