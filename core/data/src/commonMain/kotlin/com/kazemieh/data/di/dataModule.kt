@@ -40,6 +40,8 @@ import com.kazemieh.data.catalog.repository.CatalogRepositoryImpl
 import com.kazemieh.data.catalog.repository.InteractionRepositoryImpl as CatalogInteractionRepositoryImpl
 import com.kazemieh.data.catalog.source.CatalogDataSource
 import com.kazemieh.data.catalog.source.CatalogDataSourceImpl
+import com.kazemieh.data.canonical.repository.CanonicalMarketplaceRepositoryImpl
+import com.kazemieh.domain.canonical.CanonicalMarketplaceRepository
 import com.kazemieh.data.favorite.repository.FavoriteRepositoryImpl
 import com.kazemieh.data.favorite.source.FavoriteDataSource
 import com.kazemieh.data.favorite.source.FavoriteDataSourceImpl
@@ -140,6 +142,10 @@ val dataModule = module {
 
     single<CatalogDataSource> {
         CatalogDataSourceImpl(get())
+    }
+
+    single<CanonicalMarketplaceRepository> {
+        CanonicalMarketplaceRepositoryImpl(get())
     }
 
     single<FavoriteRepository> {

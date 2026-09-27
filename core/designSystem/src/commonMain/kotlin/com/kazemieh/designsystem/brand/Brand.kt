@@ -53,7 +53,7 @@ data class BrandConfig(
     val id: String,
     val appName: String,
     val colors: BrandColors,
-    val currency: String = "تومان",
+    val currency: String = "ریال",
     val apiBaseUrl: String? = null,
     val features: BrandFeatures = BrandFeatures(),
 )
@@ -68,7 +68,7 @@ val RastehBrand = BrandConfig(
     id = "rasteh",
     appName = "راسته",
     colors = RastehBrandColors,
-    currency = "تومان",
+    currency = "ریال",
     features = BrandFeatures(),
 )
 

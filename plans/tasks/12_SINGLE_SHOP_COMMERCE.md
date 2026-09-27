@@ -5,6 +5,10 @@
 **Risk:** Critical  
 **Dependencies:** Tasks 01, 04, 07 and 09
 
+## Inherited compatibility responsibility — 2026-09-27
+
+با تأیید مالک محصول، این task مسئول نهاییِ انتقال mutationهای cart/order/payment/refund از مسیر legacy، freeze کردن writeهای legacy پس از parity، و evidence بازگشت‌پذیری است. Task 04 فقط API خواندنی v1، migration expand/backfill و telemetry را تحویل داده است. legacy write تا تکمیل تمام invariantها و sandbox/reconciliation این task نباید حذف یا بسته شود.
+
 ## Outcome
 
 فقط Offerهای `BUYABLE` یک فروشگاه وارد cart شوند و checkout pickup-first با قیمت snapshot، رزرو موجودی، پرداخت idempotent، ledger، refund و reconciliation قابل‌اثبات کار کند.
@@ -112,4 +116,3 @@
 ```text
 Task 12 را فقط برای single-shop pickup-first اجرا کن. pricing snapshot، Money exact، inventory reservation، order/payment/refund state machine، idempotency، provider verify، append-only ledger و reconciliation را end-to-end بساز. client موفقیت را فقط از server state می‌گیرد. تست concurrency/replay/restart/refund و sandbox E2E اجباری است. بدون sign-off حقوقی/PSP یا با mismatch مالی task را DONE نکن؛ wallet/escrow/multi-shop را گسترش نده.
 ```
-

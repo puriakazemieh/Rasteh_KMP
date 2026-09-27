@@ -49,7 +49,7 @@ checkbox این جدول و فیلد `Status` داخل فایل همان task ب
 | [x] | 01 | [رفع فوری نقص‌های امنیتی و مالی](./tasks/01_CRITICAL_SECURITY_AND_FINANCE.md) | 00 | مالکیت سفارش، مبلغ پرداخت، callback، هم‌زمانی |
 | [x] | 02 | [محیط‌ها، secrets، session و logging](./tasks/02_ENVIRONMENTS_SECRETS_AND_SESSIONS.md) | 00 | dev/stage/prod، HTTPS، secure storage، redaction |
 | [x] | 03 | [مهاجرت DB، تست و observability پایه](./tasks/03_DATABASE_TESTS_AND_OBSERVABILITY.md) | 00 | Flyway، Testcontainers، CI gates، tracing/metrics |
-| [ ] | 04 | [یکپارچه‌سازی دامنهٔ marketplace](./tasks/04_UNIFY_MARKETPLACE_DOMAIN.md) | 01،03 | حذف دوگانگی محصول/سفارش/نظر/ذخیره |
+| [x] | 04 | [یکپارچه‌سازی دامنهٔ marketplace](./tasks/04_UNIFY_MARKETPLACE_DOMAIN.md) | 01،03 | حذف دوگانگی محصول/سفارش/نظر/ذخیره |
 | [ ] | 05 | [هویت، عضویت فروشگاه و بازاریاب](./tasks/05_IDENTITY_MEMBERSHIP_AND_FIELD_AGENT.md) | 01،04 | نقش‌های پلتفرم و فروشگاه، maker-checker، audit |
 | [ ] | 06 | [مکان، فروشگاه، claim و onboarding](./tasks/06_LOCATION_SHOP_AND_ONBOARDING.md) | 05 | گراف بازار/پاساژ/واحد، تأیید و claim |
 | [ ] | 07 | [کاتالوگ، Offer، واریانت و موجودی](./tasks/07_CATALOG_OFFERS_AND_INVENTORY.md) | 04،06 | سه mode فروش، freshness SLA، import و media |
