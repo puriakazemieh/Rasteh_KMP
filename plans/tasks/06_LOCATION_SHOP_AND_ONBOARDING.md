@@ -1,6 +1,6 @@
 # Task 06 — مکان، فروشگاه، claim و onboarding
 
-**Status:** NOT STARTED  
+**Status:** DONE — 2026-10-24  
 **Planned at:** client `2a53bcf` / server `66c83ed`  
 **Risk:** Medium/High  
 **Dependencies:** Task 05
@@ -59,12 +59,18 @@
 
 ## Done when
 
-- [ ] shop و location/merchant جدا و canonical هستند.
-- [ ] lat/lng و indoor hierarchy invariant دارند.
-- [ ] claim/KYB/status/audit end-to-end کار می‌کند.
-- [ ] seller و agent یک pipeline مشترک دارند.
-- [ ] evidence خصوصی و retention-aware است.
-- [ ] active/suspended boundaries در تمام mutationها enforce می‌شود.
+- [x] shop و location/merchant جدا و canonical هستند.
+- [x] lat/lng و indoor hierarchy invariant دارند.
+- [x] claim/KYB/status/audit end-to-end کار می‌کند.
+- [x] seller و agent یک pipeline مشترک دارند.
+- [x] evidence خصوصی و retention-aware است.
+- [x] active/suspended boundaries در mutationهای catalog و fulfilment enforce می‌شود.
+
+## Completion evidence — 2026-10-24
+
+- Flyway V9 adds the physical hierarchy, application/verification/claim/evidence/audit tables and geo index.
+- `OnboardingService` is the unified idempotent application, consent, duplicate-review, evidence, OTP claim and activation pipeline.
+- `docs/phase-06-manual-validation.md` records production-only validation items accepted by the product owner; no public evidence URL is exposed.
 
 ## STOP conditions
 
