@@ -72,6 +72,7 @@ kotlin {
                 implementation(project(":feature:support"))
                 implementation(project(":feature:blog"))
                 implementation(project(":core:common"))
+                implementation(project(":core:domain"))
 
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)

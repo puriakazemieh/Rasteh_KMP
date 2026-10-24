@@ -1,6 +1,6 @@
 # Task 05 — هویت، عضویت فروشگاه و نقش بازاریاب
 
-**Status:** BLOCKED  
+**Status:** DONE — 2026-09-27  
 **Planned at:** client `2a53bcf` / server `66c83ed`  
 **Risk:** High  
 **Dependencies:** Tasks 01 and 04
@@ -34,6 +34,10 @@ Task 05 must implement ownership transfer with strong re-auth, audit and separat
 3. **Disable transfers for the current release:** ownership is immutable; support creates a new Shop only through a future reviewed migration process. This avoids transfer risk but blocks legitimate ownership changes.
 
 Until one option is approved, no ownership-transfer endpoint, migration default, or financial-access inference will be implemented. The task is BLOCKED by its declared STOP condition.
+
+### Resolution — 2026-09-27
+
+مالک محصول گزینهٔ ۳ را تأیید کرد: در release فعلی انتقال مالکیت ممنوع است و `Shop.owner_user_id` تغییرناپذیر می‌ماند. هیچ endpoint یا migration برای transfer ساخته نمی‌شود. تغییر آینده فقط با policy و migration جداگانه ممکن است؛ shop membership هرگز مالکیت یا دسترسی settlement/wallet ایجاد نمی‌کند.
 
 ## Target model
 
@@ -88,12 +92,19 @@ Client: `core/common/Roles.kt`, profile contracts، `MainViewModel.kt`, `MoreScr
 
 ## Done when
 
-- [ ] هیچ تصمیم امنیتی به `isVendor/isAdmin` client محدود نیست.
-- [ ] vendor global role منبع حقیقت نیست.
-- [ ] authorization matrix test required CI است.
-- [ ] field agent workflow و audit کامل است.
-- [ ] separation of duties و least privilege اثبات شده است.
-- [ ] role migration و rollback/compatibility مستند است.
+- [x] هیچ تصمیم امنیتی به `isVendor/isAdmin` client محدود نیست؛ server capability resolver در هر درخواست تصمیم می‌گیرد. booleanهای کلاینت فقط compatibility UX هستند.
+- [x] vendor global role منبع حقیقت نیست؛ membership فعالِ shop منبع capability است.
+- [x] authorization matrix test required CI است؛ تست‌ها در Gradle `test/check` اجرا می‌شوند.
+- [x] field agent workflow و audit کامل است: assignment، create/edit/consent/submit/review و maker-checker.
+- [x] separation of duties و least privilege اثبات شده است.
+- [x] role migration و rollback/compatibility مستند است.
+
+## Completion evidence — 2026-09-27
+
+- Server: `AuthorizationCatalog`, `AuthorizationService`, membership APIs, agent workflow APIs and Flyway V6–V8.
+- Client: capability contract, deep-link gate and capability-gated authorization-admin surface.
+- Ownership transfer remains deliberately disabled under the product decision above; OWNER membership is neither invitable nor revocable.
+- Verified with server authorization tests and Kotlin compilation of the client authorization surfaces.
 
 ## STOP conditions
 
