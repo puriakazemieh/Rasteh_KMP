@@ -10,7 +10,9 @@ fun CanonicalOfferResponse.toDomain(): ShopOffer = ShopOffer(
     productId = productId,
     shopLocationId = shopLocationId,
     title = title,
-    price = Money(price.minorUnits, price.currency),
+    price = price?.let { Money(it.minorUnits, it.currency) },
     saleMode = SaleMode.entries.firstOrNull { it.name == saleMode } ?: SaleMode.SHOWCASE,
     availableQuantity = availableQuantity.coerceAtLeast(0),
+    stale = stale,
+    lastConfirmedAt = lastConfirmedAt,
 )

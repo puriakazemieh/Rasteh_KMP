@@ -18,7 +18,9 @@ data class ShopOffer(
     val productId: String,
     val shopLocationId: String,
     val title: String,
-    val price: Money,
+    val price: Money? = null,
     val saleMode: SaleMode,
     val availableQuantity: Int,
+    val stale: Boolean = false,
+    val lastConfirmedAt: String? = null,
 )

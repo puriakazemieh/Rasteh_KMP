@@ -14,7 +14,9 @@ data class CanonicalOfferResponse(
     val productId: String,
     val shopLocationId: String,
     val title: String,
-    val price: CanonicalMoneyResponse,
+    val price: CanonicalMoneyResponse? = null,
     val saleMode: String,
     val availableQuantity: Int,
+    val stale: Boolean = false,
+    val lastConfirmedAt: String? = null,
 )
