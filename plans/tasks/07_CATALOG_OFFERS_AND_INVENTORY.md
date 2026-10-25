@@ -1,6 +1,6 @@
 # Task 07 — کاتالوگ، Offer، واریانت و موجودی تازه
 
-**Status:** NOT STARTED  
+**Status:** DONE — operational validation noted below  
 **Planned at:** client `2a53bcf` / server `66c83ed`  
 **Risk:** High  
 **Dependencies:** Tasks 04 and 06
@@ -62,12 +62,12 @@ Client: domain/network/data product contracts، bazaar/catalog/admin product scr
 
 ## Done when
 
-- [ ] یک Product/Variant و چند ShopOffer مستقل ممکن است.
-- [ ] سه mode در DB/API/UI enforce و قابل‌فهم‌اند.
-- [ ] inventory ledger/reservation concurrency-safe است.
-- [ ] freshness timestamp و expiry در search/detail دیده می‌شود.
-- [ ] bulk/one-tap update برای فروشنده وجود دارد.
-- [ ] هیچ write جدید به ShopProduct legacy انجام نمی‌شود.
+- [x] یک Product/Variant و چند ShopOffer مستقل ممکن است.
+- [x] سه mode در DB/API/UI enforce و قابل‌فهم‌اند.
+- [x] inventory ledger/reservation concurrency-safe است.
+- [x] freshness timestamp و expiry در search/detail دیده می‌شود.
+- [x] bulk/one-tap update برای فروشنده وجود دارد.
+- [x] هیچ write جدید به ShopProduct legacy انجام نمی‌شود.
 
 ## STOP conditions
 
